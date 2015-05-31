@@ -31,6 +31,8 @@ angular.module('starter.services', [])
     face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
   }];
 
+  var data = [];
+
   return {
     all: function() {
       return chats;
