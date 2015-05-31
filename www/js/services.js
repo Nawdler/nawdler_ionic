@@ -31,7 +31,58 @@ angular.module('starter.services', [])
     face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
   }];
 
-  var data = [];
+ var dataStructure =
+    {"Routine_1": {
+          "title": "morning Routine",
+          "steps" : [
+                      "Take Shower",
+                      "Put On Clothes [Was Get Dressed]",
+                      "Eat Breakfast]",
+                      "Pack Bag"
+                      ],
+          "currentOps" : {
+                      "activeStep" : null,//which step is currently active, //"Null" if no step is running, i.e., Pause mode
+                      "currentAttemptIndex" : 2;//index # of the current attempt; increment it when you hit "Finished"
+                         }
+          "attempts" : [ //array of attempt data, each attempt is one array element
+                        [    //each element is an array of steps
+                          {"title": "Take Shower", //attempt 0 // each "step" is an object with title and times keys
+                           "times":[{
+                                    "started_at": TIME, //each TIME key is an array of objects with starts and ends time
+                                    "ended_at" : TIME
+                                    }]},
+                          {"title": "Get Dressed",
+                           "times": [{
+                                      "started_at": TIME1,
+                                      "ended_at" : TIME1
+                                    },{
+                                      "started_at": TIME2,
+                                      "ended_at" : TIME2
+                                    }]}
+                        ],//END OF ATTEMPT 0
+                        [
+                          {"title": "Take Shower", //attempt 1
+                           "times":[{
+                                      "started_at": TIME,
+                                      "ended_at" : TIME
+                                      }]},
+                          {"title": "Get Dressed",
+                           "times": [{
+                                      "started_at": TIME1,
+                                      "ended_at" : TIME1
+                                    }]},
+                          {"title": "Eat Breakfast",
+                          "times" :[{
+                                      "started_at": TIME1,
+                                      "ended_at" : TIME1
+                                   }]}
+                        ]//END OF ATTEMPT 1
+                       ]//end all attempts for this routine
+
+                  } //end named routine object
+  } //end all routines
+
+
 
   return {
     all: function() {
