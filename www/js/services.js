@@ -12,10 +12,17 @@ angular.module('starter.services', [])
   //Is the attempt running? //WORKS
   var is_attemptRunning = function(oneRoutine){
     var workingAttempt = oneRoutine.currentOps.workingAttempt;
-    var numCompletedAttempts = oneRoutine.attempts.length
+    console.log("workingAttempt::  ",workingAttempt);
+
+    var numCompletedAttempts = oneRoutine.attempts.length;
+    console.log("attempts_length::  ",numCompletedAttempts);
+
     if (workingAttempt > numCompletedAttempts){
+      console.log("Attempt wasn't running");
       return false;
     } else {
+      console.log("Attempt was running");
+
       return true;
     }
   }
@@ -26,42 +33,97 @@ angular.module('starter.services', [])
   //assuming if an attempt is RUNNING then we return times from that attempt,
   //otherwise we return times from the last completed attempt
   // THIS IS TO PASS INTO DIFF
-  var getTime = function(stepTitle, oneRoutine){
-    //ADJUST CURRENT ATTEMPT TO BE CURRENT IF ROUTINE IS ACTIVE, OTHERWISE DECREMENT BECAUSE WE INCREMENT WHEN ATTEMPTED IS FINISHED
+  var getTimeArray = function(stepTitle, oneRoutine){
 
+    console.log("HEllo from getTimeArray");
+    
+    //ADJUST CURRENT ATTEMPT TO BE CURRENT IF ROUTINE IS ACTIVE, OTHERWISE DECREMENT BECAUSE WE INCREMENT WHEN ATTEMPTED IS FINISHED
     if (is_attemptRunning(oneRoutine)){
       var currentAttempt = oneRoutine.currentOps.workingAttempt;
     } else {
       var currentAttempt = oneRoutine.currentOps.workingAttempt-1;
     }
-    //have to - 1 because of index/length issue.
-    //We adjusted it twice. It needs that.
+
+    // attemptArray is the array of the entire attempt we want to look through
+    //have also to - 1 because of distinction between index (starts at 0) and length (starts at 1)
     var attemptArray = oneRoutine.attempts[currentAttempt-1];
+
+    if (attemptArray === undefined){
+      console.log("thought the current attempt array was undefined")
+      //Get here if there is no attempt yet, and return empty array to avoid error
+      return {"timeArray":[], "titleIndex":null};
+    }
+      console.log("attempt ARray")
+        console.log(attemptArray);
+
+    var timeArray =[]; // return empty array if nothing found
+
     for (var i = 0; i < attemptArray.length; i++) {
       var thisStepName = attemptArray[i].title;
-      if (thisStepName === stepTitle){
-        var timeArray = attemptArray[i].times;
-      }
+      console.log("This Step Name::  ", thisStepName);
+      console.log("target stepTitle: ",stepTitle);
+        if (thisStepName === stepTitle){
+          console.log("Hello from found a match");
+          var timeArray = attemptArray[i].times;
+          console.log("This is the match result: ", timeArray);
+        }
     }
-    return timeArray;
+    return {"timeArray":timeArray, "titleIndex":i};
   };
 
-  var setTime = function(newTime, oneRoutine){
+  var setStartTime = function(startedStep, oneRoutine){
+    //This takes in:
+    // startedStep -- the step that needs to be started in the tree
+    // oneRoutine -- for scope purposes
+    //This calculates:
+    //  which attempt to use
+    //  the current time
+    //This either initiates a new object in the array if the step has not happened yet in this attempt, or if there was already a segment of this step, it addes a new start time and end time object
 
-  }
+    var currentAttempt = oneRoutine.currentOps.workingAttempt;
+    var now = moment();
+
+    console.log("setStartTime:GetTimeArrayResult:: ", getTimeArray(startedStep, oneRoutine));
+    if (getTimeArray(startedStep, oneRoutine).timeArray.length > 0) { 
+      //This means there is at least one time for this step in the current attempt
+      //So we can just insert an additional time object into array
+
+      //Create an object with the start time and leave end time null
+      var newStepTime = {"started_at": now
+                        ,"ended_at" : null};
+
+      //Insert this object into the time array for that step
+      // *Vomit* Let's clean this line up some time.
+
+      oneRoutine.attempts[currentAttempt][getTimeArray(startedStep, oneRoutine).titleIndex].times.push(newStepTime);
+    } else {
+      // Get here if we need to insert a whole new step for the startedStep (title + times)
+      var newStep = {"title": startedStep
+                    ,"times":[{"started_at": now
+                    , "ended_at" : null}]};
+
+      console.log("About to push new step name  ::  ", oneRoutine.attempts[currentAttempt]);
+      console.log("About to push - one routine  ::  ", oneRoutine);
+      console.log("About to push - one routine.attemps  ::  ", oneRoutine.attempts);
+      console.log("about to push -- currentAttempt  ", currentAttempt);
+
+      oneRoutine.attempts[currentAttempt-1].push(newStep);
+    }
+  }; // END OF SET START TIME
 
 
   //runs diff on all steps in attempt
-  var calDurationStep = function(){
+  var calcDurationStep = function(){
 
   }
-
 
 
   return {
     calcDurationSegment: calcDurationSegment
     ,is_attemptRunning: is_attemptRunning
-    ,getTime: getTime
+    ,getTimeArray: getTimeArray
+    ,setStartTime: setStartTime
+    ,calcDurationStep: calcDurationStep
   }
 }) //end service
 
@@ -76,7 +138,7 @@ angular.module('starter.services', [])
                         ]
             ,"currentOps" : {
                         "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
-                        ,"workingAttempt" : 0 //# (not index 0) of the current attempt; increment it when you hit "Finished"
+                        ,"workingAttempt" : 1 //# (not index 0) of the current attempt; increment it when you hit "Finished" //start at 1
                          }
             ,"attempts" :[ //array of attempt data, each attempt is one array element
                           //this will be the first attempt
@@ -85,11 +147,6 @@ angular.module('starter.services', [])
 
                      } //end first routine object
      }; //end all routines
-
-
-
-
-
 
   // Some fake testing data
   //call it with: dataStorage.all
@@ -106,7 +163,7 @@ angular.module('starter.services', [])
                         ]
             ,"currentOps" : {
                         "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
-                        ,"workingAttempt" : 3 //# (not index 0) of the current attempt; increment it when you hit "Finished"
+                        ,"workingAttempt" : 2 //# (not index 0) of the current attempt; increment it when you hit "Finished"
                          }
             ,"attempts" : [ //array of attempt data, each attempt is one array element
                           //this is attempt 0

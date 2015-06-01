@@ -4,17 +4,15 @@ angular.module('starter.controllers', ['angularMoment'])
 .controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'Routines', 'TimerCalcs', function($scope, moment, $interval, $state, Routines, TimerCalcs) {
 
   //GETTERS AND SETTERS
-  var allData = Routines.all(); //get the sample data from the factory
+  var allData = Routines.template(); //get the sample data from the factory
   var oneRoutine = allData["Routine1"]; //focus on the first (now only) routine, at least for now
   $scope.routineTitle = oneRoutine.title; //store the title
   $scope.steps = oneRoutine.steps; //store the steps array
 
-  var x = TimerCalcs.getTime("Take Shower", oneRoutine);
-  console.log(x);
 
   //$scope.currentTime = moment().format('h:mm:ss a'); // just to see that Moment is working
 
- // $scope.past1 = moment("2015-02-09 09:34:40").diff(moment("2015-02-09 09:34:20", 'seconds'));
+  $scope.past1 = moment("2015-02-09 09:34:40").diff(moment("2015-02-09 09:34:20", 'seconds'));
 
     // var start = moment.utc("2015-06-01T10:15:00","DD/MM/YYYY HH:mm:ss");
     // var finish = moment.utc("2015-06-01T11:45:10","DD/MM/YYYY HH:mm:ss");
@@ -23,15 +21,61 @@ angular.module('starter.controllers', ['angularMoment'])
     // var x = TimerCalcs.calcDurationSegment(start,finish);
     // console.log(x);
     // $scope.currentTime = x;
-
+  //console.log("activeStep outside");
+    //console.log(activeStep);
 
   //moment.utc(dur).format('HH:mm:ss');
   $scope.addStep = function(newStep){
     $scope.steps.push(newStep);
   }
 
-  $scope.active = TimerCalcs.is_attemptRunning(oneRoutine);
-  console.log($scope.active);
+  $scope.startStep = function(clickedStep){
+    //Ionic passes us clickedStep based on which list item user clicked on!
+
+    // This is the currently active step, Null if none is active
+    var activeStep = oneRoutine.currentOps.activeStep;
+
+    if (activeStep === clickedStep) { //If user clicks on current step, then nothing should happen. Let it keep timing.
+      console.log("you're already on this step.");
+      return;
+    }
+
+    if (TimerCalcs.is_attemptRunning(oneRoutine) === false) { //This means there is no attempt running and we need to create one
+      //Initiative a new attempt by creating an array to hold the steps of that attempt
+      console.log("Hello from new attempt init");
+      oneRoutine.attempts.push([]);
+      console.log(oneRoutine);
+      //consider saving oneRoutine to LocalStorage here later
+    }
+
+    if (activeStep != null) { //This means some other step is running and we need to stop it
+      stopStep(activeStep);
+    }
+
+    //Get here if we really, truly want to start the clickedStep timer
+    //Set activeStep to be clickedStep
+    oneRoutine.currentOps.activeStep = clickedStep;
+
+    //Front-end timer start (i.e., change CSS and start pulsing clock)
+
+    //Back-end timer start (i.e., push step name and start time into tree, as appropriate)
+    TimerCalcs.setStartTime(clickedStep, oneRoutine);
+
+    console.log("OneRoutine -- Yoda");
+    console.log(oneRoutine);
+
+    console.log("attempts");
+    console.log(oneRoutine.attempts);
+
+    console.log("activeStep");
+    console.log(activeStep);
+  } //END OF STARTSTEP
+
+
+
+
+  // $scope.active = TimerCalcs.is_attemptRunning(oneRoutine);
+  // console.log($scope.active);
 
 }])
 

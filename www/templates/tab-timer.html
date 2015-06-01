@@ -24,7 +24,7 @@
     </div>
 <p>Generated from data:</p>
     <div class="list">
-      <a class="item" ng-repeat="step in steps">
+      <a class="item" ng-repeat="step in steps" ng-click="startStep(step)">
         {{step}}
         <span class="item-note">
           {{currentTime}}
