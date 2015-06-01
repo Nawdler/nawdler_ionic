@@ -5,13 +5,13 @@ angular.module('starter.controllers', ['angularMoment'])
 
   var allData = Routines.all(); //get the sample data from the factory
 
-  var oneRoutine = allData["Routine1"]; //focus on the first (now only) routine, for now
+  var oneRoutine = allData["Routine1"]; //focus on the first (now only) routine, at least for now
 
   $scope.routineTitle = oneRoutine.title; //store the title
 
   $scope.steps = oneRoutine.steps; //store the steps array
 
-  $scope.currentTime = moment().format('h:mm:ss a');
+  $scope.currentTime = moment().format('h:mm:ss a'); // just to see that Moment is working
 
 }])
 
