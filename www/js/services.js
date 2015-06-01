@@ -1,5 +1,25 @@
 angular.module('starter.services', [])
 
+.service('TimerCalcs', function() {
+  var calcDurationSegment = function(startedAt, endedAt){
+
+    //WE KNOW THIS MAY HAVE AN HOUR CALCULATION BUG
+
+    var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
+
+    return moment.utc(dur).format('HH:mm:ss');
+  };
+
+
+
+
+  
+
+  return {
+    calcDurationSegment: calcDurationSegment
+  }
+})
+
 .factory('Routines', function() {
   // Might use a resource here that returns a JSON array
 
@@ -14,7 +34,7 @@ angular.module('starter.services', [])
                         ,"Eat Breakfast"
                         ,"Pack Bag"
                         ,"Put on Shoes"
-                        ,"Grab a Coat"
+                        ,"Grab a Stinky Coat"
                         ]
             ,"currentOps" : {
                         "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
@@ -27,8 +47,8 @@ angular.module('starter.services', [])
                             {"title": "Take Shower"
                             //each TIME key is an array of objects with starts and ends time
                             ,"times":[{
-                                      "started_at": "T1" 
-                                     , "ended_at" : "T2"
+                                      "started_at": moment("2015-02-09 09:30:20") 
+                                     , "ended_at" : moment("2015-02-09 09:34:40")
                                       }]
                              }
                             ,{"title": "Get Dressed",
