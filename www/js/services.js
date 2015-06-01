@@ -27,24 +27,16 @@ angular.module('starter.services', [])
   //otherwise we return times from the last completed attempt
   // THIS IS TO PASS INTO DIFF
   var getTime = function(stepTitle, oneRoutine){
-
     //ADJUST CURRENT ATTEMPT TO BE CURRENT IF ROUTINE IS ACTIVE, OTHERWISE DECREMENT BECAUSE WE INCREMENT WHEN ATTEMPTED IS FINISHED
 
     if (is_attemptRunning(oneRoutine)){
       var currentAttempt = oneRoutine.currentOps.workingAttempt;
-      console.log("This is true");
     } else {
       var currentAttempt = oneRoutine.currentOps.workingAttempt-1;
-      console.log("this is false");
     }
-    console.log("Current Attempt :: ", currentAttempt);
-    console.log(oneRoutine.attempts);
-
     //have to - 1 because of index/length issue.
     //We adjusted it twice. It needs that.
     var attemptArray = oneRoutine.attempts[currentAttempt-1];
-    console.log("Attempt Array::  ", attemptArray)
-
     for (var i = 0; i < attemptArray.length; i++) {
       var thisStepName = attemptArray[i].title;
       if (thisStepName === stepTitle){
@@ -54,7 +46,9 @@ angular.module('starter.services', [])
     return timeArray;
   };
 
+  var setTime = function(newTime, oneRoutine){
 
+  }
 
 
   //runs diff on all steps in attempt
