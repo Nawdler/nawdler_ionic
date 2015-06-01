@@ -1,6 +1,6 @@
 <ion-view view-title="Timer">
   <ion-content padding="true" class="has-header">
-<p>Hard coded:</p>  
+<p>Hard coded:</p>
     <div class="list">
       <a class="item">
         Brush Teeth
@@ -25,12 +25,22 @@
 <p>Generated from data:</p>
     <div class="list">
       <a class="item" ng-repeat="step in steps">
-        {{step}}   
+        {{step}}
         <span class="item-note">
           {{currentTime}}
         </span>
       </a>
     </div>
+    <!-- input box -->
+      <form ng-submit="addStep(newStep)">
+        <div class="item item-input">
+          <span class="input-lable">
+            Add New Step
+          </span>
+          <input type="text" ng-model="newStep"> <button type="submit">+</button>
+        </div>
+      </form>
+
 
 
   <div class="row row-center">
@@ -40,7 +50,6 @@
     </div>
   </div>
 
-       
 
 
 

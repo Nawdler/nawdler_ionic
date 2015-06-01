@@ -1,24 +1,75 @@
 angular.module('starter.services', [])
 
 .service('TimerCalcs', function() {
-  var calcDurationSegment = function(startedAt, endedAt){
 
+  var calcDurationSegment = function(startedAt, endedAt){ //WORKS
     //WE KNOW THIS MAY HAVE AN HOUR CALCULATION BUG
-
     var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
-
     return moment.utc(dur).format('HH:mm:ss');
+  };
+
+  //Current attempt = oneRoutine.currentOps.workingAttempt
+  //Is the attempt running? //WORKS
+  var is_attemptRunning = function(oneRoutine){
+    var workingAttempt = oneRoutine.currentOps.workingAttempt;
+    var numCompletedAttempts = oneRoutine.attempts.length
+    if (workingAttempt > numCompletedAttempts){
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+ //might need more massaging to get the times out of objects
+  //this gets the start and end times
+  //of a particular step in an attempt
+  //assuming if an attempt is RUNNING then we return times from that attempt,
+  //otherwise we return times from the last completed attempt
+  // THIS IS TO PASS INTO DIFF
+  var getTime = function(stepTitle, oneRoutine){
+
+    //ADJUST CURRENT ATTEMPT TO BE CURRENT IF ROUTINE IS ACTIVE, OTHERWISE DECREMENT BECAUSE WE INCREMENT WHEN ATTEMPTED IS FINISHED
+
+    if (is_attemptRunning(oneRoutine)){
+      var currentAttempt = oneRoutine.currentOps.workingAttempt;
+      console.log("This is true");
+    } else {
+      var currentAttempt = oneRoutine.currentOps.workingAttempt-1;
+      console.log("this is false");
+    }
+    console.log("Current Attempt :: ", currentAttempt);
+    console.log(oneRoutine.attempts);
+
+    //have to - 1 because of index/length issue.
+    //We adjusted it twice. It needs that.
+    var attemptArray = oneRoutine.attempts[currentAttempt-1];
+    console.log("Attempt Array::  ", attemptArray)
+
+    for (var i = 0; i < attemptArray.length; i++) {
+      var thisStepName = attemptArray[i].title;
+      if (thisStepName === stepTitle){
+        var timeArray = attemptArray[i].times;
+      }
+    }
+    return timeArray;
   };
 
 
 
 
-  
+  //runs diff on all steps in attempt
+  var calDurationStep = function(){
+
+  }
+
+
 
   return {
     calcDurationSegment: calcDurationSegment
+    ,is_attemptRunning: is_attemptRunning
+    ,getTime: getTime
   }
-})
+}) //end service
 
 .factory('Routines', function() {
   // Might use a resource here that returns a JSON array
@@ -38,7 +89,7 @@ angular.module('starter.services', [])
                         ]
             ,"currentOps" : {
                         "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
-                        ,"currentAttemptIndex" : 2 //index # of the current attempt; increment it when you hit "Finished"
+                        ,"workingAttempt" : 3 //# (not index 0) of the current attempt; increment it when you hit "Finished"
                          }
             ,"attempts" : [ //array of attempt data, each attempt is one array element
                           //this is attempt 0
@@ -47,7 +98,7 @@ angular.module('starter.services', [])
                             {"title": "Take Shower"
                             //each TIME key is an array of objects with starts and ends time
                             ,"times":[{
-                                      "started_at": moment("2015-02-09 09:30:20") 
+                                      "started_at": moment("2015-02-09 09:30:20")
                                      , "ended_at" : moment("2015-02-09 09:34:40")
                                       }]
                              }
