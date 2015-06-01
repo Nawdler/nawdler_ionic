@@ -1,15 +1,14 @@
 <ion-view view-title="Timer">
   <ion-content padding="true" class="has-header">
+<p>Hard coded:</p>  
     <div class="list">
       <a class="item">
         Brush Teeth
         <span class="item-icon-right item-note">
-          3:01
           <i class="icon ion-play">
           </i>
         </span>
       </a>
-
       <a class="item item-icon-left">
         <i class="icon ion-ios-stopwatch"></i>
         Floss Teeth
@@ -17,19 +16,27 @@
           3:45
         </span>
       </a>
-
-
       <a class="item item-icon-right">
         Eat
         <i class="icon ion-play"> </i>
       </a>
+    </div>
+<p>Generated from data:</p>
+    <div class="list">
+      <a class="item" ng-repeat="step in steps">
+        {{step}}   
+        <span class="item-note">
+          {{currentTime}}
+        </span>
+      </a>
+    </div>
 
-<div class="row row-center">
-  <div class="col">
-   <a class="button button-icon icon ion-plus-circled">
-        </a>
+  <div class="row row-center">
+    <div class="col">
+     <a class="button button-icon icon ion-plus-circled">
+          </a>
+    </div>
   </div>
-</div>
 
        
 
