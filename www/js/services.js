@@ -74,6 +74,29 @@ angular.module('starter.services', [])
 .factory('Routines', function() {
   // Might use a resource here that returns a JSON array
 
+
+   var dataTemplate =
+      {"Routine1": {
+            "title": "My Routine"
+            ,"steps" : [
+                        ]
+            ,"currentOps" : {
+                        "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
+                        ,"workingAttempt" : 0 //# (not index 0) of the current attempt; increment it when you hit "Finished"
+                         }
+            ,"attempts" :[ //array of attempt data, each attempt is one array element
+                          //this will be the first attempt
+                         
+                         ]//end all attempts for this routine
+
+                     } //end first routine object
+     }; //end all routines
+
+
+
+
+
+
   // Some fake testing data
   //call it with: dataStorage.all
   var dataStorage =
@@ -167,6 +190,9 @@ angular.module('starter.services', [])
     all: function() {
       return dataStorage;
     },
+    template: function() {
+      return dataTemplate;
+    }
     // remove: function(chat) {
     //   chats.splice(chats.indexOf(chat), 1);
     // },
