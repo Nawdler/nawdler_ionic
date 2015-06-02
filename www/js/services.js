@@ -131,13 +131,31 @@ angular.module('starter.services', [])
 .factory('Routines', function() {
   // Might use a resource here that returns a JSON array
 
-  var titleTime = {
-    "breakfast" : moment()
-    ,"lunch" : "2014-09-08T08:02:20-05:00"
-    ,"brunch" : "2014-10-08T08:02:37-05:00"
-    ,"dinner" : "2014-11-08T08:02:47-05:00"
-    ,"dessert" : "2014-12-08T08:02:57-05:00"
-  };
+  var titleTime =
+    [
+    {"title" : "Eat"
+      ,"timeDiff" : moment().format('HH:mm:ss')
+      ,"status" : "done"
+    }
+    ,{"title" : "Pray"
+      ,"timeDiff" : moment().format('HH:mm:ss')
+      ,"status" : "doing"
+    }
+      ,{"title" : "Love"
+      ,"timeDiff" : moment().format('HH:mm:ss')
+      ,"status" : "todo"
+    }
+      ,{"title" : "Read"
+      ,"timeDiff" : moment().format('HH:mm:ss')
+      ,"status" : "todo"
+    }
+  ];
+
+    // "breakfast" : moment()
+    // ,"lunch" : "2014-09-08T08:02:20-05:00"
+    // ,"brunch" : "2014-10-08T08:02:37-05:00"
+    // ,"dinner" : "2014-11-08T08:02:47-05:00"
+    // ,"dessert" : "2014-12-08T08:02:57-05:00"
 
    var dataTemplate =
       {"Routine1": {
@@ -161,13 +179,23 @@ angular.module('starter.services', [])
       {"Routine1": {
             "title": "My Morning Routine"
             ,"steps" : [
-                        "Take Shower"
-                        ,"Put On Clothes"
-                        ,"Eat Breakfast"
-                        ,"Pack Bag"
-                        ,"Put on Shoes"
-                        ,"Grab a Stinky Coat"
-                        ]
+                        {"title" : "Eat"
+                          ,"timeDiff" : moment().format('HH:mm:ss')
+                          ,"status" : "done"
+                        }
+                        ,{"title" : "Pray"
+                          ,"timeDiff" : moment().format('HH:mm:ss')
+                          ,"status" : "doing"
+                        }
+                          ,{"title" : "Love"
+                          ,"timeDiff" : moment().format('HH:mm:ss')
+                          ,"status" : "todo"
+                        }
+                          ,{"title" : "Party"
+                          ,"timeDiff" : moment().format('HH:mm:ss')
+                          ,"status" : "todo"
+                        }
+                      ]
             ,"currentOps" : {
                         "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
                         ,"workingAttempt" : 2 //# (not index 0) of the current attempt; increment it when you hit "Finished"

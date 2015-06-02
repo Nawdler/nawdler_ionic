@@ -4,17 +4,18 @@ angular.module('starter.controllers', ['angularMoment'])
 .controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'Routines', 'TimerCalcs', function($scope, moment, $interval, $state, Routines, TimerCalcs) {
 
   //GETTERS AND SETTERS
-  var allData = Routines.template(); //get the sample data from the factory
+  var allData = Routines.all(); //get the sample data from the factory
   var oneRoutine = allData["Routine1"]; //focus on the first (now only) routine, at least for now
   $scope.routineTitle = oneRoutine.title; //store the title
-  //$scope.steps = oneRoutine.steps; //store the steps array
+  $scope.steps = oneRoutine.steps; //store the steps array
   var titleTime = Routines.titleTime();
-  $scope.steps = titleTime;
+  //$scope.steps = titleTime;
 
 
 //CREATE A FAKE/TEMPORARY OBJECT WITH STEPS AND STATUS LEVELS
-$scope.fakeSteps = [{"title":"Hello world","active": false}, {"title":"Drink coffee","active":true}, {"title":"Sleep","active":false}];
+//$scope.fakeSteps = [{"title":"Hello world","active": true}, {"title":"Drink coffee","active":true}, {"title":"Sleep","active":false}];
 
+$scope.fakeSteps = [{"title":"Hello world","active": "doing"}, {"title":"Drink coffee","active":"todo"}, {"title":"Sleep","active":"done"}];
 
 //READ THIS:
 //http://stackoverflow.com/questions/13813254/how-do-i-conditionally-apply-css-styles-in-angularjs
@@ -37,7 +38,12 @@ $scope.fakeSteps = [{"title":"Hello world","active": false}, {"title":"Drink cof
 
 
   $scope.addStep = function(newStep){
-    $scope.steps.push(newStep);
+    var tempObj = {"title" : newStep
+      ,"timeDiff" : null
+      ,"status" : "todo"
+    }
+    $scope.steps.push(tempObj);
+    //$scope.newStep = "";
   }
 
   $scope.startStep = function(clickedStep){
