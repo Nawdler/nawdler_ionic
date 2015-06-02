@@ -34,10 +34,9 @@
 </div>
 
     <!-- input box -->
-      <form ng-submit="addStep(newStep)">
+      <form ng-submit="addStep(timer.newStep)">
         <div class="item item-input">
-
-          <input placeholder="Add New Step" type="text" ng-model="newStep"> <button type="submit">+</button>
+          <input placeholder="Add New Step" type="text" ng-model="timer.newStep"/> <button type="submit">+</button>
         </div>
       </form>
 
@@ -48,13 +47,8 @@
     </div>
   </div>
 
-
-
-
     <div class="bar-subfooter button-bar"></div>
     <button class="button  button-assertive button-block">I'm Probably Done</button>
 
-
   </ion-content>
 </ion-view>
-
