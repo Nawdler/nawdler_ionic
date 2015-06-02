@@ -24,10 +24,11 @@
     </div>
 <p>Generated from data:</p>
     <div class="list">
-      <a class="item" ng-repeat="step in steps" ng-click="startStep(step)">
-        {{step}}
+<!--       <a class="item" ng-repeat="step in steps" ng-click="startStep(step)"> -->
+      <a class="item" ng-repeat="(title, time) in steps" ng-click="startStep(step)">
+        {{title}}
         <span class="item-note">
-          {{currentTime}}
+          {{time}}
         </span>
       </a>
     </div>

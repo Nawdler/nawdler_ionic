@@ -36,7 +36,7 @@ angular.module('starter.services', [])
   var getTimeArray = function(stepTitle, oneRoutine){
 
     console.log("HEllo from getTimeArray");
-    
+
     //ADJUST CURRENT ATTEMPT TO BE CURRENT IF ROUTINE IS ACTIVE, OTHERWISE DECREMENT BECAUSE WE INCREMENT WHEN ATTEMPTED IS FINISHED
     if (is_attemptRunning(oneRoutine)){
       var currentAttempt = oneRoutine.currentOps.workingAttempt;
@@ -118,6 +118,7 @@ angular.module('starter.services', [])
   }
 
 
+
   return {
     calcDurationSegment: calcDurationSegment
     ,is_attemptRunning: is_attemptRunning
@@ -130,6 +131,13 @@ angular.module('starter.services', [])
 .factory('Routines', function() {
   // Might use a resource here that returns a JSON array
 
+  var titleTime = {
+    "breakfast" : moment()
+    ,"lunch" : "2014-09-08T08:02:20-05:00"
+    ,"brunch" : "2014-10-08T08:02:37-05:00"
+    ,"dinner" : "2014-11-08T08:02:47-05:00"
+    ,"dessert" : "2014-12-08T08:02:57-05:00"
+  };
 
    var dataTemplate =
       {"Routine1": {
@@ -142,7 +150,6 @@ angular.module('starter.services', [])
                          }
             ,"attempts" :[ //array of attempt data, each attempt is one array element
                           //this will be the first attempt
-                         
                          ]//end all attempts for this routine
 
                      } //end first routine object
@@ -243,11 +250,14 @@ angular.module('starter.services', [])
     },
     template: function() {
       return dataTemplate;
+    },
+    titleTime: function(){
+      return titleTime;
     }
     // remove: function(chat) {
     //   chats.splice(chats.indexOf(chat), 1);
     // },
-    // get: function(chatId) 
+    // get: function(chatId)
     // {
     //   for (var i = 0; i < chats.length; i++) {
     //     if (chats[i].id === parseInt(chatId)) {
