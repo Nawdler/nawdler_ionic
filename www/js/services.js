@@ -72,15 +72,13 @@ var setEndTime = function(endedStep, oneRoutine){
     //This looks up: which attempt to use, the current time
     //This addes a new end time 
     var currentAttempt = oneRoutine.currentOps.workingAttempt;
-    console.log("current attempt from setEndTime", currentAttempt);
     var now = moment();
-    //changes ended_at to now for this step in the attemps array
-    console.log("The Monster is soon.  oneRoutine::  ", oneRoutine);
-    console.log("oneRoutine attempts ", oneRoutine.attempts);
-    console.log("Get Time Array in Set End Time::: ", getTimeArray(endedStep, oneRoutine).titleIndex);
-    console.log("attempts[currentAttempt]:: ", oneRoutine.attempts[currentAttempt-1][getTimeArray(endedStep, oneRoutine).titleIndex]);
-    //get time array is a -1 issue
-    oneRoutine.attempts[currentAttempt-1][getTimeArray(endedStep, oneRoutine).titleIndex].times[times.length-1].ended_at = now;
+
+    //changes ended_at to current moment (now) for this step in the attemps array
+
+     //getTimeArray returns one value too high; need to decrement ***** CONFIRM
+    var times = oneRoutine.attempts[currentAttempt-1][(getTimeArray(endedStep, oneRoutine).titleIndex)-1].times;
+    times[times.length-1].ended_at = now;
   }; // END OF SET END TIME
 
 
