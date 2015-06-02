@@ -10,6 +10,14 @@ angular.module('starter.controllers', ['angularMoment'])
   $scope.steps = oneRoutine.steps; //store the steps array
 
 
+
+//CREATE A FAKE/TEMPORARY OBJECT WITH STEPS AND STATUS LEVELS
+$scope.fakeSteps = [{"title":"Hello world","active": false}, {"title":"Drink coffee","active":true}, {"title":"Sleep","active":false}];
+
+
+//READ THIS:
+//http://stackoverflow.com/questions/13813254/how-do-i-conditionally-apply-css-styles-in-angularjs
+
   //$scope.currentTime = moment().format('h:mm:ss a'); // just to see that Moment is working
 
   $scope.past1 = moment("2015-02-09 09:34:40").diff(moment("2015-02-09 09:34:20", 'seconds'));
@@ -25,6 +33,8 @@ angular.module('starter.controllers', ['angularMoment'])
     //console.log(activeStep);
 
   //moment.utc(dur).format('HH:mm:ss');
+
+
   $scope.addStep = function(newStep){
     $scope.steps.push(newStep);
   }

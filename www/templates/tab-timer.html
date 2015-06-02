@@ -31,6 +31,23 @@
         </span>
       </a>
     </div>
+<p>Generated from fake array with status field:</p>
+    <div class="list">
+      <a 
+        ng-repeat="fakeStep in fakeSteps" 
+        ng-class="{'item': fakeStep.active == false, 'item item-icon-left': fakeStep.active == true}"
+        ng-click="startFakeStep(step)"
+        >
+           {{fakeStep.title}} Status: {{fakeStep.active}}
+        <span class="item-note">
+          {{currentTime}}
+        </span>
+      </a>
+    </div>
+
+  <!-- ADD NG-SHOW and NG-HIDE for the elements that should "disappear" when an item is inactive -->
+  <!-- https://docs.angularjs.org/api/ng/directive/ngShow -->
+
     <!-- input box -->
       <form ng-submit="addStep(newStep)">
         <div class="item item-input">
