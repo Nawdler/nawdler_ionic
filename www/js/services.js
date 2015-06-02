@@ -6,7 +6,32 @@ angular.module('starter.services', [])
     //WE KNOW THIS MAY HAVE AN HOUR CALCULATION BUG
     var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
     return moment.utc(dur).format('HH:mm:ss');
+    //also try: return moment.duration(dur);
   };
+
+  var addMultipleSegments = function(array){
+    var total = moment.duration(0); //initiatialize as moment duration of zero
+    for(i=0; i < array.length; i++){
+      var start = array[i].started_at;
+      var end = array[i].ended_at || moment(); // if there is no end yet, it's running so we call it now.
+      var thisSegment = calcDurationSegment(start, end);
+      total = total.add(thisSegment); //use moment to add two durations
+    }
+    return total;
+  }
+
+// 1.) Current Diff Running -- start time - now (latest started_at)
+//       -- for if the step is running && 
+//           diff(started_at, now)
+
+// 1.5) Doing diff with prior segments
+//       -- if the step is running && array.length
+// 2.) Takes all diffs in a step and adds them
+
+
+
+// 3.) Takes all step diffs in an attempt and adds them
+
 
   //Current attempt = oneRoutine.currentOps.workingAttempt
   //Is the attempt running? //WORKS

@@ -4,25 +4,14 @@ angular.module('starter.controllers', ['angularMoment'])
 .controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'Routines', 'TimerCalcs', function($scope, moment, $interval, $state, Routines, TimerCalcs) {
 
   //GETTERS AND SETTERS
-  var allData = Routines.all(); //get the sample data from the factory
+  var allData = Routines.template(); //get the sample data from the factory
   var oneRoutine = allData["Routine1"]; //focus on the first (now only) routine, at least for now
   $scope.routineTitle = oneRoutine.title; //store the title
   $scope.steps = oneRoutine.steps; //store the steps array
-  var titleTime = Routines.titleTime();
-  //$scope.steps = titleTime;
 
 
-//CREATE A FAKE/TEMPORARY OBJECT WITH STEPS AND STATUS LEVELS
-//$scope.fakeSteps = [{"title":"Hello world","active": true}, {"title":"Drink coffee","active":true}, {"title":"Sleep","active":false}];
+//DURATION CALCULATIONS
 
-$scope.fakeSteps = [{"title":"Hello world","active": "doing"}, {"title":"Drink coffee","active":"todo"}, {"title":"Sleep","active":"done"}];
-
-//READ THIS:
-//http://stackoverflow.com/questions/13813254/how-do-i-conditionally-apply-css-styles-in-angularjs
-
-  //$scope.currentTime = moment().format('h:mm:ss a'); // just to see that Moment is working
-
-  $scope.past1 = moment("2015-02-09 09:34:40").diff(moment("2015-02-09 09:34:20", 'seconds'));
 
     // var start = moment.utc("2015-06-01T10:15:00","DD/MM/YYYY HH:mm:ss");
     // var finish = moment.utc("2015-06-01T11:45:10","DD/MM/YYYY HH:mm:ss");
@@ -58,9 +47,9 @@ $scope.fakeSteps = [{"title":"Hello world","active": "doing"}, {"title":"Drink c
 
     if (TimerCalcs.is_attemptRunning(oneRoutine) === false) { //This means there is no attempt running and we need to create one
       //Initiative a new attempt by creating an array to hold the steps of that attempt
-      console.log("Hello from new attempt init");
+     console.log("Hello from new attempt init");
       oneRoutine.attempts.push([]);
-      console.log(oneRoutine);
+      //console.log(oneRoutine);
       //consider saving oneRoutine to LocalStorage here later
     }
 
@@ -71,7 +60,7 @@ $scope.fakeSteps = [{"title":"Hello world","active": "doing"}, {"title":"Drink c
     //Get here if we really, truly want to start the clickedStep timer
     //Set activeStep to be clickedStep
     oneRoutine.currentOps.activeStep = clickedStep;
-    start(clickedStep); //this starts the timer
+    //start(clickedStep); //this starts the timer
     console.log("clicked Step::  ", clickedStep);
 
     //Front-end timer start (i.e., change CSS and start pulsing clock)
