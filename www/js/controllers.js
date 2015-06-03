@@ -44,7 +44,8 @@ angular.module('starter.controllers', ['angularMoment'])
     //PRESENTLY NO UI FOR ERROR MESSAGES -- ADD THIS LATER ***
 
     if (found === -1) {
-      var tempObj = {"title" : newStep
+      var tempObj = {
+        "title" : newStep
         ,"timeDiff" : null
         ,"status" : "todo"
       }
@@ -165,11 +166,27 @@ angular.module('starter.controllers', ['angularMoment'])
   }
 
    $scope.finishAttempt = function(){
-    //WHAT NEEDS TO HAPPEN HERE?
+
+    //Increment currentAttempt
+    oneRoutine.currentOps.workingAttempt += 1;
+    //we think this "locks" the prior attempt so that user cannot modify it / access it anymore
+
+    //Reset oneRoutine.steps so that all are "todo" and timeDiff is null
+    for (var i = 0; i < $scope.steps.length; i++) {
+      $scope.steps[i].timeDiff = null;
+      $scope.steps[i].status = "todo";
+    };
+
+    //Reset the button status to "none"
+    $scope.buttonStatus = "none";
+
+    //Save data to LocalStorage
+    TimerCalcs.saveToLocalStorage(oneRoutine);
+
+    //Redirect to graphs view, once it is ready
 
    }
  
-
   var evaluateButtonStatus = function(){
 
     console.log("Hello from evaluateButtonStatus");
