@@ -26,7 +26,7 @@ var setStartTime = function(startedStep, oneRoutine){
     //This either initiates a new object in the array if the step has not happened yet in this attempt, or if there was already a segment of this step, it addes a new start time and end time object
 
     var currentAttempt = oneRoutine.currentOps.workingAttempt;
-    var now = moment();
+    var now = moment.utc();
 
     if (getTimeArray(startedStep, oneRoutine).length > 0) {
 
@@ -83,7 +83,7 @@ var setEndTime = function(endedStep, oneRoutine){
     //This looks up: which attempt to use and knows, of course, the current time
     //This adds a new end time into the attempts array in the correct object
     var currentAttempt = oneRoutine.currentOps.workingAttempt;
-    var now = moment();
+    var now = moment.utc();
 
     //changes ended_at to current moment (now) for this step in the attemps array
 
@@ -194,9 +194,18 @@ var setEndTime = function(endedStep, oneRoutine){
   };
 
   var calcDurationSegment = function(startedAt, endedAt){ //WORKS
-    //WE KNOW THIS MAY HAVE AN HOUR CALCULATION BUG
-    var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
-    return moment.utc(dur).format('HH:mm:ss');
+    var segmentDuration = endedAt.diff(startedAt)//.format("h:mm:ss");
+    var durationFormatted = moment.duration(segmentDuration).format('H:mm:ss', { trim: false });
+    //var durationFixed = moment.utc(segmentDuration.asMilliseconds()).format("H:mm:ss");
+   // Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(":mm:ss");
+    console.log("This is DURATION in calcDurationSegment ",segmentDuration);
+    console.log("This is DURATION FIXED in calcDurationSegment ",durationFormatted);
+
+    return durationFormatted; //moment(dur).format('HH:mm:ss');
+
+// OLD   var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
+
+//  OLD    return moment.utc(dur).format('HH:mm:ss');
     //also try: return moment.duration(dur);
   };
 
@@ -210,7 +219,7 @@ var setEndTime = function(endedStep, oneRoutine){
       //console.log("Calc Multiple Segments: array[i] ",array[i]);
       //console.log("CMS Steven Total before: ",total);
       var start = array[i].started_at;
-      var end = array[i].ended_at || moment(); // if there is no end yet, it's running so we call it now.
+      var end = array[i].ended_at || moment.utc(); // if there is no end yet, it's running so we call it now.
       var thisSegment = calcDurationSegment(start, end);
       total = total.add(thisSegment); //use moment to add two durations
       //console.log("CMS Total after: ",total);
