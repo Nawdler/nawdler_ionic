@@ -36,7 +36,6 @@ var setStartTime = function(startedStep, oneRoutine){
       //Create an object with the start time and leave end time null
       var newStepTime = {"started_at": now
                         ,"ended_at" : null};
-                        console.log("Pushing again:: ", newStepTime);
 
       //Insert this object into the time array for that step
 
@@ -61,7 +60,7 @@ var setStartTime = function(startedStep, oneRoutine){
 
   var stopStep = function(stepTitle, oneRoutine){
     //Mark step status as "done"
-    console.log("Hello from stopStep Steven2");
+    console.log("Hello from stopStep");
     console.log("Stopping :",stepTitle);
     changeStatus(stepTitle, "done", oneRoutine);
 
@@ -202,10 +201,9 @@ var setEndTime = function(endedStep, oneRoutine){
 
     return durationFormatted; //moment(dur).format('HH:mm:ss');
 
-// OLD   var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
+  // OLD   var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
 
-//  OLD    return moment.utc(dur).format('HH:mm:ss');
-    //also try: return moment.duration(dur);
+  //  OLD    return moment.utc(dur).format('HH:mm:ss');
   };
 
   var calcMultipleSegments = function(array){
@@ -252,6 +250,29 @@ var setEndTime = function(endedStep, oneRoutine){
 
   }
 
+  var saveToLocalStorage = function(oneRoutine){
+    console.log("Saving to LocalStorage");
+
+    // var user = device.uuid;
+    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+    // once running on devices, then consider using UUID as key, rather than Nawdler
+
+    window.localStorage.setItem("Nawdler", JSON.stringify(oneRoutine));  
+  };
+
+var loadFromLocalStorage = function(oneRoutine){
+    console.log("Loading from LocalStorage");
+
+    // var user = device.uuid;
+    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+    // once running on devices, then consider using UUID as key, rather than Nawdler
+
+    var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
+
+    oneRoutine = reloadedData;  
+  };
+
+
   return {
     calcDurationSegment: calcDurationSegment
     ,is_attemptRunning: is_attemptRunning
@@ -263,6 +284,8 @@ var setEndTime = function(endedStep, oneRoutine){
     ,stopStep: stopStep
     ,changeDiff: changeDiff
     ,findElementByTitle: findElementByTitle
+    ,saveToLocalStorage: saveToLocalStorage
+    ,loadFromLocalStorage: loadFromLocalStorage
   }
 }) //end service
 
