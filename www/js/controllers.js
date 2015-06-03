@@ -15,13 +15,6 @@ angular.module('starter.controllers', ['angularMoment'])
   $scope.steps = oneRoutine.steps; //store the steps array
 
 
-// var test = [{"started_at": moment.utc("2015-06-01T10:15:00","DD/MM/YYYY HH:mm:ss")
-//            ,"ended_at" : moment.utc("2015-06-01T10:27:00","DD/MM/YYYY HH:mm:ss")
-//              }
-//            ,{"started_at": moment.utc("2015-06-02T10:00:00","DD/MM/YYYY HH:mm:ss")
-//            , "ended_at" : null
-//            }];
-
 //DURATION CALCULATIONS
 
 
@@ -40,15 +33,11 @@ angular.module('starter.controllers', ['angularMoment'])
   $scope.addStep = function(newStep){
     console.log("Hello from addStep and $scope.newStep", $scope.newStep)
 
-    //console.log("This is $scope in addStep",$scope);
-
     var tempObj = {"title" : newStep
       ,"timeDiff" : null
       ,"status" : "todo"
     }
     $scope.steps.push(tempObj);
-    console.log("Scope.steps AddSteps after adding new step::  ", $scope.steps);
-    console.log("oneRoutine.steps:: ", oneRoutine.steps);
     $scope.newStep = "";
   };
 
@@ -58,6 +47,11 @@ angular.module('starter.controllers', ['angularMoment'])
 
     console.log("Hello from start step");
     console.log("This is what was clicked",clickedStep);
+
+    var clickedStepString = clickedStep.title;
+    console.log("This is what was clicked and hopefully now a string",clickedStepString);
+
+   // clickedStep = clickedStepString;
 
     var activeStep = oneRoutine.currentOps.activeStep;
 
@@ -102,8 +96,6 @@ angular.module('starter.controllers', ['angularMoment'])
   var startUpdateTime = function(clickedStep){
    pulsar = $interval(function(){
     updateTime(clickedStep);
-    console.log("Tick tock ",$scope.steps);
-
    }, 1000, [clickedStep]);
    // we pass [clickedStep] in as a parameter to the callbackfunction
   }
@@ -111,14 +103,12 @@ angular.module('starter.controllers', ['angularMoment'])
   function updateTime(runningStep){
     var diff = currentDiff();
     TimerCalcs.changeDiff(runningStep, diff, oneRoutine);
-    console.log("ONE ROUTINE TO RULE THEM ALL:: " , oneRoutine);
-    //need to update view
+    console.log("ONE ROUTINE TO RULE THEM ALL (oneRoutine from updateTime) : " , oneRoutine);
+    console.log("Tick tock ($scope.steps from updateTime",$scope.steps);
   }
 
   var currentDiff = function(){
     var currentStep = oneRoutine.currentOps.activeStep;
-    //Yoda
-    console.log("GTA Controller Line 123");
 
     var timeArray = TimerCalcs.getTimeArray(currentStep, oneRoutine); //.timeArray;
     var total = TimerCalcs.calcMultipleSegments(timeArray);
