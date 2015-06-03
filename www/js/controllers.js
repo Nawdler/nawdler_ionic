@@ -3,16 +3,27 @@ angular.module('starter.controllers', ['angularMoment'])
 //.controller('TimerCtrl', function($scope) {})
 .controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'Routines', 'TimerCalcs', function($scope, moment, $interval, $state, Routines, TimerCalcs) {
 
+  //Use timer to reference scope of this controller.
+  $scope.timer = $scope;
   //GETTERS AND SETTERS
   var allData = Routines.template(); //get the sample data from the factory
   var oneRoutine = allData["Routine1"]; //focus on the first (now only) routine, at least for now
   $scope.routineTitle = oneRoutine.title; //store the title
+
+
+  //WE MAY NEED TO MOVE THIS TO OUR PULSING ITERATOR
   $scope.steps = oneRoutine.steps; //store the steps array
 
 
-  //$scope.currentTime = moment().format('h:mm:ss a'); // just to see that Moment is working
+// var test = [{"started_at": moment.utc("2015-06-01T10:15:00","DD/MM/YYYY HH:mm:ss")
+//            ,"ended_at" : moment.utc("2015-06-01T10:27:00","DD/MM/YYYY HH:mm:ss")
+//              }
+//            ,{"started_at": moment.utc("2015-06-02T10:00:00","DD/MM/YYYY HH:mm:ss")
+//            , "ended_at" : null
+//            }];
 
-  $scope.past1 = moment("2015-02-09 09:34:40").diff(moment("2015-02-09 09:34:20", 'seconds'));
+//DURATION CALCULATIONS
+
 
     // var start = moment.utc("2015-06-01T10:15:00","DD/MM/YYYY HH:mm:ss");
     // var finish = moment.utc("2015-06-01T11:45:10","DD/MM/YYYY HH:mm:ss");
@@ -21,57 +32,103 @@ angular.module('starter.controllers', ['angularMoment'])
     // var x = TimerCalcs.calcDurationSegment(start,finish);
     // console.log(x);
     // $scope.currentTime = x;
-  //console.log("activeStep outside");
-    //console.log(activeStep);
 
   //moment.utc(dur).format('HH:mm:ss');
+
+  
+
   $scope.addStep = function(newStep){
-    $scope.steps.push(newStep);
-  }
+    console.log("Hello from addStep and $scope.newStep", $scope.newStep)
+
+    //console.log("This is $scope in addStep",$scope);
+
+    var tempObj = {"title" : newStep
+      ,"timeDiff" : null
+      ,"status" : "todo"
+    }
+    $scope.steps.push(tempObj);
+    console.log("Scope.steps AddSteps after adding new step::  ", $scope.steps);
+    console.log("oneRoutine.steps:: ", oneRoutine.steps);
+    $scope.newStep = "";
+  };
 
   $scope.startStep = function(clickedStep){
     //Ionic passes us clickedStep based on which list item user clicked on!
-
     // This is the currently active step, Null if none is active
+
+    console.log("Hello from start step");
+    console.log("This is what was clicked",clickedStep);
+
     var activeStep = oneRoutine.currentOps.activeStep;
 
     if (activeStep === clickedStep) { //If user clicks on current step, then nothing should happen. Let it keep timing.
-      console.log("you're already on this step.");
+      // console.log("you're already on this step.");
       return;
     }
 
-    if (TimerCalcs.is_attemptRunning(oneRoutine) === false) { //This means there is no attempt running and we need to create one
-      //Initiative a new attempt by creating an array to hold the steps of that attempt
-      console.log("Hello from new attempt init");
+    //This means there is no attempt running and we need to create one
+    if (TimerCalcs.is_attemptRunning(oneRoutine) === false) {
+
+      //Initiate a new attempt by creating an array to hold the steps of that attempt
+     // console.log("Hello from new attempt init");
       oneRoutine.attempts.push([]);
-      console.log(oneRoutine);
       //consider saving oneRoutine to LocalStorage here later
     }
 
-    if (activeStep != null) { //This means some other step is running and we need to stop it
-      stopStep(activeStep);
+    //This means some other step is running and we need to stop it
+    if (activeStep != null) {
+      TimerCalcs.stopStep(activeStep, oneRoutine);
     }
 
     //Get here if we really, truly want to start the clickedStep timer
     //Set activeStep to be clickedStep
     oneRoutine.currentOps.activeStep = clickedStep;
 
-    //Front-end timer start (i.e., change CSS and start pulsing clock)
+    // console.log("Hello from right before change status");
+    //Set status of this step to be "doing"
+    TimerCalcs.changeStatus(clickedStep, "doing", oneRoutine);
 
     //Back-end timer start (i.e., push step name and start time into tree, as appropriate)
     TimerCalcs.setStartTime(clickedStep, oneRoutine);
 
-    console.log("OneRoutine -- Yoda");
-    console.log(oneRoutine);
+    //Front-end timer start (i.e., change CSS and start pulsing clock)
+    //start(clickedStep); //this starts the timer
+    startUpdateTime(clickedStep);
 
-    console.log("attempts");
-    console.log(oneRoutine.attempts);
-
-    console.log("activeStep");
-    console.log(activeStep);
   } //END OF STARTSTEP
 
+  ///////// updateTime stuff
+  var pulsar;
+  var startUpdateTime = function(clickedStep){
+   pulsar = $interval(function(){
+    updateTime(clickedStep);
+    console.log("Tick tock ",$scope.steps);
 
+   }, 1000, [clickedStep]);
+   // we pass [clickedStep] in as a parameter to the callbackfunction
+  }
+
+  function updateTime(runningStep){
+    var diff = currentDiff();
+    TimerCalcs.changeDiff(runningStep, diff, oneRoutine);
+    console.log("ONE ROUTINE TO RULE THEM ALL:: " , oneRoutine);
+    //need to update view
+  }
+
+  var currentDiff = function(){
+    var currentStep = oneRoutine.currentOps.activeStep;
+    //Yoda
+    console.log("GTA Controller Line 123");
+
+    var timeArray = TimerCalcs.getTimeArray(currentStep, oneRoutine); //.timeArray;
+    var total = TimerCalcs.calcMultipleSegments(timeArray);
+    return total;
+  }
+
+  $scope.stop = function(){
+    $interval.cancel(pulsar);
+  }
+  ///////end update time stuff
 
 
   // $scope.active = TimerCalcs.is_attemptRunning(oneRoutine);

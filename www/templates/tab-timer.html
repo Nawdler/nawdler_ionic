@@ -1,47 +1,44 @@
 <ion-view view-title="Timer">
   <ion-content padding="true" class="has-header">
-<p>Hard coded:</p>
-    <div class="list">
-      <a class="item">
-        Brush Teeth
-        <span class="item-icon-right item-note">
-          <i class="icon ion-play">
-          </i>
-        </span>
-      </a>
-      <a class="item item-icon-left">
-        <i class="icon ion-ios-stopwatch"></i>
-        Floss Teeth
-        <span class="badge badge-assertive">
-          {{past1}}
-        </span>
-      </a>
-      <a class="item item-icon-right">
-        Eat
-        {{past2}}
-        <i class="icon ion-play"> </i>
-      </a>
-    </div>
-<p>Generated from data:</p>
-    <div class="list">
-      <a class="item" ng-repeat="step in steps" ng-click="startStep(step)">
-        {{step}}
-        <span class="item-note">
-          {{currentTime}}
-        </span>
-      </a>
-    </div>
+
+<p>The real deal</p>
+<div class="list">
+  <a
+    class="item"
+    ng-repeat="step in steps"
+    ng-click="startStep(step)"
+    ng-class="(step.status === 'doing'? 'item item-icon-left' : 'item') + ' ' + (step.status === 'todo'? 'item item-icon-right' : 'item') + ' ' + (step.status === 'done'? 'item item-icon-right':'item')"
+    >
+  <!-- Show step title for all steps -->
+    {{step.title}}
+
+    <!-- Show timer icon if status = doing -->
+    <i
+      class="icon ion-ios-stopwatch"
+      ng-show="step.status === 'doing'">
+    </i>
+
+    <!-- Show play button if status is not doing -->
+    <i
+      class="icon ion-play"
+      ng-show="step.status != 'doing'">
+    </i>
+      <span class="item-note" ng-show="step.status === 'done'">
+        {{step.timeDiff}}
+    </span>
+          <span class="badge badge-assertive" ng-show="step.status === 'doing'">
+        {{step.timeDiff}}
+    </span>
+
+  </a>
+</div>
+
     <!-- input box -->
-      <form ng-submit="addStep(newStep)">
+      <form ng-submit="addStep(timer.newStep)">
         <div class="item item-input">
-          <span class="input-lable">
-            Add New Step
-          </span>
-          <input type="text" ng-model="newStep"> <button type="submit">+</button>
+          <input placeholder="Add New Step" type="text" ng-model="timer.newStep"/> <button type="submit">+</button>
         </div>
       </form>
-
-
 
   <div class="row row-center">
     <div class="col">
@@ -50,13 +47,8 @@
     </div>
   </div>
 
-
-
-
     <div class="bar-subfooter button-bar"></div>
     <button class="button  button-assertive button-block">I'm Probably Done</button>
 
-
   </ion-content>
 </ion-view>
-
