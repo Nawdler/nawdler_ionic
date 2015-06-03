@@ -134,9 +134,9 @@ var setEndTime = function(endedStep, oneRoutine){
     console.log("Here are my orders: title then context :: ",title, " , " ,context);
 
     if (typeof title != "string"){
-      console.log("Changing type because object");
+      console.log("Changing target type because object");
       title = title.title; //oh god, I'm so sorry.
-      console.log("new title: " , title);
+      console.log("new target title: " , title);
     };
     
     console.log("context:: ", context);
@@ -149,7 +149,15 @@ var setEndTime = function(endedStep, oneRoutine){
       console.log("FEBT says comparing to", context[i]["title"]);
       console.log("Simon sez compare to", context[0].title.title);
 
-      if (context[i].title == title){
+      if (typeof context[i].title != "string"){
+        twoTitle = context[i].title.title
+        console.log("Changing context type because object");
+        console.log("new context title ",twoTitle);
+      } else {
+        twoTitle = context[i].title
+      };
+
+      if (twoTitle == title){
         console.log("FEBT found something");
         return i;
       }
