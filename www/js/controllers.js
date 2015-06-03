@@ -126,7 +126,13 @@ angular.module('starter.controllers', ['angularMoment'])
   }
   ///////end update time stuff
 
-
+  $scope.probablyDone = function(){
+    var activeStep = oneRoutine.currentOps.activeStep;
+    if (activeStep != null) {
+      TimerCalcs.stopStep(activeStep, oneRoutine);
+      stopPulsar();
+    }
+  }
   // $scope.active = TimerCalcs.is_attemptRunning(oneRoutine);
   // console.log($scope.active);
 

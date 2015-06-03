@@ -7,7 +7,7 @@
     class="item"
     ng-repeat="step in steps"
     ng-click="startStep(step)"
-    ng-class="(step.status === 'doing'? 'item item-icon-left' : 'item') + ' ' + (step.status === 'todo'? 'item item-icon-right' : 'item') + ' ' + (step.status === 'done'? 'item item-icon-right':'item')"
+    ng-class="(step.status === 'doing'? 'item item-icon-left item-button-right' : 'item') + ' ' + (step.status === 'todo'? 'item item-icon-right' : 'item') + ' ' + (step.status === 'done'? 'item item-icon-right':'item')"
     >
   <!-- Show step title for all steps -->
     {{step.title}}
@@ -26,9 +26,9 @@
       <span class="item-note" ng-show="step.status === 'done'">
         {{step.timeDiff}}
     </span>
-          <span class="badge badge-assertive" ng-show="step.status === 'doing'">
+          <button class="button running button-assertive" ng-show="step.status === 'doing'">
         {{step.timeDiff}}
-    </span>
+    </button>
 
   </a>
 </div>
@@ -48,7 +48,7 @@
   </div>
 
     <div class="bar-subfooter button-bar"></div>
-    <button class="button  button-assertive button-block">I'm Probably Done</button>
+    <button class="button button-assertive button-block" ng-click="probablyDone()">I'm Probably Done</button>
 
   </ion-content>
 </ion-view>

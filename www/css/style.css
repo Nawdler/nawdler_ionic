@@ -1,1 +1,9 @@
 /* Empty. Add your own CSS if you like */
+
+.running{
+	font-size: 2em !important;
+	font-weight: bold;
+	background-color: white !important;
+	color: red !important;
+	border: none !important;
+}
