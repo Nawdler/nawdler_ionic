@@ -14,6 +14,9 @@ angular.module('starter.controllers', ['angularMoment'])
   //WE MAY NEED TO MOVE THIS TO OUR PULSING ITERATOR
   $scope.steps = oneRoutine.steps; //store the steps array
 
+  //Start the main UI button in "none" category
+  $scope.buttonStatus = "none";
+
 
 //DURATION CALCULATIONS
 
@@ -106,6 +109,13 @@ angular.module('starter.controllers', ['angularMoment'])
     //start(clickedStep); //this starts the timer
     startUpdateTime(clickedStep);
 
+    console.log("YODA - about to call evaluateButtonStatus in startStep");
+    //UPDATE TIMER MAIN BUTTON
+    evaluateButtonStatus();
+    console.log("YODA - just called evaluateButtonStatus in startStep");
+    console.log($scope.buttonStatus);
+
+
   } //END OF STARTSTEP
 
   ///////// updateTime stuff
@@ -123,6 +133,7 @@ angular.module('starter.controllers', ['angularMoment'])
     TimerCalcs.changeDiff(runningStep, diff, oneRoutine);
     console.log("ONE ROUTINE TO RULE THEM ALL (oneRoutine from updateTime) : " , oneRoutine);
     console.log("Tick tock ($scope.steps from updateTime",$scope.steps);
+          console.log("UPDATE TIME Button status: ",$scope.buttonStatus);
   }
 
   var currentDiff = function(){
@@ -143,12 +154,36 @@ angular.module('starter.controllers', ['angularMoment'])
     if (activeStep != null) {
       TimerCalcs.stopStep(activeStep, oneRoutine);
       stopPulsar();
-    }
-  }
-  // $scope.active = TimerCalcs.is_attemptRunning(oneRoutine);
-  // console.log($scope.active);
 
-}])
+    //set ACTIVESTEP = null to show that no steps are now running
+    oneRoutine.currentOps.activeStep = null;
+
+    //UPDATE TIMER MAIN BUTTON
+    evaluateButtonStatus();
+    }
+
+  }
+
+   $scope.finishAttempt = function(){
+    //WHAT NEEDS TO HAPPEN HERE?
+
+   }
+ 
+
+  var evaluateButtonStatus = function(){
+
+    console.log("Hello from evaluateButtonStatus");
+    
+    if (TimerCalcs.is_attemptRunning(oneRoutine) === false){
+      $scope.buttonStatus = "none";
+    } else if(TimerCalcs.is_attemptRunning(oneRoutine) === true && oneRoutine.currentOps.activeStep != null){
+      $scope.buttonStatus = "probably";
+    } else if(TimerCalcs.is_attemptRunning(oneRoutine) === true && oneRoutine.currentOps.activeStep == null){
+      $scope.buttonStatus = "definitely";
+    };
+  };
+
+}]) // END OF TIMERCTRL CONTROLLER
 
 .controller('ReportCtrl', function($scope) {
   // With the new view caching in Ionic, Controllers are only called

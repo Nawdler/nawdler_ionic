@@ -61,7 +61,7 @@ var setStartTime = function(startedStep, oneRoutine){
 
   var stopStep = function(stepTitle, oneRoutine){
     //Mark step status as "done"
-    console.log("Hello from stopStep Steven2");
+    console.log("Hello from stopStep");
     console.log("Stopping :",stepTitle);
     changeStatus(stepTitle, "done", oneRoutine);
 

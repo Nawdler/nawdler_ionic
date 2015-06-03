@@ -33,7 +33,7 @@
   </a>
 </div>
 
-    <!-- input box -->
+    <!-- Add a step input box -->
       <form ng-submit="addStep(timer.newStep)">
         <div class="item item-input">
           <input placeholder="Add New Step" type="text" ng-model="timer.newStep"/> <button type="submit">+</button>
@@ -47,8 +47,27 @@
     </div>
   </div>
 
+    <!-- I'm PROBABLY done button -->
     <div class="bar-subfooter button-bar"></div>
-    <button class="button button-assertive button-block" ng-click="probablyDone()">I'm Probably Done</button>
+    <button 
+      class="button button-assertive button-block" 
+      ng-click="probablyDone()"
+      ng-show="buttonStatus === 'probably'"
+      >
+      I'm Probably Done
+    </button>
 
+    <!-- I'm DEFINITELY done button -->
+    <div class="bar-subfooter button-bar"></div>
+    <button 
+      class="button button-calm button-block" 
+      ng-click="finishAttempt()"
+      ng-show="buttonStatus === 'definitely'"
+      >
+      I'm Definitely Finished
+    </button>
+
+
+  <!-- End of page -->
   </ion-content>
 </ion-view>
