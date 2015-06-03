@@ -3,9 +3,9 @@
 
 <p>The real deal</p>
 <div class="list">
-  <a 
-    class="item" 
-    ng-repeat="step in steps" 
+  <a
+    class="item"
+    ng-repeat="step in steps"
     ng-click="startStep(step)"
     ng-class="(step.status === 'doing'? 'item item-icon-left' : 'item') + ' ' + (step.status === 'todo'? 'item item-icon-right' : 'item') + ' ' + (step.status === 'done'? 'item item-icon-right':'item')"
     >
@@ -13,13 +13,13 @@
     {{step.title}}
 
     <!-- Show timer icon if status = doing -->
-    <i 
+    <i
       class="icon ion-ios-stopwatch"
       ng-show="step.status === 'doing'">
     </i>
 
     <!-- Show play button if status is not doing -->
-    <i 
+    <i
       class="icon ion-play"
       ng-show="step.status != 'doing'">
     </i>

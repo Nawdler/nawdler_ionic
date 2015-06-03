@@ -35,10 +35,10 @@ angular.module('starter.controllers', ['angularMoment'])
 
   //moment.utc(dur).format('HH:mm:ss');
 
+  
+
   $scope.addStep = function(newStep){
-    console.log("CLICKED!")
-    console.log("CLIIIIIICKED", $scope.newStep)
-    console.log("Hello from addStep method in controller");
+    console.log("Hello from addStep and $scope.newStep", $scope.newStep)
 
     //console.log("This is $scope in addStep",$scope);
 
@@ -55,24 +55,28 @@ angular.module('starter.controllers', ['angularMoment'])
   $scope.startStep = function(clickedStep){
     //Ionic passes us clickedStep based on which list item user clicked on!
     // This is the currently active step, Null if none is active
+
+    console.log("Hello from start step");
+    console.log("This is what was clicked",clickedStep);
+
     var activeStep = oneRoutine.currentOps.activeStep;
 
     if (activeStep === clickedStep) { //If user clicks on current step, then nothing should happen. Let it keep timing.
-      console.log("you're already on this step.");
+      // console.log("you're already on this step.");
       return;
     }
-    
+
     //This means there is no attempt running and we need to create one
-    if (TimerCalcs.is_attemptRunning(oneRoutine) === false) { 
+    if (TimerCalcs.is_attemptRunning(oneRoutine) === false) {
 
       //Initiate a new attempt by creating an array to hold the steps of that attempt
-     console.log("Hello from new attempt init");
+     // console.log("Hello from new attempt init");
       oneRoutine.attempts.push([]);
       //consider saving oneRoutine to LocalStorage here later
     }
 
     //This means some other step is running and we need to stop it
-    if (activeStep != null) { 
+    if (activeStep != null) {
       TimerCalcs.stopStep(activeStep, oneRoutine);
     }
 
@@ -80,50 +84,50 @@ angular.module('starter.controllers', ['angularMoment'])
     //Set activeStep to be clickedStep
     oneRoutine.currentOps.activeStep = clickedStep;
 
-    console.log("Hello from right before change status");
+    // console.log("Hello from right before change status");
     //Set status of this step to be "doing"
-    TimerCalcs.changeStatus(clickedStep, "doing", oneRoutine); 
+    TimerCalcs.changeStatus(clickedStep, "doing", oneRoutine);
 
     //Back-end timer start (i.e., push step name and start time into tree, as appropriate)
     TimerCalcs.setStartTime(clickedStep, oneRoutine);
 
     //Front-end timer start (i.e., change CSS and start pulsing clock)
     //start(clickedStep); //this starts the timer
+    startUpdateTime(clickedStep);
 
-
-
-
-    console.log("OneRoutine -- Yoda");
-    console.log(oneRoutine);
-
-    console.log("attempts");
-    console.log(oneRoutine.attempts);
-
-    console.log("activeStep");
-    console.log(activeStep);
   } //END OF STARTSTEP
 
   ///////// updateTime stuff
   var pulsar;
-  var start = function(clickedStep){
-   pulsar = $interval(function(clickedStep){
-    var now = moment();
-    titleTime.clickedStep = now;
-    //console.log(now);
-   }, 1000);
+  var startUpdateTime = function(clickedStep){
+   pulsar = $interval(function(){
+    updateTime(clickedStep);
+    console.log("Tick tock ",$scope.steps);
+
+   }, 1000, [clickedStep]);
+   // we pass [clickedStep] in as a parameter to the callbackfunction
   }
 
-  // function updateTime(clickedStep){
-  //   // var now = moment();
-  //   // titleTime.breakfast = now;
-  //   // console.log(now);
-  //   //console.log("update time");
-  //   //updateCurrentTime();
-  // }
+  function updateTime(runningStep){
+    var diff = currentDiff();
+    TimerCalcs.changeDiff(runningStep, diff, oneRoutine);
+    console.log("ONE ROUTINE TO RULE THEM ALL:: " , oneRoutine);
+    //need to update view
+  }
 
-  // $scope.stop = function(){
-  //   $interval.cancel(pulsar);
-  // }
+  var currentDiff = function(){
+    var currentStep = oneRoutine.currentOps.activeStep;
+    //Yoda
+    console.log("GTA Controller Line 123");
+
+    var timeArray = TimerCalcs.getTimeArray(currentStep, oneRoutine); //.timeArray;
+    var total = TimerCalcs.calcMultipleSegments(timeArray);
+    return total;
+  }
+
+  $scope.stop = function(){
+    $interval.cancel(pulsar);
+  }
   ///////end update time stuff
 
 

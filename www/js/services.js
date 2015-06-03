@@ -6,17 +6,16 @@ angular.module('starter.services', [])
   //Is the attempt running? //WORKS
   var is_attemptRunning = function(oneRoutine){
     var workingAttempt = oneRoutine.currentOps.workingAttempt;
-    console.log("workingAttempt::  ",workingAttempt);
+    // console.log("workingAttempt::  ",workingAttempt);
 
     var numCompletedAttempts = oneRoutine.attempts.length;
-    console.log("attempts_length::  ",numCompletedAttempts);
+    // console.log("attempts_length::  ",numCompletedAttempts);
 
     if (workingAttempt > numCompletedAttempts){
-      console.log("Attempt wasn't running");
+      // console.log("Attempt wasn't running");
       return false;
     } else {
-      console.log("Attempt was running");
-
+      // console.log("Attempt was running");
       return true;
     }
   }
@@ -33,30 +32,54 @@ var setStartTime = function(startedStep, oneRoutine){
     var currentAttempt = oneRoutine.currentOps.workingAttempt;
     var now = moment();
 
-    if (getTimeArray(startedStep, oneRoutine).timeArray.length > 0) { 
+//Yoda
+    console.log("GTA Line 36");
+    if (getTimeArray(startedStep, oneRoutine).length > 0) {
+      //    if (getTimeArray(startedStep, oneRoutine).timeArray.length > 0) {
+    console.log("GTA Line 40");
+      console.log("Hello from second time around:: ", getTimeArray(startedStep, oneRoutine).timeArray);
+
       //This means there is at least one time for this step in the current attempt
       //So we can just insert an additional time object into array
 
       //Create an object with the start time and leave end time null
       var newStepTime = {"started_at": now
                         ,"ended_at" : null};
+                        console.log("Pushing again:: ", newStepTime);
 
       //Insert this object into the time array for that step
       // *Vomit* Let's clean this line up some time.
+//working on this!! NOW!
 
-      oneRoutine.attempts[currentAttempt][getTimeArray(startedStep, oneRoutine).titleIndex].times.push(newStepTime);
+//Yoda
+      var currentAttemptArray = oneRoutine.attempts[currentAttempt-1];
+    console.log("FEBT:: Set Start Time");
+
+      var target = findElementByTitle(startedStep, currentAttemptArray);
+      var thisStep = currentAttemptArray[target];
+      thisStep.times.push(newStepTime);
+
+
+      //WORKED BUT OBSOLETE
+      // oneRoutine.attempts[currentAttempt-1][(getTimeArray(startedStep, oneRoutine).titleIndex)-1].times.push(newStepTime);
     } else {
       // Get here if we need to insert a whole new step for the startedStep (title + times)
       var newStep = {"title": startedStep
                     ,"times":[{"started_at": now
                     , "ended_at" : null}]};
+      var currentAttemptArray = oneRoutine.attempts[currentAttempt-1];
 
-      oneRoutine.attempts[currentAttempt-1].push(newStep);
+      currentAttemptArray.push(newStep);
+
+      //OBSOLETE
+      //oneRoutine.attempts[currentAttempt-1].push(newStep);
     }
   }; // END OF SET START TIME
 
   var stopStep = function(stepTitle, oneRoutine){
     //Mark step status as "done"
+    console.log("Hello from stopStep");
+    console.log("Stopping :",stepTitle);
     changeStatus(stepTitle, "done", oneRoutine); 
 
     //timeDiff in oneRoutine.steps is already up-to-date with "final" duration of step, as it was updated every second
@@ -66,40 +89,76 @@ var setStartTime = function(startedStep, oneRoutine){
   };
 
 var setEndTime = function(endedStep, oneRoutine){
-  console.log("YOU HOOOO");
+  console.log("Hello from inside setEndTime");
     // endedStep -- the step that needs to be ended in the tree
     // oneRoutine -- for scope purposes
     //This looks up: which attempt to use, the current time
-    //This addes a new end time 
+    //This addes a new end time
     var currentAttempt = oneRoutine.currentOps.workingAttempt;
     var now = moment();
 
     //changes ended_at to current moment (now) for this step in the attemps array
 
      //getTimeArray returns one value too high; need to decrement ***** CONFIRM
-    var times = oneRoutine.attempts[currentAttempt-1][(getTimeArray(endedStep, oneRoutine).titleIndex)-1].times;
+     //Yoda
+    var currentAttemptArray = oneRoutine.attempts[currentAttempt-1];
+    console.log("FEBT:: Set End Time");
+
+    var target = findElementByTitle(endedStep, currentAttemptArray);
+    var thisStep = currentAttemptArray[target];
+    var times = thisStep.times;
     times[times.length-1].ended_at = now;
+    console.log("This is the attempts array AFTER a setEndTime");
+    console.log(oneRoutine);
+
+     //OBSOLETE
+    // var times = oneRoutine.attempts[currentAttempt-1][(getTimeArray(endedStep, oneRoutine).titleIndex)-1].times;
+    // times[times.length-1].ended_at = now;
   }; // END OF SET END TIME
 
+  var findElementByTitle = function(title, context){
+    console.log("hello from FindElByTite");
+    console.log("Here are my orders: title then context :: ",title, " , " ,context);
+
+    if (typeof title != "string"){
+      console.log("Changing type because object");
+      title = title.title; //oh god, I'm so sorry.
+      console.log("titletitle: " , title);
+    };
+    console.log("context:: ", context);
+    console.log("Context.length ", context.length);
+    for (var i = 0; i < context.length; i++) {
+    console.log("--Here are my orders again: title then context :: ",title, " , " ,context);
+      if (context[i].title === title){
+        console.log("FEBT found something ");
+        return i;
+      }
+    }
+    console.log("FEBT:: ", -1);
+    return -1;
+  }
 
   var changeStatus = function(stepTitle, status, oneRoutine){
     console.log("Hello from inside changeStatus");
-
     stepTitle = stepTitle.title;
-
     var stepArray = oneRoutine.steps;
-    console.log("!!step array change status" , stepArray)
+    console.log("FEBT:: Change Status");
+    var target = findElementByTitle(stepTitle, stepArray);
+    stepArray[target].status = status;
+
+    //THE FOLLOWING IS MADE OBSOLETE BY findElementByTitle
     //find the step in question by the title and change the status
-    for (var i = 0; i < stepArray.length; i++) {
-      console.log("this is the target for comparison ",stepTitle);
-      console.log("This is what changeStatus is checking: ",stepArray[i].title)
-      if (stepArray[i].title === stepTitle){
-        stepArray[i].status = status;
-        console.log("I found something to change ",stepArray[i].status);
-        return;
-      }
-    }
+    // for (var i = 0; i < stepArray.length; i++) {
+    //   // console.log("this is the target for comparison ",stepTitle);
+    //   // console.log("This is what changeStatus is checking: ",stepArray[i].title)
+    //   if (stepArray[i].title === stepTitle){
+    //     stepArray[i].status = status;
+    //     // console.log("I found something to change ",stepArray[i].status);
+    //     return;
+    //   }
+    // }
   };
+
 
   var getTimeArray = function(stepTitle, oneRoutine){
 
@@ -113,22 +172,35 @@ var setEndTime = function(endedStep, oneRoutine){
     // attemptArray is the array of the entire attempt we want to look through
     //have also to - 1 because of distinction between index (starts at 0) and length (starts at 1)
     var attemptArray = oneRoutine.attempts[currentAttempt-1];
+    var timeArray =[]; // return empty array if nothing found
 
     if (attemptArray === undefined){
       console.log("thought the current attempt array was undefined")
       //Get here if there is no attempt yet, and return empty array to avoid error
-      return {"timeArray":[], "titleIndex":null};
+     return timeArray;
+     // return {"timeArray":[], "titleIndex":null};
     }
-    var timeArray =[]; // return empty array if nothing found
+    console.log("FEBT:: Get Time Array");
+    var target = findElementByTitle(stepTitle, attemptArray);
 
-    for (var i = 0; i < attemptArray.length; i++) {
-      var thisStepName = attemptArray[i].title;
-        if (thisStepName === stepTitle){
-          console.log("Hello from found a match inside of Get Time Array");
-          var timeArray = attemptArray[i].times;
-        }
-    }
-    return {"timeArray":timeArray, "titleIndex":i};
+    if (target === -1){
+      return timeArray;
+    };
+
+    console.log("tarjay :", target);
+    console.log(attemptArray);
+    console.log(attemptArray[target]);
+    var timeArray = attemptArray[target].times;
+
+    // for (var i = 0; i < attemptArray.length; i++) {
+    //   var thisStepName = attemptArray[i].title;
+    //     if (thisStepName === stepTitle){
+    //       console.log("Hello from found a match inside of Get Time Array");
+    //       var timeArray = attemptArray[i].times;
+    //     }
+    // }
+    return timeArray;
+    //return {"timeArray":timeArray, "titleIndex":i};
   };
 
   var calcDurationSegment = function(startedAt, endedAt){ //WORKS
@@ -140,18 +212,43 @@ var setEndTime = function(endedStep, oneRoutine){
 
   var calcMultipleSegments = function(array){
     var total = moment.duration(0); //initiatialize as moment duration of zero
-    for(i=0; i < array.length; i++){
-      console.log("Calc Multiple Segments: array[i] ",array[i]);
-      console.log("CMS Total before: ",total);
+
+    //console.log("Calc multiple Allxie", array);
+    //console.log("array.length zoop :: ", array.length);
+
+    for (var i=0; i < array.length; i++){
+      //console.log("Calc Multiple Segments: array[i] ",array[i]);
+      //console.log("CMS Steven Total before: ",total);
       var start = array[i].started_at;
       var end = array[i].ended_at || moment(); // if there is no end yet, it's running so we call it now.
       var thisSegment = calcDurationSegment(start, end);
       total = total.add(thisSegment); //use moment to add two durations
-      console.log("CMS Total after: ",total);
-
+      //console.log("CMS Total after: ",total);
     }
     return total;
   }
+
+  var changeDiff = function(stepTitle, diff, oneRoutine){
+    stepTitle = stepTitle.title;
+    var stepArray = oneRoutine.steps;
+    console.log("FEBT:: Change Diff");
+
+    var target = findElementByTitle(stepTitle, stepArray);
+    stepArray[target].timeDiff = diff;
+
+    // MADE OBSOLETE BY FEBT
+    // console.log("!!step array change diff" , stepArray.length);
+    // //find the step in question by the title and change the status
+    // for (var i = 0; i < stepArray.length; i++) {
+    //   console.log("Yoda this is the target for comparison ", stepTitle);
+    //   console.log("This is what changediff is checking: ",stepArray[i].title)
+    //   if (stepArray[i].title === stepTitle){
+    //     stepArray[i].timeDiff = diff;
+    //     console.log("CHANGING TIME DIFF :: ",stepArray[i].timeDiff);
+    //     return;
+    //   }
+    // }
+  };
 
   //runs diff on all steps in attempt
   var calcDurationAttempt = function(){
@@ -167,6 +264,7 @@ var setEndTime = function(endedStep, oneRoutine){
     ,calcMultipleSegments: calcMultipleSegments
     ,changeStatus: changeStatus
     ,stopStep: stopStep
+    ,changeDiff: changeDiff
   }
 }) //end service
 
