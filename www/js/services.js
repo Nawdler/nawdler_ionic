@@ -262,6 +262,7 @@ var setEndTime = function(endedStep, oneRoutine){
     ,changeStatus: changeStatus
     ,stopStep: stopStep
     ,changeDiff: changeDiff
+    ,findElementByTitle: findElementByTitle
   }
 }) //end service
 
