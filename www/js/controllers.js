@@ -28,7 +28,6 @@ angular.module('starter.controllers', ['angularMoment'])
 
   //moment.utc(dur).format('HH:mm:ss');
 
-  
 
   $scope.addStep = function(newStep){
     console.log("Hello from addStep and $scope.newStep", $scope.newStep)
@@ -68,15 +67,21 @@ angular.module('starter.controllers', ['angularMoment'])
       oneRoutine.attempts.push([]);
       //consider saving oneRoutine to LocalStorage here later
     }
-
+    console.log("Active Step 1 ", activeStep);
     //This means some other step is running and we need to stop it
     if (activeStep != null) {
       TimerCalcs.stopStep(activeStep, oneRoutine);
+      stopPulsar();
     }
+    console.log("STOPPING Active Step 2 ", activeStep);
+
 
     //Get here if we really, truly want to start the clickedStep timer
     //Set activeStep to be clickedStep
     oneRoutine.currentOps.activeStep = clickedStep;
+    console.log("Active Step 3 ", activeStep);
+    activeStep = oneRoutine.currentOps.activeStep;
+    console.log("Active Step 4 ", activeStep);
 
     // console.log("Hello from right before change status");
     //Set status of this step to be "doing"
@@ -96,6 +101,7 @@ angular.module('starter.controllers', ['angularMoment'])
   var startUpdateTime = function(clickedStep){
    pulsar = $interval(function(){
     updateTime(clickedStep);
+    console.log("UPDATE Clicked Step:: ", clickedStep);
    }, 1000, [clickedStep]);
    // we pass [clickedStep] in as a parameter to the callbackfunction
   }
@@ -115,7 +121,7 @@ angular.module('starter.controllers', ['angularMoment'])
     return total;
   }
 
-  $scope.stop = function(){
+  var stopPulsar = function(){
     $interval.cancel(pulsar);
   }
   ///////end update time stuff
