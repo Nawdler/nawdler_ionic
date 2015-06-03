@@ -48,16 +48,14 @@ var setStartTime = function(startedStep, oneRoutine){
                         console.log("Pushing again:: ", newStepTime);
 
       //Insert this object into the time array for that step
-      // *Vomit* Let's clean this line up some time.
-//working on this!! NOW!
 
-//Yoda
       var currentAttemptArray = oneRoutine.attempts[currentAttempt-1];
-    console.log("FEBT:: Set Start Time");
+      console.log("FEBT:: Set Start Time");
 
       var target = findElementByTitle(startedStep, currentAttemptArray);
       var thisStep = currentAttemptArray[target];
       thisStep.times.push(newStepTime);
+      console.log("Creation of starttime: This step ",thisStep);
 
 
       //WORKED BUT OBSOLETE
@@ -70,6 +68,7 @@ var setStartTime = function(startedStep, oneRoutine){
       var currentAttemptArray = oneRoutine.attempts[currentAttempt-1];
 
       currentAttemptArray.push(newStep);
+      console.log("Creation of attemptarray and starttime: currentAttemptArray ",currentAttemptArray);
 
       //OBSOLETE
       //oneRoutine.attempts[currentAttempt-1].push(newStep);
@@ -78,7 +77,7 @@ var setStartTime = function(startedStep, oneRoutine){
 
   var stopStep = function(stepTitle, oneRoutine){
     //Mark step status as "done"
-    console.log("Hello from stopStep");
+    console.log("Hello from stopStep Steven2");
     console.log("Stopping :",stepTitle);
     changeStatus(stepTitle, "done", oneRoutine); 
 
@@ -90,22 +89,36 @@ var setStartTime = function(startedStep, oneRoutine){
 
 var setEndTime = function(endedStep, oneRoutine){
   console.log("Hello from inside setEndTime");
+
+    console.log("Steven debugging")
+    var x = oneRoutine.attempts[0][0].title.title //WHY ARE TWO .TITLES NEEDED TO ACCESS TEXT WE WANT???
+    console.log(x);
+    //ARE WE PUSHING ELEMENT INTO ATTEMPT ARRAY WRONG?
+
     // endedStep -- the step that needs to be ended in the tree
     // oneRoutine -- for scope purposes
-    //This looks up: which attempt to use, the current time
-    //This addes a new end time
+    //This looks up: which attempt to use and knows, of course, the current time
+    //This adds a new end time into the attempts array in the correct object
     var currentAttempt = oneRoutine.currentOps.workingAttempt;
+    console.log("This is CRAZY current attempt in setEndTime", currentAttempt);
     var now = moment();
 
     //changes ended_at to current moment (now) for this step in the attemps array
 
      //getTimeArray returns one value too high; need to decrement ***** CONFIRM
-     //Yoda
+    
     var currentAttemptArray = oneRoutine.attempts[currentAttempt-1];
+    console.log("This is currentAttemptArray in setEndTime",currentAttemptArray);
+  
     console.log("FEBT:: Set End Time");
+    console.log("This is context getting sent from setEndTime");
+    console.log(currentAttemptArray); 
+    console.log("This is target element sent from setEndTime ",endedStep);
 
     var target = findElementByTitle(endedStep, currentAttemptArray);
+
     var thisStep = currentAttemptArray[target];
+    console.log("This is thisStep element in setEndTime ",thisStep);
     var times = thisStep.times;
     times[times.length-1].ended_at = now;
     console.log("This is the attempts array AFTER a setEndTime");
@@ -117,32 +130,40 @@ var setEndTime = function(endedStep, oneRoutine){
   }; // END OF SET END TIME
 
   var findElementByTitle = function(title, context){
-    console.log("hello from FindElByTite");
+    console.log("Hello from FindElementByTitle");
     console.log("Here are my orders: title then context :: ",title, " , " ,context);
 
     if (typeof title != "string"){
       console.log("Changing type because object");
       title = title.title; //oh god, I'm so sorry.
-      console.log("titletitle: " , title);
+      console.log("new title: " , title);
     };
+    
     console.log("context:: ", context);
     console.log("Context.length ", context.length);
+
     for (var i = 0; i < context.length; i++) {
-    console.log("--Here are my orders again: title then context :: ",title, " , " ,context);
-      if (context[i].title === title){
-        console.log("FEBT found something ");
+
+      console.log("--Here are my orders again: title then context :: ",title, " , " ,context);
+      console.log("FEBT says Looking for", title);
+      console.log("FEBT says comparing to", context[i]["title"]);
+      console.log("Simon sez compare to", context[0].title.title);
+
+      if (context[i].title == title){
+        console.log("FEBT found something");
         return i;
       }
-    }
-    console.log("FEBT:: ", -1);
+    };
+    console.log("FEBT returns ", -1);
     return -1;
-  }
+  };
 
   var changeStatus = function(stepTitle, status, oneRoutine){
     console.log("Hello from inside changeStatus");
     stepTitle = stepTitle.title;
     var stepArray = oneRoutine.steps;
     console.log("FEBT:: Change Status");
+    console.log("This is context getting passed into FEBT by changeStatus", stepArray);
     var target = findElementByTitle(stepTitle, stepArray);
     stepArray[target].status = status;
 
