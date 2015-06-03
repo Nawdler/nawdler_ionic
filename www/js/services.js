@@ -6,16 +6,16 @@ angular.module('starter.services', [])
   //Is the attempt running? //WORKS
   var is_attemptRunning = function(oneRoutine){
     var workingAttempt = oneRoutine.currentOps.workingAttempt;
-    console.log("workingAttempt::  ",workingAttempt);
+    // console.log("workingAttempt::  ",workingAttempt);
 
     var numCompletedAttempts = oneRoutine.attempts.length;
-    console.log("attempts_length::  ",numCompletedAttempts);
+    // console.log("attempts_length::  ",numCompletedAttempts);
 
     if (workingAttempt > numCompletedAttempts){
-      console.log("Attempt wasn't running");
+      // console.log("Attempt wasn't running");
       return false;
     } else {
-      console.log("Attempt was running");
+      // console.log("Attempt was running");
 
       return true;
     }
@@ -33,18 +33,20 @@ var setStartTime = function(startedStep, oneRoutine){
     var currentAttempt = oneRoutine.currentOps.workingAttempt;
     var now = moment();
 
-    if (getTimeArray(startedStep, oneRoutine).timeArray.length > 0) { 
+    if (getTimeArray(startedStep, oneRoutine).timeArray.length > 0) {
+      console.log("Hello from second time around:: ", getTimeArray(startedStep, oneRoutine).timeArray);
       //This means there is at least one time for this step in the current attempt
       //So we can just insert an additional time object into array
 
       //Create an object with the start time and leave end time null
       var newStepTime = {"started_at": now
                         ,"ended_at" : null};
+                        console.log("Pushing again:: ", newStepTime);
 
       //Insert this object into the time array for that step
       // *Vomit* Let's clean this line up some time.
-
-      oneRoutine.attempts[currentAttempt][getTimeArray(startedStep, oneRoutine).titleIndex].times.push(newStepTime);
+//working on this!! NOW!
+      oneRoutine.attempts[currentAttempt-1][(getTimeArray(startedStep, oneRoutine).titleIndex)-1].times.push(newStepTime);
     } else {
       // Get here if we need to insert a whole new step for the startedStep (title + times)
       var newStep = {"title": startedStep
@@ -57,6 +59,8 @@ var setStartTime = function(startedStep, oneRoutine){
 
   var stopStep = function(stepTitle, oneRoutine){
     //Mark step status as "done"
+    console.log("Hello from stopStep");
+    console.log("Stopping :",stepTitle);
     changeStatus(stepTitle, "done", oneRoutine); 
 
     //timeDiff in oneRoutine.steps is already up-to-date with "final" duration of step, as it was updated every second
@@ -66,11 +70,11 @@ var setStartTime = function(startedStep, oneRoutine){
   };
 
 var setEndTime = function(endedStep, oneRoutine){
-  console.log("YOU HOOOO");
+  console.log("Hello from inside setEndTime");
     // endedStep -- the step that needs to be ended in the tree
     // oneRoutine -- for scope purposes
     //This looks up: which attempt to use, the current time
-    //This addes a new end time 
+    //This addes a new end time
     var currentAttempt = oneRoutine.currentOps.workingAttempt;
     var now = moment();
 
@@ -79,27 +83,41 @@ var setEndTime = function(endedStep, oneRoutine){
      //getTimeArray returns one value too high; need to decrement ***** CONFIRM
     var times = oneRoutine.attempts[currentAttempt-1][(getTimeArray(endedStep, oneRoutine).titleIndex)-1].times;
     times[times.length-1].ended_at = now;
+    console.log("This is the attempts array AFTER a setEndTime");
+    console.log(oneRoutine);
   }; // END OF SET END TIME
 
+  var findElementByTitle = function(title, context){
+    console.log("hello from FindElByTite");
+    for (var i = 0; i < context.length; i++) {
+      if (context[i].title === title){
+        // console.log("I found something to change ",stepArray[i].status);
+        return i;
+      }
+    }
+    return -1;
+  }
 
   var changeStatus = function(stepTitle, status, oneRoutine){
     console.log("Hello from inside changeStatus");
-
     stepTitle = stepTitle.title;
-
     var stepArray = oneRoutine.steps;
-    console.log("!!step array change status" , stepArray)
+    var target = findElementByTitle(stepTitle, stepArray);
+    stepArray[target].status = status;
+
+    //THE FOLLOWING IS MADE OBSOLETE BY findElementByTitle
     //find the step in question by the title and change the status
-    for (var i = 0; i < stepArray.length; i++) {
-      console.log("this is the target for comparison ",stepTitle);
-      console.log("This is what changeStatus is checking: ",stepArray[i].title)
-      if (stepArray[i].title === stepTitle){
-        stepArray[i].status = status;
-        console.log("I found something to change ",stepArray[i].status);
-        return;
-      }
-    }
+    // for (var i = 0; i < stepArray.length; i++) {
+    //   // console.log("this is the target for comparison ",stepTitle);
+    //   // console.log("This is what changeStatus is checking: ",stepArray[i].title)
+    //   if (stepArray[i].title === stepTitle){
+    //     stepArray[i].status = status;
+    //     // console.log("I found something to change ",stepArray[i].status);
+    //     return;
+    //   }
+    // }
   };
+
 
   var getTimeArray = function(stepTitle, oneRoutine){
 
@@ -121,13 +139,16 @@ var setEndTime = function(endedStep, oneRoutine){
     }
     var timeArray =[]; // return empty array if nothing found
 
-    for (var i = 0; i < attemptArray.length; i++) {
-      var thisStepName = attemptArray[i].title;
-        if (thisStepName === stepTitle){
-          console.log("Hello from found a match inside of Get Time Array");
-          var timeArray = attemptArray[i].times;
-        }
-    }
+    var target = findElementByTitle(stepTitle, attemptArray);
+    var timeArray = attemptArray[target].times;
+
+    // for (var i = 0; i < attemptArray.length; i++) {
+    //   var thisStepName = attemptArray[i].title;
+    //     if (thisStepName === stepTitle){
+    //       console.log("Hello from found a match inside of Get Time Array");
+    //       var timeArray = attemptArray[i].times;
+    //     }
+    // }
     return {"timeArray":timeArray, "titleIndex":i};
   };
 
@@ -140,18 +161,40 @@ var setEndTime = function(endedStep, oneRoutine){
 
   var calcMultipleSegments = function(array){
     var total = moment.duration(0); //initiatialize as moment duration of zero
-    for(i=0; i < array.length; i++){
+    console.log("Calc multiple Allxie", array);
+    console.log("array.length zoop :: ", array.length);
+    for (var i=0; i < array.length; i++){
       console.log("Calc Multiple Segments: array[i] ",array[i]);
-      console.log("CMS Total before: ",total);
+      console.log("CMS Steven Total before: ",total);
       var start = array[i].started_at;
       var end = array[i].ended_at || moment(); // if there is no end yet, it's running so we call it now.
       var thisSegment = calcDurationSegment(start, end);
       total = total.add(thisSegment); //use moment to add two durations
       console.log("CMS Total after: ",total);
-
     }
     return total;
   }
+
+  var changeDiff = function(stepTitle, diff, oneRoutine){
+    console.log("Hello from inside changeDiff");
+    console.log(stepTitle);
+    console.log("stepTItle type: " , typeof stepTitle);
+
+    stepTitle = stepTitle.title;
+
+    var stepArray = oneRoutine.steps;
+    console.log("!!step array change diff" , stepArray.length);
+    //find the step in question by the title and change the status
+    for (var i = 0; i < stepArray.length; i++) {
+      console.log("Yoda this is the target for comparison ", stepTitle);
+      console.log("This is what changediff is checking: ",stepArray[i].title)
+      if (stepArray[i].title === stepTitle){
+        stepArray[i].timeDiff = diff;
+        console.log("CHANGING TIME DIFF :: ",stepArray[i].timeDiff);
+        return;
+      }
+    }
+  };
 
   //runs diff on all steps in attempt
   var calcDurationAttempt = function(){
@@ -167,6 +210,7 @@ var setEndTime = function(endedStep, oneRoutine){
     ,calcMultipleSegments: calcMultipleSegments
     ,changeStatus: changeStatus
     ,stopStep: stopStep
+    ,changeDiff: changeDiff
   }
 }) //end service
 
