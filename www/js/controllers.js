@@ -117,7 +117,10 @@ angular.module('starter.controllers', ['angularMoment'])
 
   var currentDiff = function(){
     var currentStep = oneRoutine.currentOps.activeStep;
-    var timeArray = TimerCalcs.getTimeArray(currentStep, oneRoutine).timeArray;
+    //Yoda
+    console.log("GTA Controller Line 123");
+
+    var timeArray = TimerCalcs.getTimeArray(currentStep, oneRoutine); //.timeArray;
     var total = TimerCalcs.calcMultipleSegments(timeArray);
     return total;
   }
