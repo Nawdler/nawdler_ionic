@@ -39,6 +39,9 @@ angular.module('starter.controllers', ['angularMoment'])
     }
     $scope.steps.push(tempObj);
     $scope.newStep = "";
+
+    var test = moment.duration(93, "seconds").format();
+    console.log("HELLO YODA", test);
   };
 
   $scope.startStep = function(clickedStep){
