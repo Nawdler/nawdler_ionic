@@ -58,11 +58,12 @@ var setStartTime = function(startedStep, oneRoutine){
     }
   }; // END OF SET START TIME
 
+
   var stopStep = function(stepTitle, oneRoutine){
     //Mark step status as "done"
     console.log("Hello from stopStep Steven2");
     console.log("Stopping :",stepTitle);
-    changeStatus(stepTitle, "done", oneRoutine); 
+    changeStatus(stepTitle, "done", oneRoutine);
 
     //timeDiff in oneRoutine.steps is already up-to-date with "final" duration of step, as it was updated every second
 
@@ -73,7 +74,6 @@ var setStartTime = function(startedStep, oneRoutine){
 var setEndTime = function(endedStep, oneRoutine){
   console.log("Hello from inside setEndTime");
 
-    console.log("Steven debugging")
     var x = oneRoutine.attempts[0][0].title.title //WHY ARE TWO .TITLES NEEDED TO ACCESS TEXT WE WANT???
     console.log(x);
     //ARE WE PUSHING ELEMENT INTO ATTEMPT ARRAY WRONG?
@@ -88,7 +88,7 @@ var setEndTime = function(endedStep, oneRoutine){
     //changes ended_at to current moment (now) for this step in the attemps array
 
      //getTimeArray returns one value too high; need to decrement ***** CONFIRM
-    
+
     var currentAttemptArray = oneRoutine.attempts[currentAttempt-1];
 
     var target = findElementByTitle(endedStep, currentAttemptArray);
@@ -108,7 +108,6 @@ var setEndTime = function(endedStep, oneRoutine){
       title = title.title; //oh god, I'm so sorry.
    //   console.log("new target title: " , title);
     };
-    
 
     for (var i = 0; i < context.length; i++) {
 
