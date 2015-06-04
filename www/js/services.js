@@ -6,16 +6,12 @@ angular.module('starter.services', [])
   //Is the attempt running? //WORKS
   var is_attemptRunning = function(oneRoutine){
     var workingAttempt = oneRoutine.currentOps.workingAttempt;
-    // console.log("workingAttempt::  ",workingAttempt);
 
     var numCompletedAttempts = oneRoutine.attempts.length;
-    // console.log("attempts_length::  ",numCompletedAttempts);
 
     if (workingAttempt > numCompletedAttempts){
-      // console.log("Attempt wasn't running");
       return false;
     } else {
-      // console.log("Attempt was running");
       return true;
     }
   }
@@ -30,14 +26,9 @@ var setStartTime = function(startedStep, oneRoutine){
     //This either initiates a new object in the array if the step has not happened yet in this attempt, or if there was already a segment of this step, it addes a new start time and end time object
 
     var currentAttempt = oneRoutine.currentOps.workingAttempt;
-    var now = moment();
+    var now = moment.utc();
 
-//Yoda
-    console.log("GTA Line 36");
     if (getTimeArray(startedStep, oneRoutine).length > 0) {
-      //    if (getTimeArray(startedStep, oneRoutine).timeArray.length > 0) {
-    console.log("GTA Line 40");
-      console.log("Hello from second time around:: ", getTimeArray(startedStep, oneRoutine).timeArray);
 
       //This means there is at least one time for this step in the current attempt
       //So we can just insert an additional time object into array
@@ -50,16 +41,11 @@ var setStartTime = function(startedStep, oneRoutine){
       //Insert this object into the time array for that step
 
       var currentAttemptArray = oneRoutine.attempts[currentAttempt-1];
-      console.log("FEBT:: Set Start Time");
 
       var target = findElementByTitle(startedStep, currentAttemptArray);
       var thisStep = currentAttemptArray[target];
       thisStep.times.push(newStepTime);
-      console.log("Creation of starttime: This step ",thisStep);
 
-
-      //WORKED BUT OBSOLETE
-      // oneRoutine.attempts[currentAttempt-1][(getTimeArray(startedStep, oneRoutine).titleIndex)-1].times.push(newStepTime);
     } else {
       // Get here if we need to insert a whole new step for the startedStep (title + times)
       var newStep = {"title": startedStep
@@ -68,18 +54,16 @@ var setStartTime = function(startedStep, oneRoutine){
       var currentAttemptArray = oneRoutine.attempts[currentAttempt-1];
 
       currentAttemptArray.push(newStep);
-      console.log("Creation of attemptarray and starttime: currentAttemptArray ",currentAttemptArray);
 
-      //OBSOLETE
-      //oneRoutine.attempts[currentAttempt-1].push(newStep);
     }
   }; // END OF SET START TIME
+
 
   var stopStep = function(stepTitle, oneRoutine){
     //Mark step status as "done"
     console.log("Hello from stopStep Steven2");
     console.log("Stopping :",stepTitle);
-    changeStatus(stepTitle, "done", oneRoutine); 
+    changeStatus(stepTitle, "done", oneRoutine);
 
     //timeDiff in oneRoutine.steps is already up-to-date with "final" duration of step, as it was updated every second
 
@@ -90,7 +74,6 @@ var setStartTime = function(startedStep, oneRoutine){
 var setEndTime = function(endedStep, oneRoutine){
   console.log("Hello from inside setEndTime");
 
-    console.log("Steven debugging")
     var x = oneRoutine.attempts[0][0].title.title //WHY ARE TWO .TITLES NEEDED TO ACCESS TEXT WE WANT???
     console.log(x);
     //ARE WE PUSHING ELEMENT INTO ATTEMPT ARRAY WRONG?
@@ -100,69 +83,52 @@ var setEndTime = function(endedStep, oneRoutine){
     //This looks up: which attempt to use and knows, of course, the current time
     //This adds a new end time into the attempts array in the correct object
     var currentAttempt = oneRoutine.currentOps.workingAttempt;
-    console.log("This is CRAZY current attempt in setEndTime", currentAttempt);
-    var now = moment();
+    var now = moment.utc();
 
     //changes ended_at to current moment (now) for this step in the attemps array
 
      //getTimeArray returns one value too high; need to decrement ***** CONFIRM
-    
+
     var currentAttemptArray = oneRoutine.attempts[currentAttempt-1];
-    console.log("This is currentAttemptArray in setEndTime",currentAttemptArray);
-  
-    console.log("FEBT:: Set End Time");
-    console.log("This is context getting sent from setEndTime");
-    console.log(currentAttemptArray); 
-    console.log("This is target element sent from setEndTime ",endedStep);
 
     var target = findElementByTitle(endedStep, currentAttemptArray);
 
     var thisStep = currentAttemptArray[target];
-    console.log("This is thisStep element in setEndTime ",thisStep);
     var times = thisStep.times;
     times[times.length-1].ended_at = now;
-    console.log("This is the attempts array AFTER a setEndTime");
-    console.log(oneRoutine);
 
-     //OBSOLETE
-    // var times = oneRoutine.attempts[currentAttempt-1][(getTimeArray(endedStep, oneRoutine).titleIndex)-1].times;
-    // times[times.length-1].ended_at = now;
   }; // END OF SET END TIME
 
   var findElementByTitle = function(title, context){
-    console.log("Hello from FindElementByTitle");
-    console.log("Here are my orders: title then context :: ",title, " , " ,context);
+   // console.log("Hello from FindElementByTitle");
+   // console.log("Here are my orders: title then context :: ",title, " , " ,context);
 
     if (typeof title != "string"){
-      console.log("Changing target type because object");
+   //   console.log("Changing target type because object");
       title = title.title; //oh god, I'm so sorry.
-      console.log("new target title: " , title);
+   //   console.log("new target title: " , title);
     };
-    
-    console.log("context:: ", context);
-    console.log("Context.length ", context.length);
 
     for (var i = 0; i < context.length; i++) {
 
-      console.log("--Here are my orders again: title then context :: ",title, " , " ,context);
-      console.log("FEBT says Looking for", title);
-      console.log("FEBT says comparing to", context[i]["title"]);
-      console.log("Simon sez compare to", context[0].title.title);
+      // console.log("--Here are my orders again: title then context :: ",title, " , " ,context);
+      // console.log("FEBT says Looking for", title);
+      // console.log("FEBT says comparing to", context[i]["title"]);
 
       if (typeof context[i].title != "string"){
         twoTitle = context[i].title.title
-        console.log("Changing context type because object");
-        console.log("new context title ",twoTitle);
+        // console.log("Changing context type because object");
+        // console.log("new context title ",twoTitle);
       } else {
         twoTitle = context[i].title
       };
 
       if (twoTitle == title){
-        console.log("FEBT found something");
+        // console.log("FEBT found something");
         return i;
       }
     };
-    console.log("FEBT returns ", -1);
+    // console.log("FEBT returns ", -1);
     return -1;
   };
 
@@ -170,8 +136,6 @@ var setEndTime = function(endedStep, oneRoutine){
     console.log("Hello from inside changeStatus");
     stepTitle = stepTitle.title;
     var stepArray = oneRoutine.steps;
-    console.log("FEBT:: Change Status");
-    console.log("This is context getting passed into FEBT by changeStatus", stepArray);
     var target = findElementByTitle(stepTitle, stepArray);
     stepArray[target].status = status;
 
@@ -209,16 +173,12 @@ var setEndTime = function(endedStep, oneRoutine){
      return timeArray;
      // return {"timeArray":[], "titleIndex":null};
     }
-    console.log("FEBT:: Get Time Array");
     var target = findElementByTitle(stepTitle, attemptArray);
 
     if (target === -1){
       return timeArray;
     };
 
-    console.log("tarjay :", target);
-    console.log(attemptArray);
-    console.log(attemptArray[target]);
     var timeArray = attemptArray[target].times;
 
     // for (var i = 0; i < attemptArray.length; i++) {
@@ -233,9 +193,18 @@ var setEndTime = function(endedStep, oneRoutine){
   };
 
   var calcDurationSegment = function(startedAt, endedAt){ //WORKS
-    //WE KNOW THIS MAY HAVE AN HOUR CALCULATION BUG
-    var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
-    return moment.utc(dur).format('HH:mm:ss');
+    var segmentDuration = endedAt.diff(startedAt)//.format("h:mm:ss");
+    var durationFormatted = moment.duration(segmentDuration).format('H:mm:ss', { trim: false });
+    //var durationFixed = moment.utc(segmentDuration.asMilliseconds()).format("H:mm:ss");
+   // Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(":mm:ss");
+    console.log("This is DURATION in calcDurationSegment ",segmentDuration);
+    console.log("This is DURATION FIXED in calcDurationSegment ",durationFormatted);
+
+    return durationFormatted; //moment(dur).format('HH:mm:ss');
+
+// OLD   var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
+
+//  OLD    return moment.utc(dur).format('HH:mm:ss');
     //also try: return moment.duration(dur);
   };
 
@@ -249,7 +218,7 @@ var setEndTime = function(endedStep, oneRoutine){
       //console.log("Calc Multiple Segments: array[i] ",array[i]);
       //console.log("CMS Steven Total before: ",total);
       var start = array[i].started_at;
-      var end = array[i].ended_at || moment(); // if there is no end yet, it's running so we call it now.
+      var end = array[i].ended_at || moment.utc(); // if there is no end yet, it's running so we call it now.
       var thisSegment = calcDurationSegment(start, end);
       total = total.add(thisSegment); //use moment to add two durations
       //console.log("CMS Total after: ",total);
@@ -260,7 +229,6 @@ var setEndTime = function(endedStep, oneRoutine){
   var changeDiff = function(stepTitle, diff, oneRoutine){
     stepTitle = stepTitle.title;
     var stepArray = oneRoutine.steps;
-    console.log("FEBT:: Change Diff");
 
     var target = findElementByTitle(stepTitle, stepArray);
     stepArray[target].timeDiff = diff;
@@ -464,4 +432,61 @@ var setEndTime = function(endedStep, oneRoutine){
     //   return null;
     // }
   };
-});
+})
+.service('GraphCalcs', ['Reports', function(Reports){
+  //calls functions in facotry to generate data for charts
+  //generates charts
+
+}])
+.factory('Reports', function(){
+
+  //methods that take data out of json object and makes it into chart data
+
+
+    // window.onload = function () {
+    var chart = new CanvasJS.Chart("chartContainer",
+    {
+      title:{
+      text: "Routine Report"
+      },
+      axisY:{
+       interval: 1,
+       intervalType: "millisecond",
+      },
+
+      data: [
+      {
+        type: "stackedColumn",
+        legendText: "Take Shower",
+        showInLegend: "true",
+        dataPoints: [
+        { x: 2, y: 3.2, label: "foo"},
+        { x: 3, y: 4.6, label: "foo"},
+        ]
+      },
+        {
+        type: "stackedColumn",
+        legendText: "Put On Clothes",
+        showInLegend: "true",
+        dataPoints: [
+        { x: 2, y: 1.5, label: "bar"},
+        { x: 3, y: 6.9, label: "bar"},
+        ]
+      },// THIS IS FOR THE LABELS
+      {
+        type: "stackedColumn",
+        showInLegend: "false",
+        dataPoints: [
+        { x: 2, y: 0, label: "2"},
+        { x: 3, y: 0, label: "3"},
+        ]
+      }
+      ]
+    });
+
+    // chart.render();
+  // }
+
+  return chart;
+})
+;

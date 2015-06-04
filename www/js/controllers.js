@@ -15,13 +15,6 @@ angular.module('starter.controllers', ['angularMoment'])
   $scope.steps = oneRoutine.steps; //store the steps array
 
 
-// var test = [{"started_at": moment.utc("2015-06-01T10:15:00","DD/MM/YYYY HH:mm:ss")
-//            ,"ended_at" : moment.utc("2015-06-01T10:27:00","DD/MM/YYYY HH:mm:ss")
-//              }
-//            ,{"started_at": moment.utc("2015-06-02T10:00:00","DD/MM/YYYY HH:mm:ss")
-//            , "ended_at" : null
-//            }];
-
 //DURATION CALCULATIONS
 
 
@@ -35,21 +28,19 @@ angular.module('starter.controllers', ['angularMoment'])
 
   //moment.utc(dur).format('HH:mm:ss');
 
-  
 
   $scope.addStep = function(newStep){
     console.log("Hello from addStep and $scope.newStep", $scope.newStep)
-
-    //console.log("This is $scope in addStep",$scope);
 
     var tempObj = {"title" : newStep
       ,"timeDiff" : null
       ,"status" : "todo"
     }
     $scope.steps.push(tempObj);
-    console.log("Scope.steps AddSteps after adding new step::  ", $scope.steps);
-    console.log("oneRoutine.steps:: ", oneRoutine.steps);
     $scope.newStep = "";
+
+    var test = moment.duration(93, "seconds").format();
+    console.log("HELLO YODA", test);
   };
 
   $scope.startStep = function(clickedStep){
@@ -58,6 +49,11 @@ angular.module('starter.controllers', ['angularMoment'])
 
     console.log("Hello from start step");
     console.log("This is what was clicked",clickedStep);
+
+    var clickedStepString = clickedStep.title;
+    console.log("This is what was clicked and hopefully now a string",clickedStepString);
+
+   // clickedStep = clickedStepString;
 
     var activeStep = oneRoutine.currentOps.activeStep;
 
@@ -74,15 +70,21 @@ angular.module('starter.controllers', ['angularMoment'])
       oneRoutine.attempts.push([]);
       //consider saving oneRoutine to LocalStorage here later
     }
-
+    console.log("Active Step 1 ", activeStep);
     //This means some other step is running and we need to stop it
     if (activeStep != null) {
       TimerCalcs.stopStep(activeStep, oneRoutine);
+      stopPulsar();
     }
+    console.log("STOPPING Active Step 2 ", activeStep);
+
 
     //Get here if we really, truly want to start the clickedStep timer
     //Set activeStep to be clickedStep
     oneRoutine.currentOps.activeStep = clickedStep;
+    console.log("Active Step 3 ", activeStep);
+    activeStep = oneRoutine.currentOps.activeStep;
+    console.log("Active Step 4 ", activeStep);
 
     // console.log("Hello from right before change status");
     //Set status of this step to be "doing"
@@ -102,8 +104,7 @@ angular.module('starter.controllers', ['angularMoment'])
   var startUpdateTime = function(clickedStep){
    pulsar = $interval(function(){
     updateTime(clickedStep);
-    console.log("Tick tock ",$scope.steps);
-
+    console.log("UPDATE Clicked Step:: ", clickedStep);
    }, 1000, [clickedStep]);
    // we pass [clickedStep] in as a parameter to the callbackfunction
   }
@@ -111,32 +112,36 @@ angular.module('starter.controllers', ['angularMoment'])
   function updateTime(runningStep){
     var diff = currentDiff();
     TimerCalcs.changeDiff(runningStep, diff, oneRoutine);
-    console.log("ONE ROUTINE TO RULE THEM ALL:: " , oneRoutine);
-    //need to update view
+    console.log("ONE ROUTINE TO RULE THEM ALL (oneRoutine from updateTime) : " , oneRoutine);
+    console.log("Tick tock ($scope.steps from updateTime",$scope.steps);
   }
 
   var currentDiff = function(){
     var currentStep = oneRoutine.currentOps.activeStep;
-    //Yoda
-    console.log("GTA Controller Line 123");
 
     var timeArray = TimerCalcs.getTimeArray(currentStep, oneRoutine); //.timeArray;
     var total = TimerCalcs.calcMultipleSegments(timeArray);
     return total;
   }
 
-  $scope.stop = function(){
+  var stopPulsar = function(){
     $interval.cancel(pulsar);
   }
   ///////end update time stuff
 
-
+  $scope.probablyDone = function(){
+    var activeStep = oneRoutine.currentOps.activeStep;
+    if (activeStep != null) {
+      TimerCalcs.stopStep(activeStep, oneRoutine);
+      stopPulsar();
+    }
+  }
   // $scope.active = TimerCalcs.is_attemptRunning(oneRoutine);
   // console.log($scope.active);
 
 }])
 
-.controller('ReportCtrl', function($scope) {
+.controller('ReportCtrl', ['$scope', 'GraphCalcs', 'Reports', function($scope, GraphCalcs, Reports) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -144,12 +149,13 @@ angular.module('starter.controllers', ['angularMoment'])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
+  // window.onload = function(){
+  //   chart.render();
+  // }
+  Reports.render();
 
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  }
-})
+
+}])
 
 
 .controller('RoutinesCtrl', function($scope) {
