@@ -267,9 +267,10 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   $scope.onClick = function(points, evt) {
 
     console.log(points, evt);
-    console.log("Hello YODA. This is the detail of the attempt.");
-    console.log("Which bar");
+    console.log("Hello. This is the detail of the attempt.");
+    console.log("Which attempt was clicked?");
     console.log(points[0]._saved.label);
+
   };
 
   // console.log("This is OneRoutine here");
