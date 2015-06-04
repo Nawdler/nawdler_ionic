@@ -191,15 +191,20 @@ var setEndTime = function(endedStep, oneRoutine){
     //return {"timeArray":timeArray, "titleIndex":i};
   };
 
-  var calcDurationSegment = function(startedAt, endedAt){ //WORKS
-    var segmentDuration = endedAt.diff(startedAt)//.format("h:mm:ss");
+  var calcDurationSegment = function(startedAt, endedAt){
+    var segmentDuration = endedAt.diff(startedAt);
     var durationFormatted = moment.duration(segmentDuration).format('H:mm:ss', { trim: false });
     //var durationFixed = moment.utc(segmentDuration.asMilliseconds()).format("H:mm:ss");
    // Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(":mm:ss");
     console.log("This is DURATION in calcDurationSegment ",segmentDuration);
-    console.log("This is DURATION FIXED in calcDurationSegment ",durationFormatted);
+    console.log("This is DURATION FORMATTED in calcDurationSegment ",durationFormatted);
+    console.log("This is TYPEOF formatted :", typeof durationFormatted);
 
-    return durationFormatted; //moment(dur).format('HH:mm:ss');
+    //FORMATTING HERE IS NOT MEANINGFUL BECAUSE DURATIONS ARE ADDED in calcMultipleSegments
+
+    return durationFormatted; 
+
+    //moment(dur).format('HH:mm:ss');
 
   // OLD   var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
 
@@ -221,8 +226,10 @@ var setEndTime = function(endedStep, oneRoutine){
       total = total.add(thisSegment); //use moment to add two durations
       //console.log("CMS Total after: ",total);
     }
-    return total;
-  }
+    var totalFormatted = moment.duration(total).format('H:mm:ss', { trim: false });
+
+    return totalFormatted;
+  };
 
   var changeDiff = function(stepTitle, diff, oneRoutine){
     stepTitle = stepTitle.title;
@@ -235,7 +242,7 @@ var setEndTime = function(endedStep, oneRoutine){
     // console.log("!!step array change diff" , stepArray.length);
     // //find the step in question by the title and change the status
     // for (var i = 0; i < stepArray.length; i++) {
-    //   console.log("Yoda this is the target for comparison ", stepTitle);
+    //   console.log("this is the target for comparison ", stepTitle);
     //   console.log("This is what changediff is checking: ",stepArray[i].title)
     //   if (stepArray[i].title === stepTitle){
     //     stepArray[i].timeDiff = diff;
@@ -456,4 +463,79 @@ var loadFromLocalStorage = function(oneRoutine){
     //   return null;
     // }
   };
-});
+})
+
+//START OF GRAPH ROUTINES 
+
+.service('GraphCalcs', ['Reports', function(Reports){
+  //calls functions in facotry to generate data for charts
+  //generates charts
+
+
+  var quickAndDirtyLoader = function() {
+    var graphOneRoutine = JSON.parse(window.localStorage.getItem("Nawdler"));
+    return graphOneRoutine;
+  };
+
+var graphOneRoutine = quickAndDirtyLoader();
+console.log("Wow this is weird", graphOneRoutine);
+
+   return {
+    quickAndDirtyLoader: quickAndDirtyLoader
+    // ,something_else: something_else
+  }
+
+
+}])
+.factory('Reports', function(){
+
+  //methods that take data out of json object and makes it into chart data
+
+
+    // window.onload = function () {
+    var chart = new CanvasJS.Chart("chartContainer",
+    {
+      title:{
+      text: "Routine Report"
+      },
+      axisY:{
+       interval: 1,
+       intervalType: "millisecond",
+      },
+
+      data: [
+      {
+        type: "stackedColumn",
+        legendText: "Take Shower",
+        showInLegend: "true",
+        dataPoints: [
+        { x: 2, y: 3.2, label: "foo"},
+        { x: 3, y: 4.6, label: "foo"},
+        ]
+      },
+        {
+        type: "stackedColumn",
+        legendText: "Put On Clothes",
+        showInLegend: "true",
+        dataPoints: [
+        { x: 2, y: 1.5, label: "bar"},
+        { x: 3, y: 6.9, label: "bar"},
+        ]
+      },// THIS IS FOR THE LABELS
+      {
+        type: "stackedColumn",
+        showInLegend: "false",
+        dataPoints: [
+        { x: 2, y: 0, label: "2"},
+        { x: 3, y: 0, label: "3"},
+        ]
+      }
+      ]
+    });
+
+    // chart.render();
+  // }
+
+  return chart;
+})
+;
