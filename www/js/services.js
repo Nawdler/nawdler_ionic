@@ -221,6 +221,7 @@ var setEndTime = function(endedStep, oneRoutine){
   };
 
   var calcMultipleSegments = function(array){
+    //This function looks at the start/stop times for a STEP inside an attempt array and returns the total duration
     var total = moment.duration(0); //initiatialize as moment duration of zero
 
     //console.log("Calc multiple Allxie", array);
@@ -261,10 +262,21 @@ var setEndTime = function(endedStep, oneRoutine){
     // }
   };
 
-  //runs diff on all steps in attempt
-  var calcDurationAttempt = function(){
 
-  }
+  //CALCULATES BIG DIFF
+  //runs diff on all steps in attempt
+  var calcDurationAttempt = function(attempt){
+    //calls CMS on each step in an attempt
+    var total = moment.duration(0);
+//    var attempt = oneRoutine.attempts[attemptInd];
+    for (var i = 0; i < attempt.length; i++) {
+      var stepTotal = calcMultipleSegments(attempt[i].times);
+      total = total.add(stepTotal);
+    };
+    var totalFormatted = moment.duration(total).format('H:mm:ss', { trim: false });
+
+    return totalFormatted;
+  };
 
   var saveToLocalStorage = function(oneRoutine){
     console.log("Saving to LocalStorage");
@@ -472,75 +484,116 @@ var loadFromLocalStorage = function(oneRoutine){
 
 //START OF GRAPH ROUTINES 
 
-.service('GraphCalcs', ['Reports', function(Reports){
+.service('GraphCalcs', ['TimerCalcs', 'ShareData', function(TimerCalcs, ShareData){
   //calls functions in factory to generate data for charts
   //generates charts
 
+  var oneRoutine = ShareData.oneRoutine;
 
-  var quickAndDirtyLoader = function() {
-    var graphOneRoutine = JSON.parse(window.localStorage.getItem("Nawdler"));
-    return graphOneRoutine;
-  };
+  var chartData = {
+    labels: [ ] //this will be labels of each attempt name
+    ,datasets: [
+      {
+        label: oneRoutine.title//string of Routine Name
+        ,fillColor: "rgba(52,73,94,1.0)"
+        // ,strokeColor: "colorname"
+        // ,highlightFill: "colorname"
+        // ,highlightStroke: "colorname"
+        ,data: [] //ARRAY OF DURATIONS OF EACH ATTEMPT
+      }
+    ]
+  } // end ChartData
 
-var graphOneRoutine = quickAndDirtyLoader();
-console.log("Wow this is weird", graphOneRoutine);
+  var getAttemptNames = function(oneRoutine){
+    var attemptLabelArray = [];
+    var attempts = oneRoutine.attempts
+    //gets attempt names and pushes them into chartData.labels
+    for (var i = 0; i < attempts.length; i++) {
+      var attemptLabel = attempts[i][0].times.started_at;
+      attemptLabel = moment(attemptLabel).format('MM/DD/YY, hh:mm');
+      attemptLabel = String(attemptLabel);
+      attemptLabelArray.push(attemptLabel);
+    };
+    return attemptLabelArray;
+  }
+
+  var getAttemptDurations = function(oneRoutine){
+    var attemptDurations = [];
+    //gets total attempt duration for each attempt an pushes them into chartData.datasets.
+    var attempts = oneRoutine.attempts
+    for (var i = 0; i < attempts.length; i++) {
+      var attemptDuration = TimerCalcs.calcDurationAttempt(attempts[i]);
+      //convert from moment duration to number of minutes
+      var attemptDuration = moment.duration(attemptDuration).asMinutes();
+
+      attemptDurations.push(attemptDuration);
+    };
+    return attemptDurations;
+  } //end of getAttemptDurations
+
+ 
+
 
    return {
-    quickAndDirtyLoader: quickAndDirtyLoader
+    getAttemptDurations: getAttemptDurations
+    ,getAttemptNames: getAttemptNames
     // ,something_else: something_else
   }
 
 
-}])
-.factory('Reports', function(){
-
-  //methods that take data out of json object and makes it into chart data
 
 
-    // window.onload = function () {
-    var chart = new CanvasJS.Chart("chartContainer",
-    {
-      title:{
-      text: "Routine Report"
-      },
-      axisY:{
-       interval: 1,
-       intervalType: "millisecond",
-      },
+}]);
 
-      data: [
-      {
-        type: "stackedColumn",
-        legendText: "Take Shower",
-        showInLegend: "true",
-        dataPoints: [
-        { x: 2, y: 3.2, label: "foo"},
-        { x: 3, y: 4.6, label: "foo"},
-        ]
-      },
-        {
-        type: "stackedColumn",
-        legendText: "Put On Clothes",
-        showInLegend: "true",
-        dataPoints: [
-        { x: 2, y: 1.5, label: "bar"},
-        { x: 3, y: 6.9, label: "bar"},
-        ]
-      },// THIS IS FOR THE LABELS
-      {
-        type: "stackedColumn",
-        showInLegend: "false",
-        dataPoints: [
-        { x: 2, y: 0, label: "2"},
-        { x: 3, y: 0, label: "3"},
-        ]
-      }
-      ]
-    });
+// .factory('Reports', function(){
 
-    // chart.render();
-  // }
+//   //methods that take data out of json object and makes it into chart data
 
-  return chart;
-})
-;
+
+//     // window.onload = function () {
+//     var chart = new CanvasJS.Chart("chartContainer",
+//     {
+//       title:{
+//       text: "Routine Report"
+//       },
+//       axisY:{
+//        interval: 1,
+//        intervalType: "millisecond",
+//       },
+
+//       data: [
+//       {
+//         type: "stackedColumn",
+//         legendText: "Take Shower",
+//         showInLegend: "true",
+//         dataPoints: [
+//         { x: 2, y: 3.2, label: "foo"},
+//         { x: 3, y: 4.6, label: "foo"},
+//         ]
+//       },
+//         {
+//         type: "stackedColumn",
+//         legendText: "Put On Clothes",
+//         showInLegend: "true",
+//         dataPoints: [
+//         { x: 2, y: 1.5, label: "bar"},
+//         { x: 3, y: 6.9, label: "bar"},
+//         ]
+//       },// THIS IS FOR THE LABELS
+//       {
+//         type: "stackedColumn",
+//         showInLegend: "false",
+// //         dataPoints: [
+// //         { x: 2, y: 0, label: "2"},
+// //         { x: 3, y: 0, label: "3"},
+// //         ]
+// //       }
+// //       ]
+// //     });
+
+//     // chart.render();
+//   // }
+
+//   return chart;
+// })
+// ;
