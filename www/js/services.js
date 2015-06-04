@@ -1,5 +1,14 @@
 angular.module('starter.services', [])
 
+.service('ShareData', function() {
+  var ShareData = this;
+
+  ShareData.wow = "Hello"; //for testing
+
+  ShareData.oneRoutine = {}; //initialize with empty object
+
+}) //END OF ShareData SERVICE
+
 .service('TimerCalcs', function() {
 
   //Current attempt = oneRoutine.currentOps.workingAttempt
@@ -294,9 +303,10 @@ var loadFromLocalStorage = function(oneRoutine){
     ,saveToLocalStorage: saveToLocalStorage
     ,loadFromLocalStorage: loadFromLocalStorage
   }
-}) //end service
+}) //END OF TimerCalcs SERVICE
 
 .factory('Routines', function() {
+
   // Might use a resource here that returns a JSON array
 
   var titleTime =
@@ -319,11 +329,6 @@ var loadFromLocalStorage = function(oneRoutine){
     }
   ];
 
-    // "breakfast" : moment()
-    // ,"lunch" : "2014-09-08T08:02:20-05:00"
-    // ,"brunch" : "2014-10-08T08:02:37-05:00"
-    // ,"dinner" : "2014-11-08T08:02:47-05:00"
-    // ,"dessert" : "2014-12-08T08:02:57-05:00"
 
    var dataTemplate =
       {"Routine1": {
@@ -468,7 +473,7 @@ var loadFromLocalStorage = function(oneRoutine){
 //START OF GRAPH ROUTINES 
 
 .service('GraphCalcs', ['Reports', function(Reports){
-  //calls functions in facotry to generate data for charts
+  //calls functions in factory to generate data for charts
   //generates charts
 
 
