@@ -142,7 +142,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   var startUpdateTime = function(clickedStep){
    pulsar = $interval(function(){
     updateTime(clickedStep);
-    console.log("UPDATE Clicked Step:: ", clickedStep);
+   // console.log("UPDATE Clicked Step:: ", clickedStep);
    }, 1000, [clickedStep]);
    // we pass [clickedStep] in as a parameter to the callbackfunction
   }
@@ -150,6 +150,10 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   function updateTime(runningStep){
     var diff = currentDiff();
     TimerCalcs.changeDiff(runningStep, diff, oneRoutine);
+
+    var currentAttempt = oneRoutine.attempts[oneRoutine.currentOps.workingAttempt-1];
+    $scope.bigDiff = TimerCalcs.calcDurationAttempt(currentAttempt);
+    
     console.log("ONE ROUTINE TO RULE THEM ALL (oneRoutine from updateTime) : " , oneRoutine);
     console.log("Tick tock ($scope.steps from updateTime",$scope.steps);
           console.log("UPDATE TIME Button status: ",$scope.buttonStatus);
@@ -236,7 +240,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
   console.log(ShareData.wow); 
 
-   console.log("YODA this is ShareData.oneRoutine in GraphCtrl ", ShareData.oneRoutine);
+   console.log("this is ShareData.oneRoutine in GraphCtrl ", ShareData.oneRoutine);
 
   var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
 

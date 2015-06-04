@@ -1,7 +1,21 @@
 <ion-view view-title="Timer">
   <ion-content padding="true" class="has-header">
 
-<p>The real deal</p>
+ <!-- Duration of attempt -->
+    <div 
+      class="card" 
+      ng-show="buttonStatus != 'none'"
+      >
+      {{bigDiff}}
+    </div>
+ <!-- Welcome text -->
+    <div 
+      class="item" 
+      ng-show="buttonStatus === 'none'"
+      >
+      Welcome to Nawdler.  Enter the steps of your routine, record the times (in any order), and then analyze the results.
+    </div>
+
 <div class="list">
   <a
     class="item"
