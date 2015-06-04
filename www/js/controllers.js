@@ -205,7 +205,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     TimerCalcs.saveToLocalStorage(oneRoutine);
 
     //Redirect to graphs view, once it is ready
-
+    $state.go('tab.graph');
    }
  
   var evaluateButtonStatus = function(){

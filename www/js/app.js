@@ -51,6 +51,7 @@ angular.module('nawdler', ['ionic', 'starter.controllers', 'starter.services', '
 
   .state('tab.graph', {
       url: '/graph',
+      cache: false,
       views: {
         'tab-graph': {
           templateUrl: 'templates/tab-graph.html',
