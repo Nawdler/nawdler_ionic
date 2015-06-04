@@ -7,3 +7,16 @@
 	color: red !important;
 	border: none !important;
 }
+
+.bigDiff{
+/*	height: 100px;*/
+margin-bottom: 400px;
+	padding: 10px;
+	font-size: 3em !important;
+	font-weight: bold !important;
+	background-color: white;
+	color: red !important;
+}
+.instructions{
+	background-color:;
+}
