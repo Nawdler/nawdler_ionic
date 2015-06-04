@@ -464,9 +464,27 @@ var loadFromLocalStorage = function(oneRoutine){
     // }
   };
 })
+
+//START OF GRAPH ROUTINES 
+
 .service('GraphCalcs', ['Reports', function(Reports){
   //calls functions in facotry to generate data for charts
   //generates charts
+
+
+  var quickAndDirtyLoader = function() {
+    var graphOneRoutine = JSON.parse(window.localStorage.getItem("Nawdler"));
+    return graphOneRoutine;
+  };
+
+var graphOneRoutine = quickAndDirtyLoader();
+console.log("Wow this is weird", graphOneRoutine);
+
+   return {
+    quickAndDirtyLoader: quickAndDirtyLoader
+    // ,something_else: something_else
+  }
+
 
 }])
 .factory('Reports', function(){

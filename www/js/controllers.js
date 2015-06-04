@@ -3,9 +3,16 @@ angular.module('starter.controllers', ['angularMoment'])
 //.controller('TimerCtrl', function($scope) {})
 .controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'Routines', 'TimerCalcs', function($scope, moment, $interval, $state, Routines, TimerCalcs) {
 
+
+  //INITIALIZE FUNCTIONS
+
   //Use timer to reference scope of this controller.
   $scope.timer = $scope;
-  //GETTERS AND SETTERS
+
+  //LOAD DATA FROM LAST TIME
+  //TimerCalcs.loadFromLocalStorage()
+
+
   var allData = Routines.template(); //get the sample data from the factory
   var oneRoutine = allData["Routine1"]; //focus on the first (now only) routine, at least for now
   $scope.routineTitle = oneRoutine.title; //store the title
@@ -17,23 +24,7 @@ angular.module('starter.controllers', ['angularMoment'])
   //Start the main UI button in "none" category
   $scope.buttonStatus = "none";
 
-
-//DURATION CALCULATIONS
-
-
-    // var start = moment.utc("2015-06-01T10:15:00","DD/MM/YYYY HH:mm:ss");
-    // var finish = moment.utc("2015-06-01T11:45:10","DD/MM/YYYY HH:mm:ss");
-    // //var finish = moment();
-    // //var dur = finish.diff(start,"DD/MM/YYYY HH:mm:ss");
-    // var x = TimerCalcs.calcDurationSegment(start,finish);
-    // console.log(x);
-    // $scope.currentTime = x;
-
-  //moment.utc(dur).format('HH:mm:ss');
-
-
   $scope.addStep = function(newStep){
-    console.log("Hello from addStep and $scope.newStep", $scope.newStep)
 
     //First validate that there is not already a step with this same name
 
@@ -54,6 +45,9 @@ angular.module('starter.controllers', ['angularMoment'])
     
     //Erase the user's value, regardless of whether it was created or not
     $scope.newStep = "";
+
+    //Save data to LocalStorage
+    TimerCalcs.saveToLocalStorage(oneRoutine);
   };
 
   $scope.startStep = function(clickedStep){
@@ -83,21 +77,16 @@ angular.module('starter.controllers', ['angularMoment'])
       oneRoutine.attempts.push([]);
       //consider saving oneRoutine to LocalStorage here later
     }
-    console.log("Active Step 1 ", activeStep);
     //This means some other step is running and we need to stop it
     if (activeStep != null) {
       TimerCalcs.stopStep(activeStep, oneRoutine);
       stopPulsar();
     }
-    console.log("STOPPING Active Step 2 ", activeStep);
-
 
     //Get here if we really, truly want to start the clickedStep timer
     //Set activeStep to be clickedStep
     oneRoutine.currentOps.activeStep = clickedStep;
-    console.log("Active Step 3 ", activeStep);
     activeStep = oneRoutine.currentOps.activeStep;
-    console.log("Active Step 4 ", activeStep);
 
     // console.log("Hello from right before change status");
     //Set status of this step to be "doing"
@@ -110,13 +99,11 @@ angular.module('starter.controllers', ['angularMoment'])
     //start(clickedStep); //this starts the timer
     startUpdateTime(clickedStep);
 
-    console.log("YODA - about to call evaluateButtonStatus in startStep");
     //UPDATE TIMER MAIN BUTTON
     evaluateButtonStatus();
-    console.log("YODA - just called evaluateButtonStatus in startStep");
-    console.log($scope.buttonStatus);
 
-
+    //Save data to LocalStorage
+    TimerCalcs.saveToLocalStorage(oneRoutine);
   } //END OF STARTSTEP
 
   ///////// updateTime stuff
@@ -163,6 +150,8 @@ angular.module('starter.controllers', ['angularMoment'])
     evaluateButtonStatus();
     }
 
+    //Save data to LocalStorage
+    TimerCalcs.saveToLocalStorage(oneRoutine);
   }
 
    $scope.finishAttempt = function(){
@@ -213,6 +202,7 @@ angular.module('starter.controllers', ['angularMoment'])
   // window.onload = function(){
   //   chart.render();
   // }
+
   Reports.render();
 
 
