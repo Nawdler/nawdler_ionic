@@ -213,6 +213,7 @@ angular.module('starter.controllers', ['angularMoment'])
   // window.onload = function(){
   //   chart.render();
   // }
+
   Reports.render();
 
 
