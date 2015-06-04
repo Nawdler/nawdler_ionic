@@ -36,7 +36,6 @@ var setStartTime = function(startedStep, oneRoutine){
       //Create an object with the start time and leave end time null
       var newStepTime = {"started_at": now
                         ,"ended_at" : null};
-                        console.log("Pushing again:: ", newStepTime);
 
       //Insert this object into the time array for that step
 
@@ -61,7 +60,7 @@ var setStartTime = function(startedStep, oneRoutine){
 
   var stopStep = function(stepTitle, oneRoutine){
     //Mark step status as "done"
-    console.log("Hello from stopStep Steven2");
+    console.log("Hello from stopStep");
     console.log("Stopping :",stepTitle);
     changeStatus(stepTitle, "done", oneRoutine);
 
@@ -192,20 +191,24 @@ var setEndTime = function(endedStep, oneRoutine){
     //return {"timeArray":timeArray, "titleIndex":i};
   };
 
-  var calcDurationSegment = function(startedAt, endedAt){ //WORKS
-    var segmentDuration = endedAt.diff(startedAt)//.format("h:mm:ss");
+  var calcDurationSegment = function(startedAt, endedAt){
+    var segmentDuration = endedAt.diff(startedAt);
     var durationFormatted = moment.duration(segmentDuration).format('H:mm:ss', { trim: false });
     //var durationFixed = moment.utc(segmentDuration.asMilliseconds()).format("H:mm:ss");
    // Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(":mm:ss");
     console.log("This is DURATION in calcDurationSegment ",segmentDuration);
-    console.log("This is DURATION FIXED in calcDurationSegment ",durationFormatted);
+    console.log("This is DURATION FORMATTED in calcDurationSegment ",durationFormatted);
+    console.log("This is TYPEOF formatted :", typeof durationFormatted);
 
-    return durationFormatted; //moment(dur).format('HH:mm:ss');
+    //FORMATTING HERE IS NOT MEANINGFUL BECAUSE DURATIONS ARE ADDED in calcMultipleSegments
 
-// OLD   var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
+    return durationFormatted; 
 
-//  OLD    return moment.utc(dur).format('HH:mm:ss');
-    //also try: return moment.duration(dur);
+    //moment(dur).format('HH:mm:ss');
+
+  // OLD   var dur = endedAt.diff(startedAt,"DD/MM/YYYY HH:mm:ss");
+
+  //  OLD    return moment.utc(dur).format('HH:mm:ss');
   };
 
   var calcMultipleSegments = function(array){
@@ -223,8 +226,10 @@ var setEndTime = function(endedStep, oneRoutine){
       total = total.add(thisSegment); //use moment to add two durations
       //console.log("CMS Total after: ",total);
     }
-    return total;
-  }
+    var totalFormatted = moment.duration(total).format('H:mm:ss', { trim: false });
+
+    return totalFormatted;
+  };
 
   var changeDiff = function(stepTitle, diff, oneRoutine){
     stepTitle = stepTitle.title;
@@ -237,7 +242,7 @@ var setEndTime = function(endedStep, oneRoutine){
     // console.log("!!step array change diff" , stepArray.length);
     // //find the step in question by the title and change the status
     // for (var i = 0; i < stepArray.length; i++) {
-    //   console.log("Yoda this is the target for comparison ", stepTitle);
+    //   console.log("this is the target for comparison ", stepTitle);
     //   console.log("This is what changediff is checking: ",stepArray[i].title)
     //   if (stepArray[i].title === stepTitle){
     //     stepArray[i].timeDiff = diff;
@@ -252,6 +257,29 @@ var setEndTime = function(endedStep, oneRoutine){
 
   }
 
+  var saveToLocalStorage = function(oneRoutine){
+    console.log("Saving to LocalStorage");
+
+    // var user = device.uuid;
+    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+    // once running on devices, then consider using UUID as key, rather than Nawdler
+
+    window.localStorage.setItem("Nawdler", JSON.stringify(oneRoutine));  
+  };
+
+var loadFromLocalStorage = function(oneRoutine){
+    console.log("Loading from LocalStorage");
+
+    // var user = device.uuid;
+    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+    // once running on devices, then consider using UUID as key, rather than Nawdler
+
+    var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
+
+    oneRoutine = reloadedData;  
+  };
+
+
   return {
     calcDurationSegment: calcDurationSegment
     ,is_attemptRunning: is_attemptRunning
@@ -262,6 +290,9 @@ var setEndTime = function(endedStep, oneRoutine){
     ,changeStatus: changeStatus
     ,stopStep: stopStep
     ,changeDiff: changeDiff
+    ,findElementByTitle: findElementByTitle
+    ,saveToLocalStorage: saveToLocalStorage
+    ,loadFromLocalStorage: loadFromLocalStorage
   }
 }) //end service
 
