@@ -32,7 +32,6 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   //Start the main UI button in "none" category
   $scope.buttonStatus = "none";
 
-
 //DURATION CALCULATIONS
 
 
@@ -236,20 +235,42 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   //   chart.render();
   // }
 
-  console.log("WOW from GraphCtrl");
+  // console.log("WOW from GraphCtrl");
 
-  console.log(ShareData.wow); 
+  // console.log(ShareData.wow); 
 
-   console.log("this is ShareData.oneRoutine in GraphCtrl ", ShareData.oneRoutine);
+  // console.log("this is ShareData.oneRoutine in GraphCtrl ", ShareData.oneRoutine);
 
+  //Initialize data
   var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
 
-  $scope.labels = GraphCalcs.getAttemptNames(oneRoutine)//["Hello","Darkness","My","Old","Friend"];
+  //Render chart
 
-  var attemptDurations = GraphCalcs.getAttemptDurations(oneRoutine);
-  $scope.data = [attemptDurations]; //Need to put result in an array to match angular-chart's expectations
 
-  console.log("This is what is getting graphed, first labels then data ",$scope.labels,$scope.data);
+
+ // var chartAttempts = function() {
+
+    $scope.labels = GraphCalcs.getAttemptNames(oneRoutine)//["Hello","Darkness","My","Old","Friend"];
+
+    var attemptDurations = GraphCalcs.getAttemptDurations(oneRoutine);
+    $scope.data = [attemptDurations]; //Need to put result in an array to match angular-chart's expectations
+
+
+    console.log("This is what is getting graphed, first labels then data ",$scope.labels,$scope.data); 
+
+    $scope.chartId = "bar";
+    $scope.chartClass = "chart chart-bar";
+    $scope.chartClick = "onClick";
+
+  //}
+
+  $scope.onClick = function(points, evt) {
+
+    console.log(points, evt);
+    console.log("Hello YODA. This is the detail of the attempt.");
+    console.log("Which bar");
+    console.log(points[0]._saved.label);
+  };
 
   // console.log("This is OneRoutine here");
   // console.log(oneRoutine);

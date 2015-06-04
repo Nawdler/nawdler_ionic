@@ -3,7 +3,7 @@ angular.module('starter.services', [])
 .service('ShareData', function() {
   var ShareData = this;
 
-  ShareData.wow = "Hello"; //for testing
+  //ShareData.wow = "Hello"; //for testing
 
   ShareData.oneRoutine = {}; //initialize with empty object
 
