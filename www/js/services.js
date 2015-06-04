@@ -484,9 +484,11 @@ var loadFromLocalStorage = function(oneRoutine){
 
 //START OF GRAPH ROUTINES 
 
-.service('GraphCalcs', ['Reports', function(Reports){
+.service('GraphCalcs', ['TimerCalcs', 'ShareData', function(TimerCalcs, ShareData){
   //calls functions in factory to generate data for charts
   //generates charts
+
+  var oneRoutine = ShareData.oneRoutine;
 
   var chartData = {
     labels: [ ] //this will be labels of each attempt name
@@ -502,34 +504,39 @@ var loadFromLocalStorage = function(oneRoutine){
     ]
   } // end ChartData
 
-  var getAttemptNames = function(){
+  var getAttemptNames = function(oneRoutine){
+    var attemptLabelArray = [];
     var attempts = oneRoutine.attempts
     //gets attempt names and pushes them into chartData.labels
     for (var i = 0; i < attempts.length; i++) {
       var attemptLabel = attempts[i][0].times.started_at;
       attemptLabel = moment(attemptLabel).format('MM/DD/YY, hh:mm');
       attemptLabel = String(attemptLabel);
-      chartData.labels.push(attemptLabel);
+      attemptLabelArray.push(attemptLabel);
     };
+    return attemptLabelArray;
   }
 
-  var getAttemptDurations = function(){
+  var getAttemptDurations = function(oneRoutine){
+    var attemptDurations = [];
     //gets total attempt duration for each attempt an pushes them into chartData.datasets.
     var attempts = oneRoutine.attempts
     for (var i = 0; i < attempts.length; i++) {
-      var attemptDuration = calcDurationAttempt(attempts[i]);
+      var attemptDuration = TimerCalcs.calcDurationAttempt(attempts[i]);
       //convert from moment duration to number of minutes
       var attemptDuration = moment.duration(attemptDuration).asMinutes();
 
-      chartData.datasets.data.push(attemptDuration);
+      attemptDurations.push(attemptDuration);
     };
+    return attemptDurations;
   } //end of getAttemptDurations
 
  
 
 
    return {
-    ABC: ABC
+    getAttemptDurations: getAttemptDurations
+    ,getAttemptNames: getAttemptNames
     // ,something_else: something_else
   }
 

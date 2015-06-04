@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['angularMoment'])
+angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 //.controller('TimerCtrl', function($scope) {})
 .controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'ShareData','Routines', 'TimerCalcs', function($scope, moment, $interval, $state, ShareData, Routines, TimerCalcs) {
@@ -220,7 +220,7 @@ angular.module('starter.controllers', ['angularMoment'])
 
 }]) // END OF TIMERCTRL CONTROLLER
 
-.controller('GraphCtrl', ['$scope', 'ShareData', 'TimerCalcs', 'GraphCalcs', 'Reports', function($scope, ShareData, TimerCalcs, GraphCalcs, Reports) {
+.controller('GraphCtrl', ['$scope', 'ShareData', 'TimerCalcs', 'GraphCalcs', function($scope, ShareData, TimerCalcs, GraphCalcs) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -232,19 +232,25 @@ angular.module('starter.controllers', ['angularMoment'])
   //   chart.render();
   // }
 
-  console.log("Eli WOW from GraphCtrl");
+  console.log("WOW from GraphCtrl");
 
   console.log(ShareData.wow); 
 
-   console.log("Eli this is ShareData.oneRoutine in GraphCtrl ", ShareData.oneRoutine);
+   console.log("YODA this is ShareData.oneRoutine in GraphCtrl ", ShareData.oneRoutine);
 
   var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
 
+  $scope.labels = GraphCalcs.getAttemptNames(oneRoutine)//["Hello","Darkness","My","Old","Friend"];
+
+  var attemptDurations = GraphCalcs.getAttemptDurations(oneRoutine);
+  $scope.data = [attemptDurations]; //Need to put result in an array to match angular-chart's expectations
+
+  console.log("This is what is getting graphed, first labels then data ",$scope.labels,$scope.data);
 
   // console.log("This is OneRoutine here");
   // console.log(oneRoutine);
 
-  Reports.render();
+  // Reports.render(); -- OLD This was for different charts module
 
 }])
 
