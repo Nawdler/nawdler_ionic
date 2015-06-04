@@ -1,13 +1,28 @@
 angular.module('starter.controllers', ['angularMoment'])
 
 //.controller('TimerCtrl', function($scope) {})
-.controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'Routines', 'TimerCalcs', function($scope, moment, $interval, $state, Routines, TimerCalcs) {
+.controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'ShareData','Routines', 'TimerCalcs', function($scope, moment, $interval, $state, ShareData, Routines, TimerCalcs) {
 
   //Use timer to reference scope of this controller.
   $scope.timer = $scope;
+
+  // console.log("WOW from TimerCtrl");
+
+  // console.log(ShareData.wow); 
+
   //GETTERS AND SETTERS
+  // var allData = Routines.template(); //get the sample data from the factory
+  // var oneRoutine = allData["Routine1"]; //focus on the first (now only) routine, at least for now
+ 
+  //Initialize ShareData.oneRoutine with template data; eventually switch to load from LocalStorage
   var allData = Routines.template(); //get the sample data from the factory
-  var oneRoutine = allData["Routine1"]; //focus on the first (now only) routine, at least for now
+
+  ShareData.oneRoutine = allData["Routine1"];
+
+  console.log("Eli this is ShareData.oneRoutine in TimerCtrl ", ShareData.oneRoutine);
+
+  var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
+
   $scope.routineTitle = oneRoutine.title; //store the title
 
 
@@ -51,6 +66,9 @@ angular.module('starter.controllers', ['angularMoment'])
       }
       $scope.steps.push(tempObj);
     }
+
+    ShareData.wow = ShareData.wow+" "+newStep; //FOR TESTING
+    console.log(ShareData.wow);
     
     //Erase the user's value, regardless of whether it was created or not
     $scope.newStep = "";
@@ -202,7 +220,7 @@ angular.module('starter.controllers', ['angularMoment'])
 
 }]) // END OF TIMERCTRL CONTROLLER
 
-.controller('ReportCtrl', ['$scope', 'GraphCalcs', 'Reports', function($scope, GraphCalcs, Reports) {
+.controller('GraphCtrl', ['$scope', 'ShareData', 'TimerCalcs', 'GraphCalcs', 'Reports', function($scope, ShareData, TimerCalcs, GraphCalcs, Reports) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -214,14 +232,25 @@ angular.module('starter.controllers', ['angularMoment'])
   //   chart.render();
   // }
 
-  Reports.render();
+  console.log("Eli WOW from GraphCtrl");
 
+  console.log(ShareData.wow); 
+
+   console.log("Eli this is ShareData.oneRoutine in GraphCtrl ", ShareData.oneRoutine);
+
+  var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
+
+
+  // console.log("This is OneRoutine here");
+  // console.log(oneRoutine);
+
+  Reports.render();
 
 }])
 
+.controller('RoutinesCtrl', ['$scope','ShareData', function($scope, ShareData) {
+  // $scope.settings = {
+  //   enableFriends: true
+  // };
 
-.controller('RoutinesCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
-});
+}]);
