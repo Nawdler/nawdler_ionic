@@ -1,5 +1,5 @@
-<ion-view view-title="Timer">
-  <ion-content padding="true" class="has-header">
+<ion-view view-title="{{routineTitle}}">
+  <ion-content padding="true" class="has-header background">
 
  <!-- Duration of attempt -->
     <div
@@ -23,9 +23,11 @@
     ng-click="startStep(step)"
     ng-class="(step.status === 'doing'? 'item item-icon-left item-button-right' : 'item') + ' ' + (step.status === 'todo'? 'item item-icon-right' : 'item') + ' ' + (step.status === 'done'? 'item item-icon-right':'item')"
     >
+    <!-- SORRY. -->
+    <font size="+1">
   <!-- Show step title for all steps -->
     {{step.title}}
-
+    </font>
     <!-- Show timer icon if status = "doing" -->
     <i
       class="icon ion-ios-stopwatch"
@@ -49,22 +51,17 @@
 
     <!-- Add a step input box -->
       <form ng-submit="addStep(timer.newStep)">
-        <div class="item item-input">
-          <input placeholder="Add New Step" type="text" ng-model="timer.newStep"/> <button type="submit">+</button>
+        <div class="item addAStep item-input">
+          <input placeholder="Add New Step" type="text" ng-model="timer.newStep"/>
+          <button class="plusButton" type="submit"><a class="button button-icon custom-icon icon ion-plus-circled">
+          </a></button>
         </div>
       </form>
 
-  <div class="row row-center">
-    <div class="col">
-     <a class="button button-icon icon ion-plus-circled">
-          </a>
-    </div>
-  </div>
-
     <!-- I'm PROBABLY done button -->
     <div class="bar-subfooter button-bar"></div>
-    <button 
-      class="button button-assertive button-block" 
+    <button
+      class="button button-assertive button-block"
       ng-click="probablyDone()"
       ng-show="buttonStatus === 'probably'"
       >
@@ -73,12 +70,12 @@
 
     <!-- I'm DEFINITELY done button -->
     <div class="bar-subfooter button-bar"></div>
-    <button 
-      class="button button-calm button-block" 
+    <button
+      class="button button-assertive button-block"
       ng-click="finishAttempt()"
       ng-show="buttonStatus === 'definitely'"
       >
-      I'm Definitely Finished
+      Finish and Analyse
     </button>
 
 
