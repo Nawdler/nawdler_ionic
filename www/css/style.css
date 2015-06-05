@@ -34,6 +34,7 @@
 	font-weight: bold;
 }
 .addAStep{
+	color: green;
 	border: solid 1px #95a5a6;
 	background-color: #34495e !important;
 }
@@ -61,6 +62,7 @@
 .tabStyle{
 	color: #e67e22 !important;
 }
+
 
 /*.stepTitles{
 	font-size: 10px;

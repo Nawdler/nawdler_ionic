@@ -13,7 +13,9 @@
       class="card instructions"
       ng-show="buttonStatus === 'none'"
       >
-      Welcome to Nawdler. Enter the steps of your routine. Then tap any step to start timing and automatically stop the prior step.  Views graphs of your speed.
+      Welcome to Nawdler! <br>1.)  Enter the steps of your routine.<br>
+      2.)  Tap any step to start timing and pause the previous step.<br>
+      3.)  Hit done and finished to analyze results.
     </div>
 
 <div class="list">
@@ -55,6 +57,7 @@
           <input placeholder="Add New Step" type="text" ng-model="timer.newStep"/>
           <button class="plusButton" type="submit"><a class="button button-icon custom-icon icon ion-plus-circled">
           </a></button>
+          <!-- Need to fix the button. Button does not actually work. -->
         </div>
       </form>
 
