@@ -537,12 +537,9 @@ var loadFromLocalStorage = function(oneRoutine){
     getAttemptDurations: getAttemptDurations
     ,getAttemptNames: getAttemptNames
     ,getStepNames: getStepNames
-    ,getStepDurations
+    ,getStepDurations: getStepDurations //This line was messed up and crashed Safari but not Chrome
     ,convertPrettyTimeToFullAttempt: convertPrettyTimeToFullAttempt
   }
-
-
-
 
 }]);
 
