@@ -45,11 +45,23 @@
 	color: #e67e22;
 }
 .list{
-	margin-top: 40px;
+	margin-top: 43px;
+	box-shadow: 1px 1px 1px #222;
+	border: none !important;
+
 }
 .item{
 	color:#bdc3c7 !important;
 	background-color: #34495e;
-	border-color: #7f8c8d;
+	border: none !important;
+	box-shadow: 1px 1px 1px #222;
+	/*border-color: #7f8c8d;*/
+	/*box-shadow: 1px 1px 5px;*/
+}
+.tabStyle{
+	color: #e67e22 !important;
 }
 
+/*.stepTitles{
+	font-size: 10px;
+}*/
