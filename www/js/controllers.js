@@ -237,9 +237,9 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
   //Start with the all attempts view
   $scope.chartSelector = "allChrono"; //other options are "allFastest" or "oneDetail"
+  $scope.routineTitle = oneRoutine.title;
 
-
-  //Render of all attempts chart
+  //Get info for all attempts chart
   var chartAllAttempts = function() {
     //Labels on X axis
     $scope.labels = GraphCalcs.getAttemptNames(oneRoutine);
@@ -256,24 +256,35 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     // $scope.chartClick = "onClick";
   };
 
-  var chartOneAttempt = function() {
-    //Labels on X axis
-    $scope.labels = GraphCalcs.getAttemptNames(oneRoutine);
+  chartAllAttempts(); // call this function
 
+  var chartOneAttempt = function(attempt, attemptIndex) {
+    //Labels on X axis
+    $scope.labelsDetail = GraphCalcs.getStepNames(attemptIndex, oneRoutine);
+    $scope.dataDetail = GraphCalcs.getStepDurations(attemptIndex, oneRoutine);
+
+    console.log("This is what is getting graphed, first labels then data ",$scope.labels,$scope.data); 
 
   };
 
-  chartAllAttempts(); // call this function
 
   $scope.clickAttempt = function(points, evt) {
-    console.log(points, evt);
     console.log("Which attempt was clicked?");
-    console.log(points[0]._saved.label);
     
-    prettyTimeClicked = points[0]._saved.label // This is the "pretty" formatted time of the attempt that user clicked, but since it is "pretty" and not exact, we can only compare it to other pretty times in the attempts array
+    prettyTimeClicked = points[0]._saved.label; // This is the "pretty" formatted time of the attempt that user clicked, but since it is "pretty" and not exact, we can only compare it to other pretty times in the attempts array
 
+    //Look up "prettyTimeClicked" in the array of prettyTimes
+    var foundResult = GraphCalcs.convertPrettyTimeToFullAttempt(prettyTimeClicked, oneRoutine);
 
+    var attemptDetail = foundResult.array;
+    var attemptDetailIndex = foundResult.index;
 
+    if (attemptDetailIndex != -1) {
+      //Show the detail chart of this Attempt
+      chartOneAttempt(attemptDetail, attemptDetailIndex);
+    } else {
+      console.log("Fire in the hole! There's an error in $scope.clickAttempt in GraphsCtrl")
+    }
   };
 
 }])
