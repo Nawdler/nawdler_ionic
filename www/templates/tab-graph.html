@@ -1,9 +1,23 @@
-<ion-view view-title="Report">
+<ion-view view-title="Analysis">
   <ion-content>
 
-  <p>This is our manual graph</p>
+<!-- Chart of all attempts: show if chartSelector = "allChrono" -->
+  <div ng-show="chartSelector === 'allChrono'">
+	  <h2>All attempts </h2>
+	  <canvas id="bar" class="chart chart-bar" data="data" labels="labels" click="clickAttempt" ></canvas>
+  </div>
 
-  <canvas id="bar" class="chart chart-bar" data="data" labels="labels" click="onClick" ></canvas>
+<!-- Chart of all attempts: show if chartSelector = "allFastest" -->
+  <div ng-show="chartSelector === 'allFastest'">
+	  <h2>Your fastest attempts </h2>
+	  <canvas id="bar" class="chart chart-bar" data="data" labels="labels" click="onClick" ></canvas>
+  </div>
+
+<!-- Detail chart of one attempt: show if chartSelector = "oneDetail" -->
+  <div ng-show="chartSelector === 'oneDetail'">
+	  <h2>Detail about one attempt </h2>
+	  <canvas id="doughnut" class="chart chart-doughnut" data="data" labels="labels" legend="true"></canvas> 
+  </div>
 
   </ion-content>
 </ion-view>

@@ -449,19 +449,20 @@ var loadFromLocalStorage = function(oneRoutine){
 
   var oneRoutine = ShareData.oneRoutine;
 
-  var chartData = {
-    labels: [ ] //this will be labels of each attempt name
-    ,datasets: [
-      {
-        label: oneRoutine.title//string of Routine Name
-        ,fillColor: "rgba(52,73,94,1.0)"
-        // ,strokeColor: "colorname"
-        // ,highlightFill: "colorname"
-        // ,highlightStroke: "colorname"
-        ,data: [] //ARRAY OF DURATIONS OF EACH ATTEMPT
-      }
-    ]
-  } // end ChartData
+  //NO LONGER NEEDED -- was for Charts.JS not Angular-Charts.JS
+  // var chartData = {
+  //   labels: [ ] //this will be labels of each attempt name
+  //   ,datasets: [
+  //     {
+  //       label: oneRoutine.title//string of Routine Name
+  //       ,fillColor: "rgba(52,73,94,1.0)"
+  //       // ,strokeColor: "colorname"
+  //       // ,highlightFill: "colorname"
+  //       // ,highlightStroke: "colorname"
+  //       ,data: [] //ARRAY OF DURATIONS OF EACH ATTEMPT
+  //     }
+  //   ]
+  // } // end ChartData
 
   var getAttemptNames = function(oneRoutine){
     var attemptLabelArray = [];
@@ -512,7 +513,8 @@ var loadFromLocalStorage = function(oneRoutine){
    return {
     getAttemptDurations: getAttemptDurations
     ,getAttemptNames: getAttemptNames
-    // ,something_else: something_else
+    ,getStepNames: getStepNames
+    ,getStepDurations
   }
 
 
