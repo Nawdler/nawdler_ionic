@@ -19,7 +19,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
   ShareData.oneRoutine = allData["Routine1"];
 
-  console.log("Eli this is ShareData.oneRoutine in TimerCtrl ", ShareData.oneRoutine);
+  console.log("This is ShareData.oneRoutine in TimerCtrl ", ShareData.oneRoutine);
 
   var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
 
@@ -231,52 +231,61 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-  // window.onload = function(){
-  //   chart.render();
-  // }
-
-  // console.log("WOW from GraphCtrl");
-
-  // console.log(ShareData.wow); 
-
-  // console.log("this is ShareData.oneRoutine in GraphCtrl ", ShareData.oneRoutine);
 
   //Initialize data
   var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
 
-  //Render chart
+  //Start with the all attempts view
+  $scope.chartSelector = "allChrono"; //other options are "allFastest" or "oneDetail"
+  $scope.routineTitle = oneRoutine.title;
 
+  //Get info for all attempts chart
+  var chartAllAttempts = function() {
+    //Labels on X axis
+    $scope.labels = GraphCalcs.getAttemptNames(oneRoutine);
 
-
- // var chartAttempts = function() {
-
-    $scope.labels = GraphCalcs.getAttemptNames(oneRoutine)//["Hello","Darkness","My","Old","Friend"];
-
+    //Data for Y axis -- how long each attempt took
     var attemptDurations = GraphCalcs.getAttemptDurations(oneRoutine);
     $scope.data = [attemptDurations]; //Need to put result in an array to match angular-chart's expectations
 
+    console.log("This is what is getting graphed, first labels then data ",$scope.labels,$scope.data); 
+
+    //This is for if we convert this to a more generic chart engine
+    // $scope.chartId = "bar";
+    // $scope.chartClass = "chart chart-bar";
+    // $scope.chartClick = "onClick";
+  };
+
+  chartAllAttempts(); // call this function
+
+  var chartOneAttempt = function(attempt, attemptIndex) {
+    //Labels on X axis
+    $scope.labelsDetail = GraphCalcs.getStepNames(attemptIndex, oneRoutine);
+    $scope.dataDetail = GraphCalcs.getStepDurations(attemptIndex, oneRoutine);
 
     console.log("This is what is getting graphed, first labels then data ",$scope.labels,$scope.data); 
 
-    $scope.chartId = "bar";
-    $scope.chartClass = "chart chart-bar";
-    $scope.chartClick = "onClick";
-
-  //}
-
-  $scope.onClick = function(points, evt) {
-
-    console.log(points, evt);
-    console.log("Hello. This is the detail of the attempt.");
-    console.log("Which attempt was clicked?");
-    console.log(points[0]._saved.label);
-
   };
 
-  // console.log("This is OneRoutine here");
-  // console.log(oneRoutine);
 
-  // Reports.render(); -- OLD This was for different charts module
+  $scope.clickAttempt = function(points, evt) {
+    console.log("Which attempt was clicked?");
+    
+    prettyTimeClicked = points[0]._saved.label; // This is the "pretty" formatted time of the attempt that user clicked, but since it is "pretty" and not exact, we can only compare it to other pretty times in the attempts array
+
+    //Look up "prettyTimeClicked" in the array of prettyTimes
+    var foundResult = GraphCalcs.convertPrettyTimeToFullAttempt(prettyTimeClicked, oneRoutine);
+
+    var attemptDetail = foundResult.array;
+    var attemptDetailIndex = foundResult.index;
+
+    if (attemptDetailIndex != -1) {
+      //Show the detail chart of this Attempt
+      chartOneAttempt(attemptDetail, attemptDetailIndex);
+    } else {
+      console.log("Fire in the hole! There's an error in $scope.clickAttempt in GraphsCtrl")
+    }
+  };
 
 }])
 
