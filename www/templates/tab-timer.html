@@ -3,7 +3,7 @@
 
  <!-- Duration of attempt -->
     <div
-      class="bar bar-header bigDiff"
+      class="bigDiff"
       ng-show="buttonStatus != 'none'"
       >
       {{bigDiff}}
@@ -53,8 +53,8 @@
       <form ng-submit="addStep(timer.newStep)">
         <div class="item addAStep item-input">
           <input placeholder="Add New Step" type="text" ng-model="timer.newStep"/>
-          <button class="plusButton" type="submit"><a class="button button-icon custom-icon icon ion-plus-circled">
-          </a></button>
+          <button class="plusButton button-icon custom-icon icon ion-plus-circled" type="submit">
+        </button>
           <!-- Need to fix the button. Button does not actually work. -->
         </div>
       </form>
