@@ -466,7 +466,7 @@ var loadFromLocalStorage = function(oneRoutine){
 
   var getAttemptNames = function(oneRoutine){
     var attemptLabelArray = [];
-    var attempts = oneRoutine.attempts
+    var attempts = oneRoutine.attempts || [];
     //gets attempt names and pushes them into chartData.labels
     for (var i = 0; i < attempts.length; i++) {
       var attemptLabel = attempts[i][0].times[0].started_at;
@@ -480,7 +480,7 @@ var loadFromLocalStorage = function(oneRoutine){
   var getAttemptDurations = function(oneRoutine){
     var attemptDurations = [];
     //gets total attempt duration for each attempt an pushes them into chartData.datasets.
-    var attempts = oneRoutine.attempts
+    var attempts = oneRoutine.attempts || [];
     for (var i = 0; i < attempts.length; i++) {
       var attemptDuration = TimerCalcs.calcDurationAttempt(attempts[i]);
       //convert from moment duration to number of minutes
