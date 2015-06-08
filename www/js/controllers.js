@@ -31,15 +31,16 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
   $scope.addStep = function(newStep){
 
-    //First validate that there is not already a step with this same name
 
-    var found = TimerCalcs.findElementByTitle(newStep,$scope.steps)
+    //First validate that there is not already a step with this same name
+    var found = TimerCalcs.findElementByTitle(newStep,$scope.steps);
 
     //Only create new step if this step did not previously exist (return value -1)
 
     //PRESENTLY NO UI FOR ERROR MESSAGES -- ADD THIS LATER ***
 
-    if (found === -1) {
+    // also filters out empty steps
+    if (found === -1 && newStep != "") {
       var tempObj = {
         "title" : newStep
         ,"timeDiff" : null
@@ -50,7 +51,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
     ShareData.wow = ShareData.wow+" "+newStep; //FOR TESTING
     console.log(ShareData.wow);
-    
+
     //Erase the user's value, regardless of whether it was created or not
     $scope.newStep = "";
 
