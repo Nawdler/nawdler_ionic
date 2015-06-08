@@ -47,16 +47,16 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
         ,"status" : "todo"
       }
       $scope.steps.push(tempObj);
+      //Save data to LocalStorage
+      TimerCalcs.saveToLocalStorage(oneRoutine);
     }
 
-    ShareData.wow = ShareData.wow+" "+newStep; //FOR TESTING
-    console.log(ShareData.wow);
+    // ShareData.wow = ShareData.wow+" "+newStep; //FOR TESTING
+    // console.log(ShareData.wow);
 
     //Erase the user's value, regardless of whether it was created or not
     $scope.newStep = "";
 
-    //Save data to LocalStorage
-    TimerCalcs.saveToLocalStorage(oneRoutine);
   };
 
   $scope.startStep = function(clickedStep){
