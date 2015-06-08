@@ -1,9 +1,69 @@
 /* Empty. Add your own CSS if you like */
-
+.background{
+	background-color: #2c3e50 !important;
+}
 .running{
 	font-size: 2em !important;
 	font-weight: bold;
-	background-color: white !important;
-	color: red !important;
+	background-color: #34495e !important;
+	color: #e67e22 !important;
 	border: none !important;
 }
+.title{
+	font-size: 1em !important;
+	font-weight: bold !important;
+	color: #bdc3c7;
+}
+.bigDiff{
+	padding-right: auto;
+	padding-left: 32%;
+	padding-top: 15px;
+	font-size: 3em !important;
+	font-weight: bold !important;
+	background-color: transparent;
+	color: #ef4e3a !important;
+	border: none;
+}
+/*.instructions{
+	background-color:#34495e;
+}*/
+.card{
+	background-color: #34495e !important;
+	color:#e67e22;
+	padding: 10px;
+	font-weight: bold;
+}
+.addAStep{
+	color: green;
+	border: solid 1px #95a5a6;
+	background-color: #34495e !important;
+}
+.plusButton{
+	background-color:#34495e;
+	border:none;
+}
+.custom-icon{
+	color: #e67e22;
+}
+.list{
+	margin-top: 43px;
+	box-shadow: 1px 1px 1px #222;
+	border: none !important;
+
+}
+.item{
+	color:#bdc3c7 !important;
+	background-color: #34495e;
+	border: none !important;
+	box-shadow: 1px 1px 1px #222;
+	/*border-color: #7f8c8d;*/
+	/*box-shadow: 1px 1px 5px;*/
+}
+.tabStyle{
+	color: #e67e22 !important;
+}
+
+
+/*.stepTitles{
+	font-size: 10px;
+}*/

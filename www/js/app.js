@@ -49,12 +49,13 @@ angular.module('nawdler', ['ionic', 'starter.controllers', 'starter.services', '
     }
   })
 
-  .state('tab.report', {
-      url: '/report',
+  .state('tab.graph', {
+      url: '/graph',
+      cache: false,
       views: {
-        'tab-report': {
-          templateUrl: 'templates/tab-report.html',
-          controller: 'ReportCtrl'
+        'tab-graph': {
+          templateUrl: 'templates/tab-graph.html',
+          controller: 'GraphCtrl'
         }
       }
     })

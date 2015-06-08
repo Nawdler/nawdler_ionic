@@ -1,7 +1,7 @@
-angular.module('starter.controllers', ['angularMoment'])
+angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 //.controller('TimerCtrl', function($scope) {})
-.controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'Routines', 'TimerCalcs', function($scope, moment, $interval, $state, Routines, TimerCalcs) {
+.controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'ShareData','Routines', 'TimerCalcs', function($scope, moment, $interval, $state, ShareData, Routines, TimerCalcs) {
 
 
   //INITIALIZE FUNCTIONS
@@ -12,9 +12,14 @@ angular.module('starter.controllers', ['angularMoment'])
   //LOAD DATA FROM LAST TIME
   //TimerCalcs.loadFromLocalStorage()
 
-
   var allData = Routines.template(); //get the sample data from the factory
-  var oneRoutine = allData["Routine1"]; //focus on the first (now only) routine, at least for now
+
+  ShareData.oneRoutine = allData["Routine1"];
+
+  console.log("This is ShareData.oneRoutine in TimerCtrl ", ShareData.oneRoutine);
+
+  var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
+
   $scope.routineTitle = oneRoutine.title; //store the title
 
 
@@ -42,6 +47,9 @@ angular.module('starter.controllers', ['angularMoment'])
       }
       $scope.steps.push(tempObj);
     }
+
+    ShareData.wow = ShareData.wow+" "+newStep; //FOR TESTING
+    console.log(ShareData.wow);
     
     //Erase the user's value, regardless of whether it was created or not
     $scope.newStep = "";
@@ -111,7 +119,7 @@ angular.module('starter.controllers', ['angularMoment'])
   var startUpdateTime = function(clickedStep){
    pulsar = $interval(function(){
     updateTime(clickedStep);
-    console.log("UPDATE Clicked Step:: ", clickedStep);
+   // console.log("UPDATE Clicked Step:: ", clickedStep);
    }, 1000, [clickedStep]);
    // we pass [clickedStep] in as a parameter to the callbackfunction
   }
@@ -119,6 +127,10 @@ angular.module('starter.controllers', ['angularMoment'])
   function updateTime(runningStep){
     var diff = currentDiff();
     TimerCalcs.changeDiff(runningStep, diff, oneRoutine);
+
+    var currentAttempt = oneRoutine.attempts[oneRoutine.currentOps.workingAttempt-1];
+    $scope.bigDiff = TimerCalcs.calcDurationAttempt(currentAttempt);
+    
     console.log("ONE ROUTINE TO RULE THEM ALL (oneRoutine from updateTime) : " , oneRoutine);
     console.log("Tick tock ($scope.steps from updateTime",$scope.steps);
           console.log("UPDATE TIME Button status: ",$scope.buttonStatus);
@@ -173,7 +185,7 @@ angular.module('starter.controllers', ['angularMoment'])
     TimerCalcs.saveToLocalStorage(oneRoutine);
 
     //Redirect to graphs view, once it is ready
-
+    $state.go('tab.graph');
    }
  
   var evaluateButtonStatus = function(){
@@ -191,7 +203,7 @@ angular.module('starter.controllers', ['angularMoment'])
 
 }]) // END OF TIMERCTRL CONTROLLER
 
-.controller('ReportCtrl', ['$scope', 'GraphCalcs', 'Reports', function($scope, GraphCalcs, Reports) {
+.controller('GraphCtrl', ['$scope', 'ShareData', 'TimerCalcs', 'GraphCalcs', function($scope, ShareData, TimerCalcs, GraphCalcs) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -199,18 +211,67 @@ angular.module('starter.controllers', ['angularMoment'])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-  // window.onload = function(){
-  //   chart.render();
-  // }
 
-  Reports.render();
+  //Initialize data
+  var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
 
+  //Start with the all attempts view
+  $scope.chartSelector = "allChrono"; //other options are "allFastest" or "oneDetail"
+  $scope.routineTitle = oneRoutine.title;
+
+  //Get info for all attempts chart
+  var chartAllAttempts = function() {
+    //Labels on X axis
+    $scope.labels = GraphCalcs.getAttemptNames(oneRoutine);
+
+    //Data for Y axis -- how long each attempt took
+    var attemptDurations = GraphCalcs.getAttemptDurations(oneRoutine);
+    $scope.data = [attemptDurations]; //Need to put result in an array to match angular-chart's expectations
+
+    console.log("This is what is getting graphed, first labels then data ",$scope.labels,$scope.data); 
+
+    //This is for if we convert this to a more generic chart engine
+    // $scope.chartId = "bar";
+    // $scope.chartClass = "chart chart-bar";
+    // $scope.chartClick = "onClick";
+  };
+
+  chartAllAttempts(); // call this function
+
+  var chartOneAttempt = function(attempt, attemptIndex) {
+    //Labels on X axis
+    $scope.labelsDetail = GraphCalcs.getStepNames(attemptIndex, oneRoutine);
+    $scope.dataDetail = GraphCalcs.getStepDurations(attemptIndex, oneRoutine);
+
+    console.log("This is what is getting graphed, first labels then data ",$scope.labels,$scope.data); 
+
+  };
+
+
+  $scope.clickAttempt = function(points, evt) {
+    console.log("Which attempt was clicked?");
+    
+    prettyTimeClicked = points[0]._saved.label; // This is the "pretty" formatted time of the attempt that user clicked, but since it is "pretty" and not exact, we can only compare it to other pretty times in the attempts array
+
+    //Look up "prettyTimeClicked" in the array of prettyTimes
+    var foundResult = GraphCalcs.convertPrettyTimeToFullAttempt(prettyTimeClicked, oneRoutine);
+
+    var attemptDetail = foundResult.array;
+    var attemptDetailIndex = foundResult.index;
+
+    if (attemptDetailIndex != -1) {
+      //Show the detail chart of this Attempt
+      chartOneAttempt(attemptDetail, attemptDetailIndex);
+    } else {
+      console.log("Fire in the hole! There's an error in $scope.clickAttempt in GraphsCtrl")
+    }
+  };
 
 }])
 
+.controller('RoutinesCtrl', ['$scope','ShareData', function($scope, ShareData) {
+  // $scope.settings = {
+  //   enableFriends: true
+  // };
 
-.controller('RoutinesCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
-});
+}]);

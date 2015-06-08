@@ -1,0 +1,23 @@
+<ion-view view-title="Analysis">
+  <ion-content>
+
+<!-- Chart of all attempts: show if chartSelector = "allChrono" -->
+  <div ng-show="chartSelector === 'allChrono'">
+	  <h2> {{routineTitle}} </h2>
+	  <canvas id="bar" class="chart chart-bar" data="data" labels="labels" click="clickAttempt" ></canvas>
+  </div>
+
+<!-- Chart of all attempts: show if chartSelector = "allFastest" -->
+  <div ng-show="chartSelector === 'allFastest'">
+	  <h2>Your fastest attempts </h2>
+	  <canvas id="bar" class="chart chart-bar" data="data" labels="labels" click="onClick" ></canvas>
+  </div>
+
+<!-- Detail chart of one attempt: for now, show in all cases... Could also just show if chartSelector = "oneDetail" -->
+  <div>
+  <!-- ng-show="chartSelector === 'oneDetail'" -->
+	  <h3>     Click a bar to see more detail</h3>
+	  <canvas id="doughnut" class="chart chart-doughnut" data="dataDetail" labels="labelsDetail" legend="true"></canvas> 
+  </div>
+  </ion-content>
+</ion-view>
