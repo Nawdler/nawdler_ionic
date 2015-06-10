@@ -1,5 +1,65 @@
 <ion-view view-title="Your Routines">
-  <ion-content>
+  <ion-content padding="true" class="has-header background">
+
+<!-- Hello -->
+
+ <!-- Welcome text -->
+    <div
+      class="card instructions"
+      ng-show="buttonStatus === 'none'"
+      >
+     Welcome to Nawdler! Select a routine or enter a new one.
+    </div>
+
+<div class="list">
+  <a
+    class="item"
+    ng-repeat="routine in routines"
+    ng-click="selectRoutine(routine)"
+    ng-class="(routine.status === 'active'? 'item item-icon-left item-button-right' : 'item') + ' ' + (routine.status === 'inactive'? 'item item-icon-right' : 'item')"
+    >
+    <!-- SORRY. -->
+    <font size="+1">
+  <!-- Show step title for all steps -->
+    {{routine.title}}
+    </font>
+    <!-- Show active icon if status = "active" -->
+    <i
+      class="icon ion-android-arrow-forward"
+      ng-show="routine.status === 'active'">
+    </i>
+
+    <!-- Show "go to this routine" button if status is "inactive" -->
+    <i
+      class="icon ion-android-arrow-forward"
+      ng-show="routine.status != 'inactive'">
+    </i>
+      <span class="item-note" ng-show="routine.status === 'routine'">
+        {{routine.numberAttempts}}
+    </span>
+    <!-- Button element because div was messing up formatting -->
+    <button class="button running button-assertive" ng-show="routine.status === 'doing'">
+        {{routine.timeDiff}}
+    </button> 
+
+  </a>
+</div>
+
+    <!-- Add a step input box -->
+      <form ng-submit="addRoutine(routines.newRoutine)">
+        <div class="item addAStep item-input">
+          <input placeholder="Add New Step" type="text" ng-model="routines.newRoutine"/>
+          <button class="plusButton button-icon custom-icon icon ion-plus-circled" type="submit">
+        </button>
+        </div>
+      </form>
+
+  <!-- End of page -->
+  </ion-content>
+</ion-view>
+
+<!-- Hello -->
+
 
   <div class="card">
   <h2> Coming soon to Nawdler:<br><br>

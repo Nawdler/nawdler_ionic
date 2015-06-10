@@ -7,6 +7,33 @@ angular.module('starter.services', [])
 
   ShareData.oneRoutine = {}; //initialize with empty object
 
+  var saveToLocalStorage = function(oneRoutine){
+    console.log("Saving to LocalStorage");
+
+    // var user = device.uuid;
+    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+    // once running on devices, then consider using UUID as key, rather than Nawdler
+
+    window.localStorage.setItem("Nawdler", JSON.stringify(oneRoutine));  
+  };
+
+  var loadFromLocalStorage = function(){
+      console.log("Loading from LocalStorage");
+
+      // var user = device.uuid;
+      // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+      // once running on devices, then consider using UUID as key, rather than Nawdler
+
+      var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
+
+      allRoutines = reloadedData;  
+  };
+
+ return {
+    saveToLocalStorage: saveToLocalStorage
+    ,loadFromLocalStorage: loadFromLocalStorage
+  }
+
 }) //END OF ShareData SERVICE
 
 .service('TimerCalcs', function() {
@@ -278,27 +305,27 @@ var setEndTime = function(endedStep, oneRoutine){
     return totalFormatted;
   };
 
-  var saveToLocalStorage = function(oneRoutine){
-    console.log("Saving to LocalStorage");
+  // var saveToLocalStorage = function(oneRoutine){
+  //   console.log("Saving to LocalStorage");
 
-    // var user = device.uuid;
-    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
-    // once running on devices, then consider using UUID as key, rather than Nawdler
+  //   // var user = device.uuid;
+  //   // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+  //   // once running on devices, then consider using UUID as key, rather than Nawdler
 
-    window.localStorage.setItem("Nawdler", JSON.stringify(oneRoutine));  
-  };
+  //   window.localStorage.setItem("Nawdler", JSON.stringify(oneRoutine));  
+  // };
 
-var loadFromLocalStorage = function(oneRoutine){
-    console.log("Loading from LocalStorage");
+// var loadFromLocalStorage = function(oneRoutine){
+//     console.log("Loading from LocalStorage");
 
-    // var user = device.uuid;
-    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
-    // once running on devices, then consider using UUID as key, rather than Nawdler
+//     // var user = device.uuid;
+//     // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+//     // once running on devices, then consider using UUID as key, rather than Nawdler
 
-    var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
+//     var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
 
-    oneRoutine = reloadedData;  
-  };
+//     oneRoutine = reloadedData;  
+//   };
 
 
   return {
@@ -312,8 +339,8 @@ var loadFromLocalStorage = function(oneRoutine){
     ,stopStep: stopStep
     ,changeDiff: changeDiff
     ,findElementByTitle: findElementByTitle
-    ,saveToLocalStorage: saveToLocalStorage
-    ,loadFromLocalStorage: loadFromLocalStorage
+   // ,saveToLocalStorage: saveToLocalStorage
+  //  ,loadFromLocalStorage: loadFromLocalStorage
   }
 }) //END OF TimerCalcs SERVICE
 
