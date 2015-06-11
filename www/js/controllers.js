@@ -59,7 +59,9 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
       $scope.steps.push(tempObj);
 
       //Save data to LocalStorage
-      LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
+      LocalStorage.saveToLocalStorage();
+ 
+     // LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
       // ShareData.saveToLocalStorage(oneRoutine);
     }
 
@@ -125,7 +127,9 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     evaluateButtonStatus();
 
     //Save data to LocalStorage
-    LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
+    LocalStorage.saveToLocalStorage();
+
+//    LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
     //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
   } //END OF STARTSTEP
 
@@ -178,7 +182,9 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     }
 
     //Save data to LocalStorage
-    LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
+    LocalStorage.saveToLocalStorage();
+
+    //LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
 
     //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
   }
@@ -199,7 +205,9 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     $scope.buttonStatus = "none";
 
     //Save data to LocalStorage
-    LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
+    LocalStorage.saveToLocalStorage();
+
+    //LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
 
     //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
 
@@ -305,10 +313,14 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
     //load data template from factory new user with example routines
     var allData = Routines.template(); //get the template data from the factory
-    console.log("This is loaded starting template in RoutineCtrl", allData);
+    console.log("Starting Nawdler with template data in RoutineCtrl", allData);
 
     //Save full template data to localStorage
-    LocalStorage.saveToLocalStorage(allData);
+    window.localStorage.setItem("Nawdler", JSON.stringify(allData));  
+
+    //LocalStorage.initialSaveToLocalStorage(allData);
+  } else {
+    console.log("Found stuff in LocalStorage to start Nawdler with");
   };
 
   //Set oneRoutine to be active routine

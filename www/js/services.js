@@ -16,35 +16,50 @@ angular.module('starter.services', [])
 
   var LocalStorage = this;
 
- var saveToLocalStorage = function(dataObject){
+ var saveToLocalStorage = function(){
     console.log("Saving to LocalStorage");
-    console.log("This is what was saved in saveToLocalStorage",dataObject);
+    //console.log("This is what was saved in saveToLocalStorage",dataObject);
+
+    var fullTree = loadFromLocalStorage();
+
+    //Determine which routine is the "active" one for the user
+    var activeRoutine = fullTree.appOps.activeRoutine; //get the index number of the active routine
+    
+   // console.log("NOW DONE", moment());
+    console.log("This is activeRoutine # ",activeRoutine);
+    console.log("This is fullTree.routines ", fullTree.routines);
+    console.log("This is fullTree.routines[ActiveRoutine] ", fullTree.routines[activeRoutine]);
+
+    console.log("DARTH This is updated oneRoutine we want to put INTO the fullTree ", ShareData.oneRoutine);
+    
+    //Put  modified active Routine into data tree
+    fullTree.routines[activeRoutine] = ShareData.oneRoutine;
 
     // var user = device.uuid;
     // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
     // once running on devices, then begin using UUID as key, rather than Nawdler
 
-    window.localStorage.setItem("Nawdler", JSON.stringify(dataObject));  
+    window.localStorage.setItem("Nawdler", JSON.stringify(fullTree));  
   };
 
-  var mergeRoutineIntoDataTree = function(){
-    //Take the existing active Routine, presumably with some data changes, and put it into the right place in the overall data tree
-    //This is needed as localStorage only "saves" the entire tree -- based on top level "key" -- does not have way to access and change elements within this object
-    console.log("MERGING DATA INTO TREE", moment());
-    //Load full stored data
-    var fullTree = loadFromLocalStorage();
+  // var NOTUSEDmergeRoutineIntoDataTree = function(){
+  //   //Take the existing active Routine, presumably with some data changes, and put it into the right place in the overall data tree
+  //   //This is needed as localStorage only "saves" the entire tree -- based on top level "key" -- does not have way to access and change elements within this object
+  //   console.log("MERGING DATA INTO TREE", moment());
+  //   //Load full stored data
+  //   var fullTree = loadFromLocalStorage();
 
-    //Determine which routine is the "active" one for the user
-    var activeRoutine = fullTree.appOps.activeRoutine; //get the index number of the active routine
-    console.log("NOW DONE", moment());
-    console.log("This is activeRoutine # ",activeRoutine);
-    console.log("This is fullTree.routines ", fullTree.routines);
-    console.log("This is fullTree.routines[ActiveRoutine] ", fullTree.routines[activeRoutine]);
+  //   //Determine which routine is the "active" one for the user
+  //   var activeRoutine = fullTree.appOps.activeRoutine; //get the index number of the active routine
+  //   console.log("NOW DONE", moment());
+  //   console.log("This is activeRoutine # ",activeRoutine);
+  //   console.log("This is fullTree.routines ", fullTree.routines);
+  //   console.log("This is fullTree.routines[ActiveRoutine] ", fullTree.routines[activeRoutine]);
 
-    console.log("ALLXIE This is what we want to put INTO the fullTree ", ShareData.oneRoutine);
-    //Put likely modified active Routine into data tree
-    fullTree.routines[activeRoutine] = ShareData.oneRoutine;
-  };
+  //   console.log("ALLXIE This is what we want to put INTO the fullTree ", ShareData.oneRoutine);
+  //   //Put likely modified active Routine into data tree
+  //   fullTree.routines[activeRoutine] = ShareData.oneRoutine;
+  // };
 
   var loadFromLocalStorage = function(){
       console.log("Loading from LocalStorage");
@@ -75,7 +90,7 @@ angular.module('starter.services', [])
  return {
     saveToLocalStorage: saveToLocalStorage
     ,loadFromLocalStorage: loadFromLocalStorage
-    ,mergeRoutineIntoDataTree: mergeRoutineIntoDataTree
+   // ,NOTUSEDmergeRoutineIntoDataTree: NOTUSEDmergeRoutineIntoDataTree
   }  
 }]) //END OF LocalStorage SERVICE
 
