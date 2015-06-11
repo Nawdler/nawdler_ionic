@@ -1,7 +1,7 @@
 angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 //.controller('TimerCtrl', function($scope) {})
-.controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'ShareData','Routines', 'TimerCalcs', function($scope, moment, $interval, $state, ShareData, Routines, TimerCalcs) {
+.controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'ShareData','Routines', 'TimerCalcs', 'LocalStorage', function($scope, moment, $interval, $state, ShareData, Routines, TimerCalcs, LocalStorage) {
 
 
   //INITIALIZE FUNCTIONS
@@ -10,20 +10,30 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   $scope.timer = $scope;
 
   //LOAD DATA FROM LAST TIME
-  //TimerCalcs.loadFromLocalStorage()
+  //ShareData.loadFromLocalStorage()
 
-  var allData = Routines.template(); //get the sample data from the factory
+  //If no routine is "active" send user to Routines page to pick one
 
-  ShareData.oneRoutine = allData["Routine1"];
 
-  console.log("This is ShareData.oneRoutine in TimerCtrl ", ShareData.oneRoutine);
+//REPLACE THIS or REMOVE THIS -- REPLACED BY LOADING IN ROUTINES TAB
+  //var allData = Routines.template(); //get the sample data from the factory
 
-  var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
+//  ShareData.oneRoutine = allData["Routine1"]; //this will be replaced with active routine
+//TO HERE
 
+ 
+ // var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
+ // console.log("This is ShareData.oneRoutine in TimerCtrl ", ShareData.oneRoutine);
+
+  
+
+  //Initialize data -- load from "ShareData" service!
+  var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this works!
+  console.log("This is loaded data in TimerCtrl - ShareData.oneRoutine ",oneRoutine);
+
+  //Load data about the routine into $scope for displaying
   $scope.routineTitle = oneRoutine.title; //store the title
 
-
-  //WE MAY NEED TO MOVE THIS TO OUR PULSING ITERATOR
   $scope.steps = oneRoutine.steps; //store the steps array
 
   //Start the main UI button in "none" category
@@ -47,8 +57,12 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
         ,"status" : "todo"
       }
       $scope.steps.push(tempObj);
+
       //Save data to LocalStorage
-      TimerCalcs.saveToLocalStorage(oneRoutine);
+      LocalStorage.saveToLocalStorage();
+ 
+     // LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
+      // ShareData.saveToLocalStorage(oneRoutine);
     }
 
     // ShareData.wow = ShareData.wow+" "+newStep; //FOR TESTING
@@ -64,7 +78,8 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     // This is the currently active step, Null if none is active
 
     console.log("Hello from start step");
-    console.log("This is what was clicked",clickedStep);
+    console.log("DARTH This is what was clicked",clickedStep);
+    console.log("DARTH typeof what was clicked ",typeof clickedStep);
 
     var clickedStepString = clickedStep.title;
     console.log("This is what was clicked and hopefully now a string",clickedStepString);
@@ -112,7 +127,10 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     evaluateButtonStatus();
 
     //Save data to LocalStorage
-    TimerCalcs.saveToLocalStorage(oneRoutine);
+    LocalStorage.saveToLocalStorage();
+
+//    LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
+    //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
   } //END OF STARTSTEP
 
   ///////// updateTime stuff
@@ -164,7 +182,11 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     }
 
     //Save data to LocalStorage
-    TimerCalcs.saveToLocalStorage(oneRoutine);
+    LocalStorage.saveToLocalStorage();
+
+    //LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
+
+    //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
   }
 
    $scope.finishAttempt = function(){
@@ -183,7 +205,11 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     $scope.buttonStatus = "none";
 
     //Save data to LocalStorage
-    TimerCalcs.saveToLocalStorage(oneRoutine);
+    LocalStorage.saveToLocalStorage();
+
+    //LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
+
+    //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
 
     //Redirect to graphs view, once it is ready
     $state.go('tab.graph');
@@ -204,7 +230,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 }]) // END OF TIMERCTRL CONTROLLER
 
-.controller('GraphCtrl', ['$scope', 'ShareData', 'TimerCalcs', 'GraphCalcs', function($scope, ShareData, TimerCalcs, GraphCalcs) {
+.controller('GraphCtrl', ['$scope', 'ShareData', 'TimerCalcs', 'GraphCalcs', 'LocalStorage', function($scope, ShareData, TimerCalcs, GraphCalcs, LocalStorage) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -214,7 +240,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   //});
 
   //Initialize data
-  var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
+  var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this works!
 
   //Start with the all attempts view
   $scope.chartSelector = "allChrono"; //other options are "allFastest" or "oneDetail"
@@ -270,9 +296,139 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 }])
 
-.controller('RoutinesCtrl', ['$scope','ShareData', function($scope, ShareData) {
-  // $scope.settings = {
-  //   enableFriends: true
-  // };
+.controller('RoutinesCtrl', ['$scope','ShareData', 'Routines', 'LocalStorage', 'RoutineCalcs', function($scope, ShareData, Routines, LocalStorage, RoutineCalcs) {
+
+  //INITIALIZE DATA FOR APP, which defaults to Routines page.  Thus, this should be the first code that runs in the app after being launched
+
+  console.log("This should be first code to run... Start of RoutinesCtrl");
+
+  //Check if localStorage exists with Nawdler data.  If so, load it.  If not, create it with default template
+
+  var allData = LocalStorage.loadFromLocalStorage();
+
+  //allData will be false if there is nothing with "Nawdler" key in localStorage. See loadFromLocalStorage function
+  if (!allData) { 
+    //Get here if there is no "nawdler" data in localStorage  
+    console.log("Nothing for Nawdler in localStorage");
+
+    //load data template from factory new user with example routines
+    var allData = Routines.template(); //get the template data from the factory
+    console.log("Starting Nawdler with template data in RoutineCtrl", allData);
+
+    //Save full template data to localStorage
+    window.localStorage.setItem("Nawdler", JSON.stringify(allData));  
+
+    //LocalStorage.initialSaveToLocalStorage(allData);
+  } else {
+    console.log("Found stuff in LocalStorage to start Nawdler with");
+  };
+
+  //Set oneRoutine to be active routine
+  //Determine which routine is the "active" one for the user
+  var activeRoutine = allData.appOps.activeRoutine; //get the index number of the active routine
+  
+  // To "activate" and share a given routine...  Share activeRoutine by using ShareData.oneRoutine variable.  Because Objects are a reference type, this works
+  ShareData.oneRoutine = allData.routines[activeRoutine];
+
+  console.log("This is ShareData.oneRoutine in RoutinesCtrl ", ShareData.oneRoutine);
+
+  //PREP FOR ROUTINES PAGE USER INTERACTIONS
+  //Use 'routines' term to reference scope of this controller -- important for HTML template
+  $scope.routines = $scope;
+
+  //grabbing all the routine names from the data
+  var routineArray = RoutineCalcs.getRoutineDisplayObjects(allData);
+  //Make the "routines" array for template ng-repeat, or use an empty array
+  $scope.routineArray = routineArray || [];
+
+
+  $scope.addRoutine = function(newRoutine){
+
+
+    //Push new routine into tree
+
+    //Erase the user's value, regardless of whether it was created or not
+    $scope.newRoutine = "";
+
+    ///asdf
+
+
+    // //First validate that there is not already a step with this same name
+    // var found = TimerCalcs.findElementByTitle(newStep,$scope.steps);
+
+    // //Only create new step if this step did not previously exist (return value -1)
+
+    // //PRESENTLY NO UI FOR ERROR MESSAGES -- ADD THIS LATER ***
+
+    // // also filters out empty steps
+    // if (found === -1 && newStep != "") {
+    //   var tempObj = {
+    //     "title" : newStep
+    //     ,"timeDiff" : null
+    //     ,"status" : "todo"
+    //   }
+    //   $scope.steps.push(tempObj);
+
+    //   //Save data to LocalStorage
+    //   LocalStorage.saveToLocalStorage();
+ 
+    //  // LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
+    //   // ShareData.saveToLocalStorage(oneRoutine);
+    // }
+
+    // // ShareData.wow = ShareData.wow+" "+newStep; //FOR TESTING
+    // // console.log(ShareData.wow);
+
+    // //Erase the user's value, regardless of whether it was created or not
+    // $scope.newStep = "";
+    ///asdf
+
+
+
+  }
+
+  $scope.selectRoutine = function(clickedRoutine){
+    //Get here when user clicks on routine to activate it
+  
+    var allData = LocalStorage.loadFromLocalStorage();
+
+    // needs to: make this routine the active one
+    // unmake any previous active routine
+    // take us over to the timer page with that routine loaded
+
+    console.log("NICE Clicked on a routine, and all I got was this ",clickedRoutine);
+    console.log("This is the active index before adjusting ",allData.appOps.activeRoutine);
+
+    //This is the routine that was clicked
+    var clickedRoutineString = clickedRoutine.title;
+
+    //Set flag of formerly active routine to be inactive
+    $scope.routineArray[allData.appOps.activeRoutine].activeStatus = "inactive";
+    
+    //set activeRoutine to this routine's index
+    allData.appOps.activeRoutine = clickedRoutine.index;
+  
+    console.log("This is the active index after adjusting ",allData.appOps.activeRoutine);
+
+    // To "activate" and share a given routine...  Share activeRoutine by using ShareData.oneRoutine variable.  Because Objects are a reference type, this works
+    ShareData.oneRoutine = allData.routines[allData.appOps.activeRoutine];
+  
+    console.log("This is the newly selected routine ",ShareData.oneRoutine);
+
+    //Adjust flags in array that holds routines for ng-repeat
+    //$scope.routineArray = RoutineCalcs.getRoutineDisplayObjects(allData); 
+    $scope.routineArray[clickedRoutine.index].activeStatus = "active";
+    
+    console.log("This is what is getting ng-repeated in Routines page ",$scope.routineArray);
+
+    //Save data to LocalStorage
+    LocalStorage.saveAppOpsToLocalStorage(clickedRoutine.index);
+
+  }
+
+  // Maybe with swipe?
+  $scope.deleteRoutine = function(routine){
+
+  }
 
 }]);
