@@ -342,7 +342,47 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   $scope.routineArray = routineArray || [];
 
 
-  $scope.addRoutine = function(){
+  $scope.addRoutine = function(newRoutine){
+
+
+    //Push new routine into tree
+
+    //Erase the user's value, regardless of whether it was created or not
+    $scope.newRoutine = "";
+
+    ///asdf
+
+
+    // //First validate that there is not already a step with this same name
+    // var found = TimerCalcs.findElementByTitle(newStep,$scope.steps);
+
+    // //Only create new step if this step did not previously exist (return value -1)
+
+    // //PRESENTLY NO UI FOR ERROR MESSAGES -- ADD THIS LATER ***
+
+    // // also filters out empty steps
+    // if (found === -1 && newStep != "") {
+    //   var tempObj = {
+    //     "title" : newStep
+    //     ,"timeDiff" : null
+    //     ,"status" : "todo"
+    //   }
+    //   $scope.steps.push(tempObj);
+
+    //   //Save data to LocalStorage
+    //   LocalStorage.saveToLocalStorage();
+ 
+    //  // LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
+    //   // ShareData.saveToLocalStorage(oneRoutine);
+    // }
+
+    // // ShareData.wow = ShareData.wow+" "+newStep; //FOR TESTING
+    // // console.log(ShareData.wow);
+
+    // //Erase the user's value, regardless of whether it was created or not
+    // $scope.newStep = "";
+    ///asdf
+
 
 
   }
@@ -382,7 +422,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     console.log("This is what is getting ng-repeated in Routines page ",$scope.routineArray);
 
     //Save data to LocalStorage
-   // LocalStorage.saveAppOpsToLocalStorage();
+    LocalStorage.saveAppOpsToLocalStorage(clickedRoutine.index);
 
   }
 

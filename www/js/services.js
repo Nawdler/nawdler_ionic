@@ -42,6 +42,32 @@ angular.module('starter.services', [])
     window.localStorage.setItem("Nawdler", JSON.stringify(fullTree));  
   };
 
+var saveAppOpsToLocalStorage = function(newActiveRoutine){
+    console.log("Saving AppOps to LocalStorage");
+    //console.log("This is what was saved in saveToLocalStorage",dataObject);
+
+    var fullTree = loadFromLocalStorage();
+
+    //Determine which routine is the "active" one for the user
+    var activeRoutine = newActiveRoutine; //use the index number of the newly selected active routine
+    
+   // console.log("NOW DONE", moment());
+    console.log("This is old activeRoutine # ",fullTree.appOps.activeRoutine);
+
+    console.log("This is new activeRoutine # ",activeRoutine);
+    
+    //Put newly selected active Routine INDEX into data tree
+    fullTree.appOps.activeRoutine = activeRoutine;
+
+    // var user = device.uuid;
+    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+    // once running on devices, then begin using UUID as key, rather than Nawdler
+
+    window.localStorage.setItem("Nawdler", JSON.stringify(fullTree));  
+  };
+
+
+
   // var NOTUSEDmergeRoutineIntoDataTree = function(){
   //   //Take the existing active Routine, presumably with some data changes, and put it into the right place in the overall data tree
   //   //This is needed as localStorage only "saves" the entire tree -- based on top level "key" -- does not have way to access and change elements within this object
@@ -90,6 +116,7 @@ angular.module('starter.services', [])
  return {
     saveToLocalStorage: saveToLocalStorage
     ,loadFromLocalStorage: loadFromLocalStorage
+    ,saveAppOpsToLocalStorage: saveAppOpsToLocalStorage
    // ,NOTUSEDmergeRoutineIntoDataTree: NOTUSEDmergeRoutineIntoDataTree
   }  
 }]) //END OF LocalStorage SERVICE
@@ -509,7 +536,7 @@ var setEndTime = function(endedStep, oneRoutine){
   
   var getRoutineDisplayObjects = function(allData){
     var routineArray = allData.routines;
-    var activeIndex = allData.appOps.currentRoutine;
+    var activeIndex = allData.appOps.activeRoutine;
     var array = [];
     //NEED TO ADD ISRUNNING LOGIC ***
     for (var i = 0; i < routineArray.length; i++) {
