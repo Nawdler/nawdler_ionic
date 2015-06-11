@@ -1,7 +1,7 @@
 angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 //.controller('TimerCtrl', function($scope) {})
-.controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'ShareData','Routines', 'TimerCalcs', function($scope, moment, $interval, $state, ShareData, Routines, TimerCalcs) {
+.controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'ShareData','Routines', 'TimerCalcs', 'LocalStorage', function($scope, moment, $interval, $state, ShareData, Routines, TimerCalcs, LocalStorage) {
 
 
   //INITIALIZE FUNCTIONS
@@ -57,8 +57,9 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
         ,"status" : "todo"
       }
       $scope.steps.push(tempObj);
+
       //Save data to LocalStorage
-      ShareData.saveToLocalStorage(ShareData.mergeRoutineIntoDataTree());
+      LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
       // ShareData.saveToLocalStorage(oneRoutine);
     }
 
@@ -124,7 +125,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     evaluateButtonStatus();
 
     //Save data to LocalStorage
-    ShareData.saveToLocalStorage(ShareData.mergeRoutineIntoDataTree());
+    LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
     //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
   } //END OF STARTSTEP
 
@@ -177,7 +178,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     }
 
     //Save data to LocalStorage
-    ShareData.saveToLocalStorage(ShareData.mergeRoutineIntoDataTree());
+    LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
 
     //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
   }
@@ -198,7 +199,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     $scope.buttonStatus = "none";
 
     //Save data to LocalStorage
-    ShareData.saveToLocalStorage(ShareData.mergeRoutineIntoDataTree());
+    LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
 
     //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
 
@@ -221,7 +222,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 }]) // END OF TIMERCTRL CONTROLLER
 
-.controller('GraphCtrl', ['$scope', 'ShareData', 'TimerCalcs', 'GraphCalcs', function($scope, ShareData, TimerCalcs, GraphCalcs) {
+.controller('GraphCtrl', ['$scope', 'ShareData', 'TimerCalcs', 'GraphCalcs', 'LocalStorage', function($scope, ShareData, TimerCalcs, GraphCalcs, LocalStorage) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -287,17 +288,17 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 }])
 
-.controller('RoutinesCtrl', ['$scope','ShareData', 'Routines', function($scope, ShareData, Routines) {
+.controller('RoutinesCtrl', ['$scope','ShareData', 'Routines', 'LocalStorage', function($scope, ShareData, Routines, LocalStorage) {
 
   //INITIALIZE DATA FOR APP, which defaults to Routines page.  Thus, this should be the first code that runs in the app after being launched
 
-  console.log("This should be first... Start of RoutinesCtrl");
+  console.log("This should be first code to run... Start of RoutinesCtrl");
 
   //Check if localStorage exists with Nawdler data.  If so, load it.  If not, create it with default template
 
-  var allData = ShareData.loadFromLocalStorage();
+  var allData = LocalStorage.loadFromLocalStorage();
 
-  //allData will be "undefined" (and falsey) if there is nothing with "Nawdler" key in localStorage
+  //allData will be false if there is nothing with "Nawdler" key in localStorage. See loadFromLocalStorage function
   if (!allData) { 
     //Get here if there is no "nawdler" data in localStorage  
     console.log("Nothing for Nawdler in localStorage");
@@ -307,12 +308,10 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     console.log("This is loaded starting template in RoutineCtrl", allData);
 
     //Save full template data to localStorage
-    ShareData.saveToLocalStorage(allData);
+    LocalStorage.saveToLocalStorage(allData);
   };
 
-  //Now load data from localStorage and set oneRoutine to be active routine
-  var allData = ShareData.loadFromLocalStorage();
-
+  //Set oneRoutine to be active routine
   //Determine which routine is the "active" one for the user
   var activeRoutine = allData.appOps.activeRoutine; //get the index number of the active routine
   

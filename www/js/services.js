@@ -8,7 +8,15 @@ angular.module('starter.services', [])
   ShareData.oneRoutine = {}; //initialize shared variable with empty object
   //Because this is an object and an object is a reference type and its scope is a shared Service that is injected in various places, this variable can be accessed by any controller that has this service injected
 
-  var saveToLocalStorage = function(dataObject){
+ return {}
+
+}) //END OF ShareData SERVICE
+
+.service('LocalStorage', ['ShareData', function(ShareData){
+
+  var LocalStorage = this;
+
+ var saveToLocalStorage = function(dataObject){
     console.log("Saving to LocalStorage");
     console.log("This is what was saved in saveToLocalStorage",dataObject);
 
@@ -22,13 +30,18 @@ angular.module('starter.services', [])
   var mergeRoutineIntoDataTree = function(){
     //Take the existing active Routine, presumably with some data changes, and put it into the right place in the overall data tree
     //This is needed as localStorage only "saves" the entire tree -- based on top level "key" -- does not have way to access and change elements within this object
-
+    console.log("MERGING DATA INTO TREE", moment());
     //Load full stored data
     var fullTree = loadFromLocalStorage();
 
     //Determine which routine is the "active" one for the user
     var activeRoutine = fullTree.appOps.activeRoutine; //get the index number of the active routine
+    console.log("NOW DONE", moment());
+    console.log("This is activeRoutine # ",activeRoutine);
+    console.log("This is fullTree.routines ", fullTree.routines);
+    console.log("This is fullTree.routines[ActiveRoutine] ", fullTree.routines[activeRoutine]);
 
+    console.log("ALLXIE This is what we want to put INTO the fullTree ", ShareData.oneRoutine);
     //Put likely modified active Routine into data tree
     fullTree.routines[activeRoutine] = ShareData.oneRoutine;
   };
@@ -36,14 +49,25 @@ angular.module('starter.services', [])
   var loadFromLocalStorage = function(){
       console.log("Loading from LocalStorage");
 
+      var storedData = window.localStorage.getItem("Nawdler");
+      console.log("This is what was stored in LS ", storedData);
+      console.log("Typeof storedData ",typeof storedData);
+
+      if (storedData != "undefined") { //This is what local storage returns if no data found. STRING of "undefined"
+        console.log("Got something from local storage; parsing it");
+        var reloadedData = JSON.parse(storedData);        
+      } else {
+        console.log("Got nothing from local storage. Send false");
+        var reloadedData = false;
+      };
+
       // var user = device.uuid;
       // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
       // once running on devices, then consider using UUID as key, rather than Nawdler
-
-      var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
+     // var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
 
       //allRoutines = reloadedData; 
-      console.log("This is what was loaded in loadFromLocalStorage", reloadedData);
+      console.log("YODA This is what was loaded in loadFromLocalStorage", reloadedData);
       
       return reloadedData; 
   };
@@ -52,9 +76,8 @@ angular.module('starter.services', [])
     saveToLocalStorage: saveToLocalStorage
     ,loadFromLocalStorage: loadFromLocalStorage
     ,mergeRoutineIntoDataTree: mergeRoutineIntoDataTree
-  }
-
-}) //END OF ShareData SERVICE
+  }  
+}]) //END OF LocalStorage SERVICE
 
 .service('TimerCalcs', function() {
 
@@ -492,7 +515,7 @@ var setEndTime = function(endedStep, oneRoutine){
 
   var dataTemplate =
       {"appOps": {
-                "activeRoutine":0 //index # of activeRoutine
+                "activeRoutine":1 //index # of activeRoutine
                 }
       ,"routines": [
                     {"title": "Demo - My first routine"
