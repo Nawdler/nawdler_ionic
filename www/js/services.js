@@ -66,7 +66,7 @@ angular.module('starter.services', [])
 
       var storedData = window.localStorage.getItem("Nawdler");
       console.log("This is what was stored in LS ", storedData);
-      console.log("Typeof storedData ",typeof storedData);
+     // console.log("Typeof storedData ",typeof storedData);
 
       if (storedData != "undefined") { //This is what local storage returns if no data found. STRING of "undefined"
         console.log("Got something from local storage; parsing it");
@@ -82,7 +82,7 @@ angular.module('starter.services', [])
      // var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
 
       //allRoutines = reloadedData; 
-      console.log("YODA This is what was loaded in loadFromLocalStorage", reloadedData);
+      console.log("This is what was loaded in loadFromLocalStorage", reloadedData);
       
       return reloadedData; 
   };
@@ -511,14 +511,14 @@ var setEndTime = function(endedStep, oneRoutine){
     var routineArray = allData.routines;
     var activeIndex = allData.appOps.currentRoutine;
     var array = [];
-    
+    //NEED TO ADD ISRUNNING LOGIC ***
     for (var i = 0; i < routineArray.length; i++) {
       var title = routineArray[i].title;
       //Check whether this is active Routine, and mark status with "active" or "inactive" to meet expectations of the Routines template
       var active = "";
-      i === activeIndex ? active = "active" : active = "inactive";
+      i === activeIndex ? activeStatus = "active" : activeStatus = "inactive";
       
-      var obj = {"title": title, "status": active};
+      var obj = {"title": title, "activeStatus": activeStatus, "runningStatus": "isRunning", "index": i};
       array.push(obj);
     };
     return array;

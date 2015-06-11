@@ -78,8 +78,8 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     // This is the currently active step, Null if none is active
 
     console.log("Hello from start step");
-    console.log("YODA This is what was clicked",clickedStep);
-    console.log("YODA typeof what was clicked ",typeof clickedStep);
+    console.log("DARTH This is what was clicked",clickedStep);
+    console.log("DARTH typeof what was clicked ",typeof clickedStep);
 
     var clickedStepString = clickedStep.title;
     console.log("This is what was clicked and hopefully now a string",clickedStepString);
@@ -348,9 +348,28 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   }
 
   $scope.selectRoutine = function(clickedRoutine){
+    //Get here when user clicks on routine to activate it
+  
+    var allData = LocalStorage.loadFromLocalStorage();
 
+    // needs to: make this routine the active one
+    // unmake any previous active routine
+    // take us over to the timer page with that routine loaded
 
+    console.log("NICE Clicked on a routine, and all I got was this ",clickedRoutine);
+    console.log("This is the active index before adjusting ",allData.appOps.activeRoutine);
+
+    var clickedRoutineString = clickedRoutine.title;
+    //set activeRoutine to this routine's index
+
+    allData.appOps.activeRoutine = clickedRoutine.index;
+    console.log("This is the active index after adjusting ",allData.appOps.activeRoutine);
+
+    // To "activate" and share a given routine...  Share activeRoutine by using ShareData.oneRoutine variable.  Because Objects are a reference type, this works
+    ShareData.oneRoutine = allData.routines[allData.appOps.activeRoutine];
+    console.log("This is the newly selected routine ",ShareData.oneRoutine);
   }
+
   // Maybe with swipe?
   $scope.deleteRoutine = function(routine){
 

@@ -16,7 +16,7 @@
     class="item"
     ng-repeat="routine in routineArray"
     ng-click="selectRoutine(routine)"
-    ng-class="(routine.status === 'active'? 'item item-icon-left item-button-right' : 'item') + ' ' + (routine.status === 'inactive'? 'item item-icon-right' : 'item')"
+    ng-class="(routine.activeStatus === 'active'? 'item item-icon-left item-button-right' : 'item') + ' ' + (routine.activeStatus === 'inactive'? 'item item-icon-right' : 'item')"
     >
     <!-- SORRY. -->
     <font size="+1">
@@ -26,13 +26,13 @@
     <!-- Show active icon if status = "active" -->
     <i
       class="icon ion-android-arrow-forward"
-      ng-show="routine.status === 'active'">
+      ng-show="routine.activeStatus === 'active'">
     </i>
 
     <!-- Show "go to this routine" button if status is "inactive" -->
     <i
       class="icon ion-android-arrow-forward"
-      ng-show="routine.status != 'inactive'">
+      ng-show="routine.activeStatus != 'inactive'">
     </i>
 <!--  Add new feature in future: Show # of attempts for a given Routine
       <span class="item-note" ng-show="routine.status === 'routine'">
