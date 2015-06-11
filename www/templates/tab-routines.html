@@ -14,7 +14,7 @@
 <div class="list">
   <a
     class="item"
-    ng-repeat="routine in routines"
+    ng-repeat="routine in routineArray"
     ng-click="selectRoutine(routine)"
     ng-class="(routine.status === 'active'? 'item item-icon-left item-button-right' : 'item') + ' ' + (routine.status === 'inactive'? 'item item-icon-right' : 'item')"
     >
@@ -34,13 +34,15 @@
       class="icon ion-android-arrow-forward"
       ng-show="routine.status != 'inactive'">
     </i>
+<!--  Add new feature in future: Show # of attempts for a given Routine
       <span class="item-note" ng-show="routine.status === 'routine'">
         {{routine.numberAttempts}}
-    </span>
+    </span> -->
     <!-- Button element because div was messing up formatting -->
-    <button class="button running button-assertive" ng-show="routine.status === 'doing'">
+    <!-- Add feature: Show current diff of active Routine -->
+  <!--   <button class="button running button-assertive" ng-show="routine.status === 'doing'">
         {{routine.timeDiff}}
-    </button> 
+    </button>  -->
 
   </a>
 </div>
@@ -48,7 +50,7 @@
     <!-- Add a step input box -->
       <form ng-submit="addRoutine(routines.newRoutine)">
         <div class="item addAStep item-input">
-          <input placeholder="Add New Step" type="text" ng-model="routines.newRoutine"/>
+          <input placeholder="Add New Routine" type="text" ng-model="routines.newRoutine"/>
           <button class="plusButton button-icon custom-icon icon ion-plus-circled" type="submit">
         </button>
         </div>

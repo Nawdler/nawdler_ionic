@@ -296,7 +296,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 }])
 
-.controller('RoutinesCtrl', ['$scope','ShareData', 'Routines', 'LocalStorage', function($scope, ShareData, Routines, LocalStorage) {
+.controller('RoutinesCtrl', ['$scope','ShareData', 'Routines', 'LocalStorage', 'RoutineCalcs', function($scope, ShareData, Routines, LocalStorage, RoutineCalcs) {
 
   //INITIALIZE DATA FOR APP, which defaults to Routines page.  Thus, this should be the first code that runs in the app after being launched
 
@@ -336,8 +336,10 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   //Use 'routines' term to reference scope of this controller -- important for HTML template
   $scope.routines = $scope;
 
-  //Make the "routines" array for template ng-repeat
-
+  //grabbing all the routine names from the data
+  var routineArray = RoutineCalcs.getRoutineDisplayObjects(allData);
+  //Make the "routines" array for template ng-repeat, or use an empty array
+  $scope.routineArray = routineArray || [];
 
 
   $scope.addRoutine = function(){
@@ -347,6 +349,10 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
   $scope.selectRoutine = function(clickedRoutine){
 
+
+  }
+  // Maybe with swipe?
+  $scope.deleteRoutine = function(routine){
 
   }
 

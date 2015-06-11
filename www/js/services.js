@@ -504,6 +504,30 @@ var setEndTime = function(endedStep, oneRoutine){
   }
 
 }])
+.service('RoutineCalcs', [ 'ShareData', function(ShareData){
+  
+  var getRoutineDisplayObjects = function(allData){
+    var routineArray = allData.routines;
+    var activeIndex = allData.appOps.currentRoutine;
+    var array = [];
+    
+    for (var i = 0; i < routineArray.length; i++) {
+      var title = routineArray[i].title;
+      //Check whether this is active Routine, and mark status with "active" or "inactive" to meet expectations of the Routines template
+      var active = "";
+      i === activeIndex ? active = "active" : active = "inactive";
+      
+      var obj = {"title": title, "status": active};
+      array.push(obj);
+    };
+    return array;
+  }
+
+  return{
+    getRoutineDisplayObjects: getRoutineDisplayObjects
+  }
+
+}])
 
 .factory('Routines', function() {
 
@@ -684,56 +708,3 @@ var setEndTime = function(endedStep, oneRoutine){
   }
 
 });
-
-// .factory('Reports', function(){
-
-//   //methods that take data out of json object and makes it into chart data
-
-
-//     // window.onload = function () {
-//     var chart = new CanvasJS.Chart("chartContainer",
-//     {
-//       title:{
-//       text: "Routine Report"
-//       },
-//       axisY:{
-//        interval: 1,
-//        intervalType: "millisecond",
-//       },
-
-//       data: [
-//       {
-//         type: "stackedColumn",
-//         legendText: "Take Shower",
-//         showInLegend: "true",
-//         dataPoints: [
-//         { x: 2, y: 3.2, label: "foo"},
-//         { x: 3, y: 4.6, label: "foo"},
-//         ]
-//       },
-//         {
-//         type: "stackedColumn",
-//         legendText: "Put On Clothes",
-//         showInLegend: "true",
-//         dataPoints: [
-//         { x: 2, y: 1.5, label: "bar"},
-//         { x: 3, y: 6.9, label: "bar"},
-//         ]
-//       },// THIS IS FOR THE LABELS
-//       {
-//         type: "stackedColumn",
-//         showInLegend: "false",
-// //         dataPoints: [
-// //         { x: 2, y: 0, label: "2"},
-// //         { x: 3, y: 0, label: "3"},
-// //         ]
-// //       }
-// //       ]
-// //     });
-
-//     // chart.render();
-//   // }
-
-//   return chart;
-// })
-// ;
