@@ -5,16 +5,18 @@ angular.module('starter.services', [])
 
   //ShareData.wow = "Hello"; //for testing
 
-  ShareData.oneRoutine = {}; //initialize with empty object
+  ShareData.oneRoutine = {}; //initialize shared variable with empty object
+  //Because this is an object and an object is a reference type and its scope is a shared Service that is injected in various places, this variable can be accessed by any controller that has this service injected
 
-  var saveToLocalStorage = function(oneRoutine){
+  var saveToLocalStorage = function(dataObject){
     console.log("Saving to LocalStorage");
+    console.log("This is what was saved in saveToLocalStorage",dataObject);
 
     // var user = device.uuid;
     // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
-    // once running on devices, then consider using UUID as key, rather than Nawdler
+    // once running on devices, then begin using UUID as key, rather than Nawdler
 
-    window.localStorage.setItem("Nawdler", JSON.stringify(oneRoutine));  
+    window.localStorage.setItem("Nawdler", JSON.stringify(dataObject));  
   };
 
   var loadFromLocalStorage = function(){
@@ -26,7 +28,10 @@ angular.module('starter.services', [])
 
       var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
 
-      allRoutines = reloadedData;  
+      //allRoutines = reloadedData; 
+      console.log("This is what was loaded in loadFromLocalStorage", reloadedData);
+      
+      return reloadedData; 
   };
 
  return {
@@ -344,130 +349,6 @@ var setEndTime = function(endedStep, oneRoutine){
   }
 }) //END OF TimerCalcs SERVICE
 
-.factory('Routines', function() {
-
-  // Might use a resource here that returns a JSON array
-
-  var titleTime =
-    [
-    {"title" : "Eat"
-      ,"timeDiff" : moment().format('HH:mm:ss')
-      ,"status" : "done"
-    }
-    ,{"title" : "Pray"
-      ,"timeDiff" : moment().format('HH:mm:ss')
-      ,"status" : "doing"
-    }
-      ,{"title" : "Love"
-      ,"timeDiff" : moment().format('HH:mm:ss')
-      ,"status" : "todo"
-    }
-      ,{"title" : "Read"
-      ,"timeDiff" : moment().format('HH:mm:ss')
-      ,"status" : "todo"
-    }
-  ];
-
-
-   var dataTemplate =
-      {"Routine1": {
-            "title": "My Routine"
-            ,"steps" : [
-                        ]
-            ,"currentOps" : {
-                        "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
-                        ,"workingAttempt" : 1 //# (not index 0) of the current attempt; increment it when you hit "Finished" //start at 1
-                         }
-            ,"attempts" :[ //array of attempt data, each attempt is one array element
-                          //this will be the first attempt
-                         ]//end all attempts for this routine
-
-                     } //end first routine object
-     }; //end all routines
-
-  // Some fake testing data
-  //call it with: dataStorage.all
-  var dataStorage =
-      {"Routine1": {
-            "title": "My Morning Routine"
-            ,"steps" : [
-                        {"title" : "Eat"
-                          ,"timeDiff" : moment().format('HH:mm:ss')
-                          ,"status" : "done"
-                        }
-                        ,{"title" : "Pray"
-                          ,"timeDiff" : moment().format('HH:mm:ss')
-                          ,"status" : "doing"
-                        }
-                          ,{"title" : "Love"
-                          ,"timeDiff" : moment().format('HH:mm:ss')
-                          ,"status" : "todo"
-                        }
-                          ,{"title" : "Party"
-                          ,"timeDiff" : moment().format('HH:mm:ss')
-                          ,"status" : "todo"
-                        }
-                      ]
-            ,"currentOps" : {
-                        "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
-                        ,"workingAttempt" : 2 //# (not index 0) of the current attempt; increment it when you hit "Finished"
-                         }
-            ,"attempts" : [ //array of attempt data, each attempt is one array element
-                          //this is attempt 0
-                          [ //each element is an array of steps
-                          //each "step" is an object with title and times keys
-                            {"title": "Take Shower"
-                            //each TIME key is an array of objects with starts and ends time
-                            ,"times":[{
-                                      "started_at": moment("2015-02-09 09:30:20")
-                                     , "ended_at" : moment("2015-02-09 09:34:40")
-                                      }]
-                             }
-                            ,{"title": "Get Dressed",
-                             "times": [{
-                                        "started_at": "T3"
-                                        ,"ended_at" : "T4"
-                                      }
-                                      ,{
-                                        "started_at": "T5"
-                                       , "ended_at" : "T6"
-                                      }]}
-                          ]//END OF ATTEMPT 0
-                          ,[ // START OF ATTEMPT 1
-                            {"title": "Take Shower"
-                             ,"times":[{
-                                        "started_at": "T7"
-                                        ,"ended_at" : "T8"
-                                        }]}
-                            ,{"title": "Get Dressed"
-                             ,"times": [{
-                                        "started_at": "T9"
-                                        ,"ended_at" : "T10"
-                                      }]}
-                            ,{"title": "Eat Breakfast",
-                            "times" :[{
-                                        "started_at": "T11"
-                                        ,"ended_at" : "T12"
-                                      }]}
-                          ]//END OF ATTEMPT 1
-                         ]//end all attempts for this routine
-
-                     } //end first routine object
-     }; //end all routines
-
-  return {
-    all: function() {
-      return dataStorage;
-    },
-    template: function() {
-      return dataTemplate;
-    },
-    titleTime: function(){
-      return titleTime;
-    }
-  };
-})
-
 //START OF GRAPH ROUTINES 
 
 .service('GraphCalcs', ['TimerCalcs', 'ShareData', function(TimerCalcs, ShareData){
@@ -569,7 +450,187 @@ var setEndTime = function(endedStep, oneRoutine){
     ,convertPrettyTimeToFullAttempt: convertPrettyTimeToFullAttempt
   }
 
-}]);
+}])
+
+.factory('Routines', function() {
+
+
+  // var titleTime =
+  //   [
+  //   {"title" : "Eat"
+  //     ,"timeDiff" : moment().format('HH:mm:ss')
+  //     ,"status" : "done"
+  //   }
+  //   ,{"title" : "Pray"
+  //     ,"timeDiff" : moment().format('HH:mm:ss')
+  //     ,"status" : "doing"
+  //   }
+  //     ,{"title" : "Love"
+  //     ,"timeDiff" : moment().format('HH:mm:ss')
+  //     ,"status" : "todo"
+  //   }
+  //     ,{"title" : "Read"
+  //     ,"timeDiff" : moment().format('HH:mm:ss')
+  //     ,"status" : "todo"
+  //   }
+  // ];
+
+  var dataTemplate =
+      {"appOps": {
+                "activeRoutine":0 //index # of activeRoutine
+                }
+      ,"routines": [
+                    {"title": "Demo - My first routine"
+                    ,"steps": [
+                                {"title" : "Eat"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                ,{"title" : "Pray"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                  ,{"title" : "Love"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                  ,{"title" : "Sleep"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                              ]
+                    ,"currentOps": {"activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
+                                   ,"workingAttempt" : 1 //# (not index 0) of the current attempt; increment it when you hit "Finished" //start at 1
+                                    }
+                    ,"attempts":[]
+                    }
+                    ,{"title": "Demo - Commute by train/bus"
+                    ,"steps": [
+                                {"title" : "Walk to station"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                ,{"title" : "Wait for train/bus"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                  ,{"title" : "Ride, Sally, ride"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                  ,{"title" : "Walk to office/home/school"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                            ]
+                    ,"currentOps": {"activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
+                                   ,"workingAttempt" : 1 //# (not index 0) of the current attempt; increment it when you hit "Finished" //start at 1
+                                    }
+                    ,"attempts":[]
+                    }
+                    ]
+                  };
+
+
+   // var dataTemplate = OLD VERSION -- BEFORE ADDING MULTI-ROUTINES
+   //    {"Routine1": {
+   //          "title": "My Routine"
+   //          ,"steps" : [
+   //                      ]
+   //          ,"currentOps" : {
+   //                      "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
+   //                      ,"workingAttempt" : 1 //# (not index 0) of the current attempt; increment it when you hit "Finished" //start at 1
+   //                       }
+   //          ,"attempts" :[ //array of attempt data, each attempt is one array element
+   //                        //this will be the first attempt
+   //                       ]//end all attempts for this routine
+
+   //                   } //end first routine object
+   //   }; //end all routines
+
+  // Some fake testing data
+  //call it with: dataStorage.all
+  // var dataStorage =
+  //     {"Routine1": {
+  //           "title": "My Morning Routine"
+  //           ,"steps" : [
+  //                       {"title" : "Eat"
+  //                         ,"timeDiff" : moment().format('HH:mm:ss')
+  //                         ,"status" : "done"
+  //                       }
+  //                       ,{"title" : "Pray"
+  //                         ,"timeDiff" : moment().format('HH:mm:ss')
+  //                         ,"status" : "doing"
+  //                       }
+  //                         ,{"title" : "Love"
+  //                         ,"timeDiff" : moment().format('HH:mm:ss')
+  //                         ,"status" : "todo"
+  //                       }
+  //                         ,{"title" : "Party"
+  //                         ,"timeDiff" : moment().format('HH:mm:ss')
+  //                         ,"status" : "todo"
+  //                       }
+  //                     ]
+  //           ,"currentOps" : {
+  //                       "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
+  //                       ,"workingAttempt" : 2 //# (not index 0) of the current attempt; increment it when you hit "Finished"
+  //                        }
+  //           ,"attempts" : [ //array of attempt data, each attempt is one array element
+  //                         //this is attempt 0
+  //                         [ //each element is an array of steps
+  //                         //each "step" is an object with title and times keys
+  //                           {"title": "Take Shower"
+  //                           //each TIME key is an array of objects with starts and ends time
+  //                           ,"times":[{
+  //                                     "started_at": moment("2015-02-09 09:30:20")
+  //                                    , "ended_at" : moment("2015-02-09 09:34:40")
+  //                                     }]
+  //                            }
+  //                           ,{"title": "Get Dressed",
+  //                            "times": [{
+  //                                       "started_at": "T3"
+  //                                       ,"ended_at" : "T4"
+  //                                     }
+  //                                     ,{
+  //                                       "started_at": "T5"
+  //                                      , "ended_at" : "T6"
+  //                                     }]}
+  //                         ]//END OF ATTEMPT 0
+  //                         ,[ // START OF ATTEMPT 1
+  //                           {"title": "Take Shower"
+  //                            ,"times":[{
+  //                                       "started_at": "T7"
+  //                                       ,"ended_at" : "T8"
+  //                                       }]}
+  //                           ,{"title": "Get Dressed"
+  //                            ,"times": [{
+  //                                       "started_at": "T9"
+  //                                       ,"ended_at" : "T10"
+  //                                     }]}
+  //                           ,{"title": "Eat Breakfast",
+  //                           "times" :[{
+  //                                       "started_at": "T11"
+  //                                       ,"ended_at" : "T12"
+  //                                     }]}
+  //                         ]//END OF ATTEMPT 1
+  //                        ]//end all attempts for this routine
+
+  //                    } //end first routine object
+  //    }; //end all routines
+
+  return {
+    template: function() {
+      return dataTemplate;
+    }
+    // , all: function() {
+    //   return dataStorage;
+    // }
+    // , titleTime: function(){
+    //   return titleTime;
+    // }
+  }
+
+});
 
 // .factory('Reports', function(){
 

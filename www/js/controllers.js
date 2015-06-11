@@ -15,21 +15,21 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   //If no routine is "active" send user to Routines page to pick one
 
 
-//REPLACE THIS
-  var allData = Routines.template(); //get the sample data from the factory
+//REPLACE THIS or REMOVE THIS -- REPLACED BY LOADING IN ROUTINES TAB
+  //var allData = Routines.template(); //get the sample data from the factory
 
-  ShareData.oneRoutine = allData["Routine1"]; //this will be replaced with active routine
-
-  console.log("This is ShareData.oneRoutine in TimerCtrl ", ShareData.oneRoutine);
-
-  var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
-
+//  ShareData.oneRoutine = allData["Routine1"]; //this will be replaced with active routine
 //TO HERE
 
-  //Initialize data
-  //if (ShareData.oneRoutine 
-  var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this works!
+ 
+ // var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
+ // console.log("This is ShareData.oneRoutine in TimerCtrl ", ShareData.oneRoutine);
 
+  
+
+  //Initialize data -- load from "ShareData" service!
+  var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this works!
+  console.log("This is loaded data in TimerCtrl - ShareData.oneRoutine ",oneRoutine);
 
   //Load data about the routine into $scope for displaying
   $scope.routineTitle = oneRoutine.title; //store the title
@@ -281,45 +281,47 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 }])
 
-.controller('RoutinesCtrl', ['$scope','ShareData', function($scope, ShareData) {
+.controller('RoutinesCtrl', ['$scope','ShareData', 'Routines', function($scope, ShareData, Routines) {
 
-  //Initialize data for app, which defaults to Routines page
+  //Initialize data for app, which defaults to Routines page.  Thus, this should be the first code that runs in the app after being launched
+
+  console.log("Is this first? Should be! Start of RoutinesCtrl");
 
   //Check if localStorage exists with Nawdler data.  If so, load it.  If not, create it with default template
 
   var allData = ShareData.loadFromLocalStorage();
 
-  if (!allData) {
-    
-    //*** VALIDATE THAT NO LOCALSTORAGE "nawdler" really returns NULL not some other message
-
+  //allData will be "undefined" (and falsey) if there is nothing with "Nawdler" key in localStorage
+  if (!allData) { 
     //Get here if there is no "nawdler" data in localStorage  
-    //create data template for new user with example routines
+    console.log("Nothing for Nawdler in localStorage");
 
-    //ShareData.saveToLocalStorage(NAMEOFNEWOBJECT);
+    //load data template from factory new user with example routines
+    var allData = Routines.template(); //get the template data from the factory
+    console.log("This is loaded template in RoutineCtrl", allData);
+
+    //Save full template data to localStorage
+    ShareData.saveToLocalStorage(allData);
   };
 
+  //Now load data from localStorage and set oneRoutine to be active routine
+  var allData = ShareData.loadFromLocalStorage();
+
   //Determine which routine is the "active" one for the user
+  var activeRoutine = allData.appOps.activeRoutine; //get the index number of the active routine
+  
+  // To "activate" and share a given routine...
+  //Share activeRoutine by using ShareData.oneRoutine variable.  Because Objects are a reference type, this works
+  ShareData.oneRoutine = allData.routines[activeRoutine];
 
+  //  ShareData.oneRoutine = allData["Routine1"]; //this will be replaced with active routine
 
+  console.log("This is ShareData.oneRoutine in RoutinesCtrl ", ShareData.oneRoutine);
 
+  //var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
 
-
-
-
-
-
-
-
-
-
-
-
-  //Use routines to reference scope of this controller.
+  //Use 'routines' term to reference scope of this controller -- important for HTML template
   $scope.routines = $scope;
-
-// To "activate" a given routine, do this
-//ShareData.oneRoutine = allData["Routine1"]; where allData["Routine1"] is the active routine
 
   $scope.addRoutine = function(){
 
@@ -330,7 +332,5 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 
   }
-
-
 
 }]);
