@@ -286,13 +286,14 @@ var setEndTime = function(endedStep, oneRoutine){
   };
 
   var calcDurationSegment = function(startedAt, endedAt){
+    console.log("Hi from calcDurationSegment. Start and end ",startedAt,endedAt);
+    console.log("typeof start and end", typeof startedAt, typeof endedAt);
     var segmentDuration = endedAt.diff(startedAt);
     var durationFormatted = moment.duration(segmentDuration).format('H:mm:ss', { trim: false });
-    //var durationFixed = moment.utc(segmentDuration.asMilliseconds()).format("H:mm:ss");
-   // Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(":mm:ss");
-    console.log("This is DURATION in calcDurationSegment ",segmentDuration);
-    console.log("This is DURATION FORMATTED in calcDurationSegment ",durationFormatted);
-    console.log("This is TYPEOF formatted :", typeof durationFormatted);
+   
+ //    console.log("This is DURATION in calcDurationSegment ",segmentDuration);
+  //  console.log("This is DURATION FORMATTED in calcDurationSegment ",durationFormatted);
+    //console.log("This is TYPEOF formatted :", typeof durationFormatted);
 
     //FORMATTING HERE IS NOT MEANINGFUL BECAUSE DURATIONS ARE ADDED in calcMultipleSegments
 
