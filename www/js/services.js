@@ -555,7 +555,7 @@ var setEndTime = function(endedStep, oneRoutine){
 
   var dataTemplate =
       {"appOps": {
-                "activeRoutine":1 //index # of activeRoutine
+                "activeRoutine":0 //index # of activeRoutine
                 }
       ,"routines": [
                     {"title": "Demo - My first routine"

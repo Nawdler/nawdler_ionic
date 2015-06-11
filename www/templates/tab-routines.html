@@ -31,8 +31,8 @@
 
     <!-- Show "go to this routine" button if status is "inactive" -->
     <i
-      class="icon ion-android-arrow-forward"
-      ng-show="routine.activeStatus != 'inactive'">
+      class="icon ion-android-arrow-backward"
+      ng-show="routine.activeStatus === 'inactive'">
     </i>
 <!--  Add new feature in future: Show # of attempts for a given Routine
       <span class="item-note" ng-show="routine.status === 'routine'">

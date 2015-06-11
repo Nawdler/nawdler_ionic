@@ -359,15 +359,31 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     console.log("NICE Clicked on a routine, and all I got was this ",clickedRoutine);
     console.log("This is the active index before adjusting ",allData.appOps.activeRoutine);
 
+    //This is the routine that was clicked
     var clickedRoutineString = clickedRoutine.title;
-    //set activeRoutine to this routine's index
 
+    //Set flag of formerly active routine to be inactive
+    $scope.routineArray[allData.appOps.activeRoutine].activeStatus = "inactive";
+    
+    //set activeRoutine to this routine's index
     allData.appOps.activeRoutine = clickedRoutine.index;
+  
     console.log("This is the active index after adjusting ",allData.appOps.activeRoutine);
 
     // To "activate" and share a given routine...  Share activeRoutine by using ShareData.oneRoutine variable.  Because Objects are a reference type, this works
     ShareData.oneRoutine = allData.routines[allData.appOps.activeRoutine];
+  
     console.log("This is the newly selected routine ",ShareData.oneRoutine);
+
+    //Adjust flags in array that holds routines for ng-repeat
+    //$scope.routineArray = RoutineCalcs.getRoutineDisplayObjects(allData); 
+    $scope.routineArray[clickedRoutine.index].activeStatus = "active";
+    
+    console.log("This is what is getting ng-repeated in Routines page ",$scope.routineArray);
+
+    //Save data to LocalStorage
+   // LocalStorage.saveAppOpsToLocalStorage();
+
   }
 
   // Maybe with swipe?
