@@ -58,7 +58,8 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
       }
       $scope.steps.push(tempObj);
       //Save data to LocalStorage
-      ShareData.saveToLocalStorage(oneRoutine);
+      ShareData.saveToLocalStorage(ShareData.mergeRoutineIntoDataTree());
+      // ShareData.saveToLocalStorage(oneRoutine);
     }
 
     // ShareData.wow = ShareData.wow+" "+newStep; //FOR TESTING
@@ -123,7 +124,8 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     evaluateButtonStatus();
 
     //Save data to LocalStorage
-    ShareData.saveToLocalStorage(oneRoutine);
+    ShareData.saveToLocalStorage(ShareData.mergeRoutineIntoDataTree());
+    //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
   } //END OF STARTSTEP
 
   ///////// updateTime stuff
@@ -175,7 +177,9 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     }
 
     //Save data to LocalStorage
-    ShareData.saveToLocalStorage(oneRoutine);
+    ShareData.saveToLocalStorage(ShareData.mergeRoutineIntoDataTree());
+
+    //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
   }
 
    $scope.finishAttempt = function(){
@@ -194,7 +198,9 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     $scope.buttonStatus = "none";
 
     //Save data to LocalStorage
-    ShareData.saveToLocalStorage(oneRoutine);
+    ShareData.saveToLocalStorage(ShareData.mergeRoutineIntoDataTree());
+
+    //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
 
     //Redirect to graphs view, once it is ready
     $state.go('tab.graph');
@@ -283,9 +289,9 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 .controller('RoutinesCtrl', ['$scope','ShareData', 'Routines', function($scope, ShareData, Routines) {
 
-  //Initialize data for app, which defaults to Routines page.  Thus, this should be the first code that runs in the app after being launched
+  //INITIALIZE DATA FOR APP, which defaults to Routines page.  Thus, this should be the first code that runs in the app after being launched
 
-  console.log("Is this first? Should be! Start of RoutinesCtrl");
+  console.log("This should be first... Start of RoutinesCtrl");
 
   //Check if localStorage exists with Nawdler data.  If so, load it.  If not, create it with default template
 
@@ -298,7 +304,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
     //load data template from factory new user with example routines
     var allData = Routines.template(); //get the template data from the factory
-    console.log("This is loaded template in RoutineCtrl", allData);
+    console.log("This is loaded starting template in RoutineCtrl", allData);
 
     //Save full template data to localStorage
     ShareData.saveToLocalStorage(allData);
@@ -310,18 +316,18 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   //Determine which routine is the "active" one for the user
   var activeRoutine = allData.appOps.activeRoutine; //get the index number of the active routine
   
-  // To "activate" and share a given routine...
-  //Share activeRoutine by using ShareData.oneRoutine variable.  Because Objects are a reference type, this works
+  // To "activate" and share a given routine...  Share activeRoutine by using ShareData.oneRoutine variable.  Because Objects are a reference type, this works
   ShareData.oneRoutine = allData.routines[activeRoutine];
-
-  //  ShareData.oneRoutine = allData["Routine1"]; //this will be replaced with active routine
 
   console.log("This is ShareData.oneRoutine in RoutinesCtrl ", ShareData.oneRoutine);
 
-  //var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
-
+  //PREP FOR ROUTINES PAGE USER INTERACTIONS
   //Use 'routines' term to reference scope of this controller -- important for HTML template
   $scope.routines = $scope;
+
+  //Make the "routines" array for template ng-repeat
+
+
 
   $scope.addRoutine = function(){
 

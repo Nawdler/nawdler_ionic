@@ -19,6 +19,20 @@ angular.module('starter.services', [])
     window.localStorage.setItem("Nawdler", JSON.stringify(dataObject));  
   };
 
+  var mergeRoutineIntoDataTree = function(){
+    //Take the existing active Routine, presumably with some data changes, and put it into the right place in the overall data tree
+    //This is needed as localStorage only "saves" the entire tree -- based on top level "key" -- does not have way to access and change elements within this object
+
+    //Load full stored data
+    var fullTree = loadFromLocalStorage();
+
+    //Determine which routine is the "active" one for the user
+    var activeRoutine = fullTree.appOps.activeRoutine; //get the index number of the active routine
+
+    //Put likely modified active Routine into data tree
+    fullTree.routines[activeRoutine] = ShareData.oneRoutine;
+  };
+
   var loadFromLocalStorage = function(){
       console.log("Loading from LocalStorage");
 
@@ -37,6 +51,7 @@ angular.module('starter.services', [])
  return {
     saveToLocalStorage: saveToLocalStorage
     ,loadFromLocalStorage: loadFromLocalStorage
+    ,mergeRoutineIntoDataTree: mergeRoutineIntoDataTree
   }
 
 }) //END OF ShareData SERVICE
