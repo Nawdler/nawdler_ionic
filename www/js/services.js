@@ -24,14 +24,14 @@ angular.module('starter.services', [])
 
     //Determine which routine is the "active" one for the user
     var activeRoutine = fullTree.appOps.activeRoutine; //get the index number of the active routine
-    
+
    // console.log("NOW DONE", moment());
     console.log("This is activeRoutine # ",activeRoutine);
     console.log("This is fullTree.routines ", fullTree.routines);
     console.log("This is fullTree.routines[ActiveRoutine] ", fullTree.routines[activeRoutine]);
 
     console.log("DARTH This is updated oneRoutine we want to put INTO the fullTree ", ShareData.oneRoutine);
-    
+
     //Put  modified active Routine into data tree
     fullTree.routines[activeRoutine] = ShareData.oneRoutine;
 
@@ -39,7 +39,7 @@ angular.module('starter.services', [])
     // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
     // once running on devices, then begin using UUID as key, rather than Nawdler
 
-    window.localStorage.setItem("Nawdler", JSON.stringify(fullTree));  
+    window.localStorage.setItem("Nawdler", JSON.stringify(fullTree));
   };
 
 var saveAppOpsToLocalStorage = function(newActiveRoutine){
@@ -50,12 +50,12 @@ var saveAppOpsToLocalStorage = function(newActiveRoutine){
 
     //Determine which routine is the "active" one for the user
     var activeRoutine = newActiveRoutine; //use the index number of the newly selected active routine
-    
+
    // console.log("NOW DONE", moment());
     console.log("This is old activeRoutine # ",fullTree.appOps.activeRoutine);
 
     console.log("This is new activeRoutine # ",activeRoutine);
-    
+
     //Put newly selected active Routine INDEX into data tree
     fullTree.appOps.activeRoutine = activeRoutine;
 
@@ -109,7 +109,7 @@ var saveAppOpsToLocalStorage = function(newActiveRoutine){
 
       //allRoutines = reloadedData; 
       console.log("This is what was loaded in loadFromLocalStorage", reloadedData);
-      
+
       return reloadedData; 
   };
 
