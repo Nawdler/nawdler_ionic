@@ -315,6 +315,11 @@ var setEndTime = function(endedStep, oneRoutine){
   var calcDurationSegment = function(startedAt, endedAt){
     console.log("Hi from calcDurationSegment. Start and end ",startedAt,endedAt);
     console.log("typeof start and end", typeof startedAt, typeof endedAt);
+    if (typeof startedAt === 'string' && typeof endedAt === 'string'){
+      console.log("THEY WERE STRINGS ALL ALONG");
+      startedAt = moment(startedAt);
+      endedAt = moment(endedAt);
+    }
     var segmentDuration = endedAt.diff(startedAt);
     var durationFormatted = moment.duration(segmentDuration).format('H:mm:ss', { trim: false });
    

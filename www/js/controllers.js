@@ -294,7 +294,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 }])
 
-.controller('RoutinesCtrl', ['$scope','ShareData', 'Routines', 'LocalStorage', 'RoutineCalcs', function($scope, ShareData, Routines, LocalStorage, RoutineCalcs) {
+.controller('RoutinesCtrl', ['$scope','ShareData', 'Routines', 'LocalStorage', 'RoutineCalcs', "$state", function($scope, ShareData, Routines, LocalStorage, RoutineCalcs, $state) {
 
   //INITIALIZE DATA FOR APP, which defaults to Routines page.  Thus, this should be the first code that runs in the app after being launched
 
@@ -407,6 +407,8 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
     //Save data to LocalStorage
     LocalStorage.saveAppOpsToLocalStorage(clickedRoutine.index);
+    //redirect to the timer page.
+    $state.go('tab.timer');
 
   }
 
