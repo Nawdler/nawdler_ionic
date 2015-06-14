@@ -338,6 +338,8 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   //Make the "routines" array for template ng-repeat, or use an empty array
   $scope.routineArray = routineArray || [];
 
+  //Start with delete buttons hidden
+  $scope.shouldShowEditView = false;
 
   $scope.addRoutine = function(newRoutine){
     //validates that the new routine isn't blank
@@ -412,8 +414,68 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
   }
 
+  $scope.reorderRoutine = function(movedRoutine, fromIndex, toIndex) {
+    
+    //MOVE THE ROUTINE IN THE FRONT-END ARRAY
+    //Remove the item from the old location in the array
+    $scope.routineArray.splice(fromIndex, 1);
+    //Add the item to the new location in the array
+    $scope.routineArray.splice(toIndex, 0, movedRoutine);
+
+    //MOVE THE ROUTINE IN THE BACK-END DATA TREE
+    //RELOAD FROM LOCALSTORAGE, JUST IN CASE
+    var allData = LocalStorage.loadFromLocalStorage();
+
+    var movedRoutine = allData.routines[fromIndex];
+    //Remove the item from the old location in the array
+    allData.routines.splice(fromIndex, 1);
+    //Add the item to the new location in the array
+    allData.routines.splice(toIndex, 0, movedRoutine);
+
+    //NEED TO ADJUST ACTIVEROUTINE INDEX IN APPOPS
+    //If user moves activeRoutine, set it to the toIndex
+    //If user moves something from before to after, move activeRoutine to lower index
+    //If user moves something from after to before, move activeRoutine to higher index
+    var activeIndex = allData.appOps.activeRoutine
+    if (activeIndex === fromIndex) {
+      allData.appOps.activeRoutine = toIndex;
+    } else if (fromIndex < activeIndex && toIndex >= activeIndex) {
+      allData.appOps.activeRoutine -= 1;
+    } else if (toIndex <= activeIndex && fromIndex > activeIndex) {
+      allData.appOps.activeRoutine += 1;
+    };
+
+    //RESAVE THE ENTIRE TREE TO LOCAL STORAGE
+    window.localStorage.setItem("Nawdler", JSON.stringify(allData));
+
+    //Regenerate the display array with fresh data
+    $scope.routineArray = RoutineCalcs.getRoutineDisplayObjects(allData);
+  };
+  
   // Maybe with swipe?
-  $scope.deleteRoutine = function(routine){
+  $scope.deleteRoutine = function(routine, index){
+    //DELETE FROM FRONT-END ARRAY
+    $scope.routineArray.splice(index, 1)
+
+    //DELETE FROM BACK-END DATA TREE
+    //RELOAD FROM LOCALSTORAGE, JUST IN CASE
+    var allData = LocalStorage.loadFromLocalStorage();
+
+    //Remove from the data tree
+    allData.routines.splice(index, 1);
+
+    //DEAL WITH ACTIVEROUTINE INDEX IN APPOPS -- shift to 0 if user deletes activeRoutine, and decrement if activeRoutine is higher than deleted Routine
+    if (allData.appOps.activeRoutine === index) {
+      allData.appOps.activeRoutine = 0; //Reset to top of array, if activeRoutine is the one that was deleted
+    } else if (allData.appOps.activeRoutine >= index) {
+      allData.appOps.activeRoutine -= 1;
+    }
+
+    //RESAVE THE ENTIRE TREE TO LOCAL STORAGE
+    window.localStorage.setItem("Nawdler", JSON.stringify(allData));
+
+    //Regenerate the display array with fresh data
+    $scope.routineArray = RoutineCalcs.getRoutineDisplayObjects(allData);
 
   }
 

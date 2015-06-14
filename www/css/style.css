@@ -65,6 +65,13 @@
 	color: #e67e22 !important;
 }
 
+.routineSelected {
+	background-color: #e67e22 !important;
+}
+.itemContent {
+	background-color: none;
+}
+
 
 /*.stepTitles{
 	font-size: 10px;
