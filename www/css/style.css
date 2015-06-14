@@ -18,12 +18,15 @@
 	padding-right: auto;
 	padding-left: 32%;
 	padding-top: 15px;
+	margin-bottom: -15px;
 	font-size: 3em !important;
 	font-weight: bold !important;
 	background-color: transparent;
 	color: #ef4e3a !important;
-	border: none;
+	/*border-bottom: solid green 5px; This one doesn't work*/
+	/*border: none !important;*/
 }
+
 /*.instructions{
 	background-color:#34495e;
 }*/
@@ -49,7 +52,6 @@
 	margin-top: 43px;
 	box-shadow: 1px 1px 1px #222;
 	border: none !important;
-
 }
 .item{
 	color:#bdc3c7 !important;
@@ -61,6 +63,13 @@
 }
 .tabStyle{
 	color: #e67e22 !important;
+}
+
+.routineSelected {
+	background-color: #e67e22 !important;
+}
+.itemContent {
+	background-color: none;
 }
 
 
