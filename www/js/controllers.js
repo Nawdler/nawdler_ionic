@@ -415,6 +415,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   }
 
     $scope.reorderItem = function(item, fromIndex, toIndex) {
+      //NEED TO DO THIS ON REAL TREE, TOO! AND THEN SAVE
     $scope.routineArray.splice(fromIndex, 1);
     $scope.routineArray.splice(toIndex, 0, item);
   };
