@@ -314,7 +314,7 @@ var setEndTime = function(endedStep, oneRoutine){
 
   var calcDurationSegment = function(startedAt, endedAt){
     console.log("Hi from calcDurationSegment. Start and end ",startedAt,endedAt);
-    console.log("typeof start and end", typeof startedAt, typeof endedAt);
+    //console.log("typeof start and end", typeof startedAt, typeof endedAt);
     if (typeof startedAt === 'string' && typeof endedAt === 'string'){
       console.log("THEY WERE STRINGS ALL ALONG");
       startedAt = moment(startedAt);
@@ -323,10 +323,6 @@ var setEndTime = function(endedStep, oneRoutine){
     var segmentDuration = endedAt.diff(startedAt);
     var durationFormatted = moment.duration(segmentDuration).format('H:mm:ss', { trim: false });
    
- //    console.log("This is DURATION in calcDurationSegment ",segmentDuration);
-  //  console.log("This is DURATION FORMATTED in calcDurationSegment ",durationFormatted);
-    //console.log("This is TYPEOF formatted :", typeof durationFormatted);
-
     //FORMATTING HERE IS NOT MEANINGFUL BECAUSE DURATIONS ARE ADDED in calcMultipleSegments
 
     return durationFormatted; 
@@ -366,18 +362,6 @@ var setEndTime = function(endedStep, oneRoutine){
     var target = findElementByTitle(stepTitle, stepArray);
     stepArray[target].timeDiff = diff;
 
-    // MADE OBSOLETE BY FEBT
-    // console.log("!!step array change diff" , stepArray.length);
-    // //find the step in question by the title and change the status
-    // for (var i = 0; i < stepArray.length; i++) {
-    //   console.log("this is the target for comparison ", stepTitle);
-    //   console.log("This is what changediff is checking: ",stepArray[i].title)
-    //   if (stepArray[i].title === stepTitle){
-    //     stepArray[i].timeDiff = diff;
-    //     console.log("CHANGING TIME DIFF :: ",stepArray[i].timeDiff);
-    //     return;
-    //   }
-    // }
   };
 
 
@@ -540,17 +524,22 @@ var setEndTime = function(endedStep, oneRoutine){
 .service('RoutineCalcs', [ 'ShareData', function(ShareData){
   
   var getRoutineDisplayObjects = function(allData){
-    var routineArray = allData.routines;
+    var allRoutinesArray = allData.routines;
     var activeIndex = allData.appOps.activeRoutine;
     var array = [];
     //NEED TO ADD ISRUNNING LOGIC ***
-    for (var i = 0; i < routineArray.length; i++) {
-      var title = routineArray[i].title;
+    for (var i = 0; i < allRoutinesArray.length; i++) {
+      var title = allRoutinesArray[i].title;
       //Check whether this is active Routine, and mark status with "active" or "inactive" to meet expectations of the Routines template
-      var active = "";
+      var activeStatus = "";
       i === activeIndex ? activeStatus = "active" : activeStatus = "inactive";
+
+      //Check to see if this routine's currentOps.activeStep != null --> If != null, then a step is running in that routine
+      var runningStatus = new Boolean();
+      allRoutinesArray[i].currentOps.activeStep != null ? runningStatus = true : runningStatus = false;
+      console.log("RoutineDisplayObject: this is runningStatus and routine ",runningStatus,allRoutinesArray[i]);
       
-      var obj = {"title": title, "activeStatus": activeStatus, "runningStatus": "isRunning", "index": i};
+      var obj = {"title": title, "activeStatus": activeStatus, "runningStatus": runningStatus, "index": i};
       array.push(obj);
     };
     return array;

@@ -63,7 +63,7 @@ angular.module('nawdler', ['ionic', 'starter.controllers', 'starter.services', '
 
   .state('tab.routines', {
     url: '/routines',
-   // cache: false,
+    cache: false,
     views: {
       'tab-routines': {
         templateUrl: 'templates/tab-routines.html',
