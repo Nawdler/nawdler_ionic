@@ -1,10 +1,8 @@
-<ion-nav-bar class="bar-dark">
- {{routineTitle}}
-      <ion-nav-back-button>
+<ion-header-bar class="bar-dark">
 
-      </ion-nav-back-button>
-    </ion-nav-bar>
-<ion-view view-title="{{routineTitle}}">
+      <h1 class="title">{{routineTitle}}</h1>
+
+    </ion-header-bar>
   <ion-content padding="true" class="has-header background">
 
  <!-- Duration of attempt -->
@@ -19,7 +17,7 @@
       class="card instructions"
       ng-show="buttonStatus === 'none'"
       >
-     Welcome to Nawdler! Enter the steps of your routine. Tap any step to begin timing and pause the previous step. Hit done to analyze your results.
+     Enter the steps of your routine. Tap any step to begin timing and pause the previous step. Hit done to analyze your results.
     </div>
 
 <div class="list">
@@ -78,7 +76,7 @@
     <!-- I'm DEFINITELY done button -->
     <div class="bar-subfooter button-bar"></div>
     <button
-      class="button button-assertive button-block"
+      class="button button-dark finish button-block"
       ng-click="finishAttempt()"
       ng-show="buttonStatus === 'definitely'"
       >
