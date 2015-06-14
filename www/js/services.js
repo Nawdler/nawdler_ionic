@@ -527,7 +527,6 @@ var setEndTime = function(endedStep, oneRoutine){
     var allRoutinesArray = allData.routines;
     var activeIndex = allData.appOps.activeRoutine;
     var array = [];
-    //NEED TO ADD ISRUNNING LOGIC ***
     for (var i = 0; i < allRoutinesArray.length; i++) {
       var title = allRoutinesArray[i].title;
       //Check whether this is active Routine, and mark status with "active" or "inactive" to meet expectations of the Routines template
@@ -535,11 +534,11 @@ var setEndTime = function(endedStep, oneRoutine){
       i === activeIndex ? activeStatus = "active" : activeStatus = "inactive";
 
       //Check to see if this routine's currentOps.activeStep != null --> If != null, then a step is running in that routine
-      var runningStatus = new Boolean();
-      allRoutinesArray[i].currentOps.activeStep != null ? runningStatus = true : runningStatus = false;
-      console.log("RoutineDisplayObject: this is runningStatus and routine ",runningStatus,allRoutinesArray[i]);
+      var is_running = new Boolean();
+      allRoutinesArray[i].currentOps.activeStep != null ? is_running = true : is_running = false;
+      console.log("RoutineDisplayObject: this is is_running and routine ",is_running,allRoutinesArray[i]);
       
-      var obj = {"title": title, "activeStatus": activeStatus, "runningStatus": runningStatus, "index": i};
+      var obj = {"title": title, "activeStatus": activeStatus, "runningStatus": is_running, "index": i};
       array.push(obj);
     };
     return array;

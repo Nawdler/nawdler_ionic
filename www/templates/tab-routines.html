@@ -13,17 +13,7 @@
       </div>
     </ion-header-bar>
 
-
-
-
-
-
-
-
-
   <ion-content padding="true" class="has-header background">
-
-<!-- Hello -->
 
  <!-- Welcome text -->
  <!-- ng-show="buttonStatus === 'none'"  -->
@@ -36,28 +26,25 @@
   class="list"
   show-delete="shouldShowEditView"
   show-reorder="shouldShowEditView">
-  <ion-item
-    class="item ion-item"
-    ng-repeat="routine in routineArray"
-    ng-click="selectRoutine(routine)"
-    ng-class="(routine.activeStatus === 'active'? 'item-icon-left item-button-right routineSelected' : 'item') + ' ' + (routine.activeStatus === 'inactive'? 'item item-icon-right' : 'item')"
+  <ion-item class="item ion-item" ng-repeat="routine in routineArray" ng-click="selectRoutine(routine)" ng-class="((routine.activeStatus === 'active') && (routine.runningStatus === true)? 'item-icon-left routineSelected item-icon-right' : 'item') + ' ' + ((routine.activeStatus === 'active') && (routine.runningStatus === false)? 'routineSelected item-icon-right' : 'item') + ' ' + ((routine.activeStatus === 'inactive') && (routine.runningStatus === true)? 'item-icon-left' : 'item') + ' ' + ((routine.activeStatus === 'inactive') && (routine.runningStatus === false)? 'item' : 'item')"
     >
     <!-- SORRY. -->
     <font size="+1">
   <!-- Show step title for all steps -->
     {{routine.title}}
     </font>
+    <!-- Show "go to this routine" button if status is "inactive" -->
+    <i
+      class="icon ion-ios-stopwatch"
+      ng-show="routine.runningStatus === true">
+    </i>
+    
     <!-- Show active icon if status = "active" -->
     <i
       class="icon ion-android-arrow-forward"
       ng-show="routine.activeStatus === 'active'">
     </i>
 
-    <!-- Show "go to this routine" button if status is "inactive" -->
-    <i
-      class="icon ion-android-arrow-backward"
-      ng-show="routine.activeStatus === 'inactive'">
-    </i>
 <!--  Add new feature in future: Show # of attempts for a given Routine
       <span class="item-note" ng-show="routine.status === 'routine'">
         {{routine.numberAttempts}}
