@@ -34,9 +34,9 @@
     </div>
 
 
-<ion-list 
-  class="list" 
-  show-delete="shouldShowEditView" 
+<ion-list
+  class="list"
+  show-delete="shouldShowEditView"
   show-reorder="shouldShowEditView">
   <ion-item
     class="item ion-item"
@@ -69,15 +69,15 @@
   <!--   <button class="button running button-assertive" ng-show="routine.status === 'doing'">
         {{routine.timeDiff}}
     </button>  -->
- 
+
   <ion-delete-button
     class="ion-minus-circled"
     ng-click="deleteRoutine(routine, $index)"
-    >    
+    >
   </ion-delete-button>
 
-  <ion-reorder-button 
-    class="ion-navicon"
+  <ion-reorder-button
+    class="ion-navicon dragPad"
     on-reorder="reorderRoutine(routine, $fromIndex, $toIndex)">
   </ion-reorder-button>
 
