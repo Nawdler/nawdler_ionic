@@ -1,4 +1,26 @@
-<ion-view view-title="Your Routines">
+<!-- <ion-view view-title="Your Routines"> -->
+
+<!-- <ion-view view-title="Your Routines"> -->
+
+ <ion-header-bar class="bar-dark">
+
+      <h1 class="title">Your Routines</h1>
+
+      <div class="buttons">
+        <button class="button" ng-click="shouldShowEditView = !shouldShowEditView">
+            Edit
+        </button>
+      </div>
+    </ion-header-bar>
+
+
+
+
+
+
+
+
+
   <ion-content padding="true" class="has-header background">
 
 <!-- Hello -->
@@ -12,12 +34,15 @@
     </div>
 
 
-<ion-list class="list" show-delete="shouldShowEditView" show-reorder="shouldShowEditView">
+<ion-list 
+  class="list" 
+  show-delete="shouldShowEditView" 
+  show-reorder="shouldShowEditView">
   <ion-item
     class="item ion-item"
     ng-repeat="routine in routineArray"
     ng-click="selectRoutine(routine)"
-    ng-class="(routine.activeStatus === 'active'? 'item item-icon-left item-button-right' : 'item') + ' ' + (routine.activeStatus === 'inactive'? 'item item-icon-right' : 'item')"
+    ng-class="(routine.activeStatus === 'active'? 'item-icon-left item-button-right routineSelected' : 'item') + ' ' + (routine.activeStatus === 'inactive'? 'item item-icon-right' : 'item')"
     >
     <!-- SORRY. -->
     <font size="+1">
@@ -47,15 +72,14 @@
  
   <ion-delete-button
     class="ion-minus-circled"
-    ng-click="routineArray.splice($index, 1)"> 
-    <!-- NEED TO CHANGE THIS SO IT CALLS FUNCTION THAT DELETES NOT JUST IN routineArray but in dataTree, too -->
-    
+    ng-click="deleteRoutine(routine, $index)"
+    >    
   </ion-delete-button>
 
-  <ion-reorder-button class="ion-navicon"
-    on-reorder="reorderItem(routine, $fromIndex, $toIndex)">
+  <ion-reorder-button 
+    class="ion-navicon"
+    on-reorder="reorderRoutine(routine, $fromIndex, $toIndex)">
   </ion-reorder-button>
-
 
   </ion-item>
 
@@ -70,10 +94,10 @@
     </div>
   </form>
 
-<!-- Control whether to be in delete mode? -->
-<ion-toggle ng-model="shouldShowEditView">
+<!-- Control whether to be in edit mode? -->
+<!-- <ion-toggle ng-model="shouldShowEditView">
   Edit mode?
-</ion-toggle>
+</ion-toggle> -->
 
 <!-- End of page -->
   </ion-content>
