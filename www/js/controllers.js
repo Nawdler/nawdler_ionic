@@ -414,6 +414,12 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
   }
 
+    $scope.reorderItem = function(item, fromIndex, toIndex) {
+    $scope.routineArray.splice(fromIndex, 1);
+    $scope.routineArray.splice(toIndex, 0, item);
+  };
+  
+
   // Maybe with swipe?
   $scope.deleteRoutine = function(routine){
 
