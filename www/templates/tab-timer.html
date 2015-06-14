@@ -17,7 +17,7 @@
       class="card instructions"
       ng-show="buttonStatus === 'none'"
       >
-     Welcome to Nawdler! Enter the steps of your routine. Tap any step to begin timing and pause the previous step. Hit done to analyze your results.
+     Enter the steps of your routine. Tap any step to begin timing and pause the previous step. Hit done to analyze your results.
     </div>
 
 <div class="list">
@@ -76,7 +76,7 @@
     <!-- I'm DEFINITELY done button -->
     <div class="bar-subfooter button-bar"></div>
     <button
-      class="button button-assertive button-block"
+      class="button button-dark finish button-block"
       ng-click="finishAttempt()"
       ng-show="buttonStatus === 'definitely'"
       >

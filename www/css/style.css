@@ -30,6 +30,11 @@
 /*.instructions{
 	background-color:#34495e;
 }*/
+.routineInstructions{
+	margin-top: 0px;
+	margin-bottom: -30px;
+}
+
 .card{
 	background-color: #34495e !important;
 	color:#e67e22;
@@ -73,6 +78,10 @@
 }
 .dragPad{
 	color:#bdc3c7 !important;
+}
+.finish{
+	background-color: #e67e22 !important;
+	margin-top: 200px;
 }
 
 /*.stepTitles{
