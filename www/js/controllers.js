@@ -338,6 +338,8 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   //Make the "routines" array for template ng-repeat, or use an empty array
   $scope.routineArray = routineArray || [];
 
+  //Start with delete buttons hidden
+  $scope.shouldShowEditView = false;
 
   $scope.addRoutine = function(newRoutine){
     //validates that the new routine isn't blank
