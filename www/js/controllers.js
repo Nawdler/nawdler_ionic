@@ -335,6 +335,9 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
   //grabbing all the routine names from the data
   var routineArray = RoutineCalcs.getRoutineDisplayObjects(allData);
+  
+  console.log("STEVEN - This is what is going to be displayed ",routineArray);
+
   //Make the "routines" array for template ng-repeat, or use an empty array
   $scope.routineArray = routineArray || [];
 
@@ -405,7 +408,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     //$scope.routineArray = RoutineCalcs.getRoutineDisplayObjects(allData);
     $scope.routineArray[clickedRoutine.index].activeStatus = "active";
 
-    console.log("This is what is getting ng-repeated in Routines page ",$scope.routineArray);
+    console.log("STEVEN This is what is getting ng-repeated in Routines page ",$scope.routineArray);
 
     //Save data to LocalStorage
     LocalStorage.saveAppOpsToLocalStorage(clickedRoutine.index);
