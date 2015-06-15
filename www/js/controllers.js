@@ -250,7 +250,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   $scope.chartSelector = "allChrono"; //other options are "allFastest" or "oneDetail"
   $scope.routineTitle = oneRoutine.title;
 
-  //Get info for all attempts chart
+  //All attempts chart
   var chartAllAttempts = function() {
     //Labels on X axis
     $scope.labels = GraphCalcs.getAttemptNames(oneRoutine);
@@ -259,7 +259,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     var attemptDurations = GraphCalcs.getAttemptDurations(oneRoutine);
     $scope.data = [attemptDurations]; //Need to put result in an array to match angular-chart's expectations
 
-    console.log("This is what is getting graphed, first labels then data ",$scope.labels,$scope.data);
+    console.log("This is going into multi-attempt graph, first labels then data ",$scope.labels,$scope.data);
 
     //This is for if we convert this to a more generic chart engine
     // $scope.chartId = "bar";
@@ -267,19 +267,26 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     // $scope.chartClick = "onClick";
   };
 
-  chartAllAttempts(); // call this function
-
-  var chartOneAttempt = function(attempt, attemptIndex) { //REFACTOR IF BOTH PARAMS NOT NEEDED?
+  var chartOneAttempt = function(attempt, attemptIndex) { //REFACTOR AS BOTH PARAMS NOT NEEDED?
     //Labels on X axis
     $scope.labelsDetail = GraphCalcs.getStepNames(attemptIndex, oneRoutine);
     $scope.dataDetail = GraphCalcs.getStepDurations(attemptIndex, oneRoutine);
 
-    console.log("This is what is getting graphed, first labels then data ",$scope.labels,$scope.data);
+    console.log("This is going into attempt detail donut, first labels then data ",$scope.labelsDetail,$scope.dataDetail);
   };
 
+  //THIS IS MAIN OPERATION FOR THE GRAPH / ANALYSIS PAGE
+  //So long as there is some data for this routine, show the graphs; otherwise give message
 
-  //Automatically show donut for the most recent attempt
-  chartOneAttempt(null,oneRoutine.attempts.length-1); //FIRST PARAM IS NOT NEEDED?
+  if (oneRoutine.attempts.length > 0) {
+
+    //Show the graph of all attempts
+    chartAllAttempts();
+
+    //Automatically show donut for the most recent attempt
+    chartOneAttempt(null,oneRoutine.attempts.length-1); //FIRST PARAM IS NOT NEEDED!
+
+  };
 
   $scope.clickAttempt = function(points, evt) {
     console.log("Which attempt was clicked?");
