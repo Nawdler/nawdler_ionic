@@ -1,9 +1,14 @@
 <ion-view view-title="Analysis">
-  <ion-content>
+
+<ion-header-bar class="bar-dark">
+  <h1 class="title">{{routineTitle}}</h1>
+</ion-header-bar>
+
+<ion-content>
 
 <!-- Chart of all attempts: show if chartSelector = "allChrono" -->
   <div ng-show="chartSelector === 'allChrono'">
-	  <h3> {{routineTitle}} </h3>
+	  <!-- <h3> {{routineTitle}} </h3> -->
 	  <canvas id="bar" class="chart chart-bar" data="data" labels="labels" click="clickAttempt" ></canvas>
   </div>
 
@@ -16,7 +21,7 @@
 <!-- Detail chart of one attempt: for now, show in all cases... Could also just show if chartSelector = "oneDetail" -->
   <div>
   <!-- ng-show="chartSelector === 'oneDetail'" -->
-	  <h4>     Click any bar to see details</h4>
+	  <h4>Click any bar to see details</h4>
 	  <canvas id="doughnut" class="chart chart-doughnut" data="dataDetail" labels="labelsDetail" legend="true"></canvas>
   </div>
   </ion-content>
