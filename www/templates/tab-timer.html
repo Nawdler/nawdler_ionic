@@ -1,9 +1,13 @@
-<ion-view view-title="{{routineTitle}}">
+<ion-header-bar class="bar-dark">
+
+      <h1 class="title">{{routineTitle}}</h1>
+
+    </ion-header-bar>
   <ion-content padding="true" class="has-header background">
 
  <!-- Duration of attempt -->
     <div
-      class="bar bar-header bigDiff"
+      class="bigDiff"
       ng-show="buttonStatus != 'none'"
       >
       {{bigDiff}}
@@ -13,7 +17,7 @@
       class="card instructions"
       ng-show="buttonStatus === 'none'"
       >
-     Welcome to Nawdler! Enter the steps of your routine. Tap any step to begin timing and pause the previous step. Hit done to analyze your results.
+     Enter the steps of your routine. Tap any step to begin timing and pause the previous step. Hit done to analyze your results.
     </div>
 
 <div class="list">
@@ -42,7 +46,8 @@
       <span class="item-note" ng-show="step.status === 'done'">
         {{step.timeDiff}}
     </span>
-          <button class="button running button-assertive" ng-show="step.status === 'doing'">
+    <!-- Button element because div was messing up formatting -->
+    <button class="button running button-assertive" ng-show="step.status === 'doing'">
         {{step.timeDiff}}
     </button>
 
@@ -53,9 +58,8 @@
       <form ng-submit="addStep(timer.newStep)">
         <div class="item addAStep item-input">
           <input placeholder="Add New Step" type="text" ng-model="timer.newStep"/>
-          <button class="plusButton" type="submit"><a class="button button-icon custom-icon icon ion-plus-circled">
-          </a></button>
-          <!-- Need to fix the button. Button does not actually work. -->
+          <button class="plusButton button-icon custom-icon icon ion-plus-circled" type="submit">
+        </button>
         </div>
       </form>
 
@@ -72,7 +76,7 @@
     <!-- I'm DEFINITELY done button -->
     <div class="bar-subfooter button-bar"></div>
     <button
-      class="button button-assertive button-block"
+      class="button button-dark finish button-block"
       ng-click="finishAttempt()"
       ng-show="buttonStatus === 'definitely'"
       >

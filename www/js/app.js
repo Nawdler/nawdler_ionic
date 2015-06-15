@@ -41,6 +41,7 @@ angular.module('nawdler', ['ionic', 'starter.controllers', 'starter.services', '
 
   .state('tab.timer', {
     url: '/timer',
+    cache: false,
     views: {
       'tab-timer': {
         templateUrl: 'templates/tab-timer.html',
@@ -62,6 +63,7 @@ angular.module('nawdler', ['ionic', 'starter.controllers', 'starter.services', '
 
   .state('tab.routines', {
     url: '/routines',
+    cache: false,
     views: {
       'tab-routines': {
         templateUrl: 'templates/tab-routines.html',
@@ -71,6 +73,6 @@ angular.module('nawdler', ['ionic', 'starter.controllers', 'starter.services', '
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/timer');
+  $urlRouterProvider.otherwise('/tab/routines');
 
 });

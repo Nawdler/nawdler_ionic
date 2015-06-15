@@ -1,10 +1,99 @@
-<ion-view view-title="Your Routines">
-  <ion-content>
+<!-- <ion-view view-title="Your Routines"> -->
+
+<!-- <ion-view view-title="Your Routines"> -->
+
+ <ion-header-bar class="bar-dark">
+
+      <h1 class="title">Your Routines</h1>
+
+      <div class="buttons">
+        <button class="button" ng-click="shouldShowEditView = !shouldShowEditView">
+            Edit
+        </button>
+      </div>
+    </ion-header-bar>
+
+  <ion-content padding="true" class="has-header background">
+
+ <!-- Welcome text -->
+ <!-- ng-show="buttonStatus === 'none'"  -->
+    <div class="card instructions routineInstructions">
+      Welcome to Nawdler! Select a routine or enter a new one.
+    </div>
+
+
+<ion-list
+  class="list"
+  show-delete="shouldShowEditView"
+  show-reorder="shouldShowEditView">
+  <ion-item class="item ion-item" ng-repeat="routine in routineArray" ng-click="selectRoutine(routine)" ng-class="((routine.activeStatus === 'active') && (routine.runningStatus === true)? 'item-icon-left routineSelected item-icon-right' : 'item') + ' ' + ((routine.activeStatus === 'active') && (routine.runningStatus === false)? 'routineSelected item-icon-right' : 'item') + ' ' + ((routine.activeStatus === 'inactive') && (routine.runningStatus === true)? 'item-icon-left' : 'item') + ' ' + ((routine.activeStatus === 'inactive') && (routine.runningStatus === false)? 'item' : 'item')"
+    >
+    <!-- SORRY. -->
+    <font size="+1">
+  <!-- Show step title for all steps -->
+    {{routine.title}}
+    </font>
+    <!-- Show "go to this routine" button if status is "inactive" -->
+    <i
+      class="icon ion-ios-stopwatch"
+      ng-show="routine.runningStatus === true">
+    </i>
+    
+    <!-- Show active icon if status = "active" -->
+    <i
+      class="icon ion-android-arrow-forward"
+      ng-show="routine.activeStatus === 'active'">
+    </i>
+
+<!--  Add new feature in future: Show # of attempts for a given Routine
+      <span class="item-note" ng-show="routine.status === 'routine'">
+        {{routine.numberAttempts}}
+    </span> -->
+    <!-- Button element because div was messing up formatting -->
+    <!-- Add feature: Show current diff of active Routine -->
+  <!--   <button class="button running button-assertive" ng-show="routine.status === 'doing'">
+        {{routine.timeDiff}}
+    </button>  -->
+
+  <ion-delete-button
+    class="ion-minus-circled"
+    ng-click="deleteRoutine(routine, $index)"
+    >
+  </ion-delete-button>
+
+  <ion-reorder-button
+    class="ion-navicon dragPad"
+    on-reorder="reorderRoutine(routine, $fromIndex, $toIndex)">
+  </ion-reorder-button>
+
+  </ion-item>
+
+</ion-list>
+
+<!-- Add a routine input box -->
+  <form ng-submit="addRoutine(routines.newRoutine)">
+    <div class="item addAStep item-input">
+      <input placeholder="Add New Routine" type="text" ng-model="routines.newRoutine"/>
+      <button class="plusButton button-icon custom-icon icon ion-plus-circled" type="submit">
+    </button>
+    </div>
+  </form>
+
+<!-- Control whether to be in edit mode? -->
+<!-- <ion-toggle ng-model="shouldShowEditView">
+  Edit mode?
+</ion-toggle> -->
+
+<!-- End of page -->
+  </ion-content>
+</ion-view>
+
+<!-- Hello -->
+
 
   <div class="card">
   <h2> Coming soon to Nawdler:<br><br>
 	Add, remove and manage as many different routines as you'd like to track. </h2>
   </div>
-  
   </ion-content>
 </ion-view>

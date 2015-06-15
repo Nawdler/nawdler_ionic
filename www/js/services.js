@@ -5,9 +5,121 @@ angular.module('starter.services', [])
 
   //ShareData.wow = "Hello"; //for testing
 
-  ShareData.oneRoutine = {}; //initialize with empty object
+  ShareData.oneRoutine = {}; //initialize shared variable with empty object
+  //Because this is an object and an object is a reference type and its scope is a shared Service that is injected in various places, this variable can be accessed by any controller that has this service injected
+
+ return {}
 
 }) //END OF ShareData SERVICE
+
+.service('LocalStorage', ['ShareData', function(ShareData){
+
+  var LocalStorage = this;
+
+ var saveToLocalStorage = function(){
+    console.log("Saving to LocalStorage");
+    //console.log("This is what was saved in saveToLocalStorage",dataObject);
+
+    var fullTree = loadFromLocalStorage();
+
+    //Determine which routine is the "active" one for the user
+    var activeRoutine = fullTree.appOps.activeRoutine; //get the index number of the active routine
+
+   // console.log("NOW DONE", moment());
+    console.log("This is activeRoutine # ",activeRoutine);
+    console.log("This is fullTree.routines ", fullTree.routines);
+    console.log("This is fullTree.routines[ActiveRoutine] ", fullTree.routines[activeRoutine]);
+
+    console.log("DARTH This is updated oneRoutine we want to put INTO the fullTree ", ShareData.oneRoutine);
+
+    //Put  modified active Routine into data tree
+    fullTree.routines[activeRoutine] = ShareData.oneRoutine;
+
+    // var user = device.uuid;
+    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+    // once running on devices, then begin using UUID as key, rather than Nawdler
+
+    window.localStorage.setItem("Nawdler", JSON.stringify(fullTree));
+  };
+
+var saveAppOpsToLocalStorage = function(newActiveRoutine){
+    console.log("Saving AppOps to LocalStorage");
+    //console.log("This is what was saved in saveToLocalStorage",dataObject);
+
+    var fullTree = loadFromLocalStorage();
+
+    //Determine which routine is the "active" one for the user
+    var activeRoutine = newActiveRoutine; //use the index number of the newly selected active routine
+
+   // console.log("NOW DONE", moment());
+    console.log("This is old activeRoutine # ",fullTree.appOps.activeRoutine);
+
+    console.log("This is new activeRoutine # ",activeRoutine);
+
+    //Put newly selected active Routine INDEX into data tree
+    fullTree.appOps.activeRoutine = activeRoutine;
+
+    // var user = device.uuid;
+    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+    // once running on devices, then begin using UUID as key, rather than Nawdler
+
+    window.localStorage.setItem("Nawdler", JSON.stringify(fullTree));  
+  };
+
+
+
+  // var NOTUSEDmergeRoutineIntoDataTree = function(){
+  //   //Take the existing active Routine, presumably with some data changes, and put it into the right place in the overall data tree
+  //   //This is needed as localStorage only "saves" the entire tree -- based on top level "key" -- does not have way to access and change elements within this object
+  //   console.log("MERGING DATA INTO TREE", moment());
+  //   //Load full stored data
+  //   var fullTree = loadFromLocalStorage();
+
+  //   //Determine which routine is the "active" one for the user
+  //   var activeRoutine = fullTree.appOps.activeRoutine; //get the index number of the active routine
+  //   console.log("NOW DONE", moment());
+  //   console.log("This is activeRoutine # ",activeRoutine);
+  //   console.log("This is fullTree.routines ", fullTree.routines);
+  //   console.log("This is fullTree.routines[ActiveRoutine] ", fullTree.routines[activeRoutine]);
+
+  //   console.log("ALLXIE This is what we want to put INTO the fullTree ", ShareData.oneRoutine);
+  //   //Put likely modified active Routine into data tree
+  //   fullTree.routines[activeRoutine] = ShareData.oneRoutine;
+  // };
+
+  var loadFromLocalStorage = function(){
+      console.log("Loading from LocalStorage");
+
+      var storedData = window.localStorage.getItem("Nawdler");
+      console.log("This is what was stored in LS ", storedData);
+     // console.log("Typeof storedData ",typeof storedData);
+
+      if (storedData != "undefined") { //This is what local storage returns if no data found. STRING of "undefined"
+        console.log("Got something from local storage; parsing it");
+        var reloadedData = JSON.parse(storedData);        
+      } else {
+        console.log("Got nothing from local storage. Send false");
+        var reloadedData = false;
+      };
+
+      // var user = device.uuid;
+      // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+      // once running on devices, then consider using UUID as key, rather than Nawdler
+     // var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
+
+      //allRoutines = reloadedData; 
+      console.log("This is what was loaded in loadFromLocalStorage", reloadedData);
+
+      return reloadedData; 
+  };
+
+ return {
+    saveToLocalStorage: saveToLocalStorage
+    ,loadFromLocalStorage: loadFromLocalStorage
+    ,saveAppOpsToLocalStorage: saveAppOpsToLocalStorage
+   // ,NOTUSEDmergeRoutineIntoDataTree: NOTUSEDmergeRoutineIntoDataTree
+  }  
+}]) //END OF LocalStorage SERVICE
 
 .service('TimerCalcs', function() {
 
@@ -201,14 +313,16 @@ var setEndTime = function(endedStep, oneRoutine){
   };
 
   var calcDurationSegment = function(startedAt, endedAt){
+    console.log("Hi from calcDurationSegment. Start and end ",startedAt,endedAt);
+    //console.log("typeof start and end", typeof startedAt, typeof endedAt);
+    if (typeof startedAt === 'string' && typeof endedAt === 'string'){
+      console.log("THEY WERE STRINGS ALL ALONG");
+      startedAt = moment(startedAt);
+      endedAt = moment(endedAt);
+    }
     var segmentDuration = endedAt.diff(startedAt);
     var durationFormatted = moment.duration(segmentDuration).format('H:mm:ss', { trim: false });
-    //var durationFixed = moment.utc(segmentDuration.asMilliseconds()).format("H:mm:ss");
-   // Math.floor(duration.asHours()) + moment.utc(duration.asMilliseconds()).format(":mm:ss");
-    console.log("This is DURATION in calcDurationSegment ",segmentDuration);
-    console.log("This is DURATION FORMATTED in calcDurationSegment ",durationFormatted);
-    console.log("This is TYPEOF formatted :", typeof durationFormatted);
-
+   
     //FORMATTING HERE IS NOT MEANINGFUL BECAUSE DURATIONS ARE ADDED in calcMultipleSegments
 
     return durationFormatted; 
@@ -248,18 +362,6 @@ var setEndTime = function(endedStep, oneRoutine){
     var target = findElementByTitle(stepTitle, stepArray);
     stepArray[target].timeDiff = diff;
 
-    // MADE OBSOLETE BY FEBT
-    // console.log("!!step array change diff" , stepArray.length);
-    // //find the step in question by the title and change the status
-    // for (var i = 0; i < stepArray.length; i++) {
-    //   console.log("this is the target for comparison ", stepTitle);
-    //   console.log("This is what changediff is checking: ",stepArray[i].title)
-    //   if (stepArray[i].title === stepTitle){
-    //     stepArray[i].timeDiff = diff;
-    //     console.log("CHANGING TIME DIFF :: ",stepArray[i].timeDiff);
-    //     return;
-    //   }
-    // }
   };
 
 
@@ -278,27 +380,27 @@ var setEndTime = function(endedStep, oneRoutine){
     return totalFormatted;
   };
 
-  var saveToLocalStorage = function(oneRoutine){
-    console.log("Saving to LocalStorage");
+  // var saveToLocalStorage = function(oneRoutine){
+  //   console.log("Saving to LocalStorage");
 
-    // var user = device.uuid;
-    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
-    // once running on devices, then consider using UUID as key, rather than Nawdler
+  //   // var user = device.uuid;
+  //   // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+  //   // once running on devices, then consider using UUID as key, rather than Nawdler
 
-    window.localStorage.setItem("Nawdler", JSON.stringify(oneRoutine));  
-  };
+  //   window.localStorage.setItem("Nawdler", JSON.stringify(oneRoutine));  
+  // };
 
-var loadFromLocalStorage = function(oneRoutine){
-    console.log("Loading from LocalStorage");
+// var loadFromLocalStorage = function(oneRoutine){
+//     console.log("Loading from LocalStorage");
 
-    // var user = device.uuid;
-    // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
-    // once running on devices, then consider using UUID as key, rather than Nawdler
+//     // var user = device.uuid;
+//     // console.log("User id", user); //NO uuid in Ionic browser emulator, just in iOS emulator
+//     // once running on devices, then consider using UUID as key, rather than Nawdler
 
-    var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
+//     var reloadedData = JSON.parse(window.localStorage.getItem("Nawdler"));
 
-    oneRoutine = reloadedData;  
-  };
+//     oneRoutine = reloadedData;  
+//   };
 
 
   return {
@@ -312,134 +414,10 @@ var loadFromLocalStorage = function(oneRoutine){
     ,stopStep: stopStep
     ,changeDiff: changeDiff
     ,findElementByTitle: findElementByTitle
-    ,saveToLocalStorage: saveToLocalStorage
-    ,loadFromLocalStorage: loadFromLocalStorage
+   // ,saveToLocalStorage: saveToLocalStorage
+  //  ,loadFromLocalStorage: loadFromLocalStorage
   }
 }) //END OF TimerCalcs SERVICE
-
-.factory('Routines', function() {
-
-  // Might use a resource here that returns a JSON array
-
-  var titleTime =
-    [
-    {"title" : "Eat"
-      ,"timeDiff" : moment().format('HH:mm:ss')
-      ,"status" : "done"
-    }
-    ,{"title" : "Pray"
-      ,"timeDiff" : moment().format('HH:mm:ss')
-      ,"status" : "doing"
-    }
-      ,{"title" : "Love"
-      ,"timeDiff" : moment().format('HH:mm:ss')
-      ,"status" : "todo"
-    }
-      ,{"title" : "Read"
-      ,"timeDiff" : moment().format('HH:mm:ss')
-      ,"status" : "todo"
-    }
-  ];
-
-
-   var dataTemplate =
-      {"Routine1": {
-            "title": "My Routine"
-            ,"steps" : [
-                        ]
-            ,"currentOps" : {
-                        "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
-                        ,"workingAttempt" : 1 //# (not index 0) of the current attempt; increment it when you hit "Finished" //start at 1
-                         }
-            ,"attempts" :[ //array of attempt data, each attempt is one array element
-                          //this will be the first attempt
-                         ]//end all attempts for this routine
-
-                     } //end first routine object
-     }; //end all routines
-
-  // Some fake testing data
-  //call it with: dataStorage.all
-  var dataStorage =
-      {"Routine1": {
-            "title": "My Morning Routine"
-            ,"steps" : [
-                        {"title" : "Eat"
-                          ,"timeDiff" : moment().format('HH:mm:ss')
-                          ,"status" : "done"
-                        }
-                        ,{"title" : "Pray"
-                          ,"timeDiff" : moment().format('HH:mm:ss')
-                          ,"status" : "doing"
-                        }
-                          ,{"title" : "Love"
-                          ,"timeDiff" : moment().format('HH:mm:ss')
-                          ,"status" : "todo"
-                        }
-                          ,{"title" : "Party"
-                          ,"timeDiff" : moment().format('HH:mm:ss')
-                          ,"status" : "todo"
-                        }
-                      ]
-            ,"currentOps" : {
-                        "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
-                        ,"workingAttempt" : 2 //# (not index 0) of the current attempt; increment it when you hit "Finished"
-                         }
-            ,"attempts" : [ //array of attempt data, each attempt is one array element
-                          //this is attempt 0
-                          [ //each element is an array of steps
-                          //each "step" is an object with title and times keys
-                            {"title": "Take Shower"
-                            //each TIME key is an array of objects with starts and ends time
-                            ,"times":[{
-                                      "started_at": moment("2015-02-09 09:30:20")
-                                     , "ended_at" : moment("2015-02-09 09:34:40")
-                                      }]
-                             }
-                            ,{"title": "Get Dressed",
-                             "times": [{
-                                        "started_at": "T3"
-                                        ,"ended_at" : "T4"
-                                      }
-                                      ,{
-                                        "started_at": "T5"
-                                       , "ended_at" : "T6"
-                                      }]}
-                          ]//END OF ATTEMPT 0
-                          ,[ // START OF ATTEMPT 1
-                            {"title": "Take Shower"
-                             ,"times":[{
-                                        "started_at": "T7"
-                                        ,"ended_at" : "T8"
-                                        }]}
-                            ,{"title": "Get Dressed"
-                             ,"times": [{
-                                        "started_at": "T9"
-                                        ,"ended_at" : "T10"
-                                      }]}
-                            ,{"title": "Eat Breakfast",
-                            "times" :[{
-                                        "started_at": "T11"
-                                        ,"ended_at" : "T12"
-                                      }]}
-                          ]//END OF ATTEMPT 1
-                         ]//end all attempts for this routine
-
-                     } //end first routine object
-     }; //end all routines
-
-  return {
-    all: function() {
-      return dataStorage;
-    },
-    template: function() {
-      return dataTemplate;
-    },
-    titleTime: function(){
-      return titleTime;
-    }
-  };
-})
 
 //START OF GRAPH ROUTINES 
 
@@ -466,10 +444,11 @@ var loadFromLocalStorage = function(oneRoutine){
 
   var getAttemptNames = function(oneRoutine){
     var attemptLabelArray = [];
-    var attempts = oneRoutine.attempts
+    var attempts = oneRoutine.attempts || [];
     //gets attempt names and pushes them into chartData.labels
     for (var i = 0; i < attempts.length; i++) {
       var attemptLabel = attempts[i][0].times[0].started_at;
+      attemptLabel = moment(attemptLabel).local(); //to fix time bump issue
       attemptLabel = moment(attemptLabel).format('MM/DD/YY, hh:mm:ss');
       attemptLabel = String(attemptLabel);
       attemptLabelArray.push(attemptLabel);
@@ -480,7 +459,7 @@ var loadFromLocalStorage = function(oneRoutine){
   var getAttemptDurations = function(oneRoutine){
     var attemptDurations = [];
     //gets total attempt duration for each attempt an pushes them into chartData.datasets.
-    var attempts = oneRoutine.attempts
+    var attempts = oneRoutine.attempts || [];
     for (var i = 0; i < attempts.length; i++) {
       var attemptDuration = TimerCalcs.calcDurationAttempt(attempts[i]);
       //convert from moment duration to number of minutes
@@ -541,57 +520,220 @@ var loadFromLocalStorage = function(oneRoutine){
     ,convertPrettyTimeToFullAttempt: convertPrettyTimeToFullAttempt
   }
 
-}]);
+}])
+.service('RoutineCalcs', [ 'ShareData', function(ShareData){
+  
+  var getRoutineDisplayObjects = function(allData){
+    var allRoutinesArray = allData.routines;
+    var activeIndex = allData.appOps.activeRoutine;
+    var array = [];
+    for (var i = 0; i < allRoutinesArray.length; i++) {
+      var title = allRoutinesArray[i].title;
+      //Check whether this is active Routine, and mark status with "active" or "inactive" to meet expectations of the Routines template
+      var activeStatus = "";
+      i === activeIndex ? activeStatus = "active" : activeStatus = "inactive";
 
-// .factory('Reports', function(){
+      //Check to see if this routine's currentOps.activeStep != null --> If != null, then a step is running in that routine
+      var is_running = new Boolean();
+      allRoutinesArray[i].currentOps.activeStep != null ? is_running = true : is_running = false;
+      console.log("RoutineDisplayObject: this is is_running and routine ",is_running,allRoutinesArray[i]);
+      
+      var obj = {"title": title, "activeStatus": activeStatus, "runningStatus": is_running, "index": i};
+      array.push(obj);
+    };
+    return array;
+  }
 
-//   //methods that take data out of json object and makes it into chart data
+  return{
+    getRoutineDisplayObjects: getRoutineDisplayObjects
+  }
+
+}])
+
+.factory('Routines', function() {
 
 
-//     // window.onload = function () {
-//     var chart = new CanvasJS.Chart("chartContainer",
-//     {
-//       title:{
-//       text: "Routine Report"
-//       },
-//       axisY:{
-//        interval: 1,
-//        intervalType: "millisecond",
-//       },
+  // var titleTime =
+  //   [
+  //   {"title" : "Eat"
+  //     ,"timeDiff" : moment().format('HH:mm:ss')
+  //     ,"status" : "done"
+  //   }
+  //   ,{"title" : "Pray"
+  //     ,"timeDiff" : moment().format('HH:mm:ss')
+  //     ,"status" : "doing"
+  //   }
+  //     ,{"title" : "Love"
+  //     ,"timeDiff" : moment().format('HH:mm:ss')
+  //     ,"status" : "todo"
+  //   }
+  //     ,{"title" : "Read"
+  //     ,"timeDiff" : moment().format('HH:mm:ss')
+  //     ,"status" : "todo"
+  //   }
+  // ];
 
-//       data: [
-//       {
-//         type: "stackedColumn",
-//         legendText: "Take Shower",
-//         showInLegend: "true",
-//         dataPoints: [
-//         { x: 2, y: 3.2, label: "foo"},
-//         { x: 3, y: 4.6, label: "foo"},
-//         ]
-//       },
-//         {
-//         type: "stackedColumn",
-//         legendText: "Put On Clothes",
-//         showInLegend: "true",
-//         dataPoints: [
-//         { x: 2, y: 1.5, label: "bar"},
-//         { x: 3, y: 6.9, label: "bar"},
-//         ]
-//       },// THIS IS FOR THE LABELS
-//       {
-//         type: "stackedColumn",
-//         showInLegend: "false",
-// //         dataPoints: [
-// //         { x: 2, y: 0, label: "2"},
-// //         { x: 3, y: 0, label: "3"},
-// //         ]
-// //       }
-// //       ]
-// //     });
+  var dataTemplate =
+      {"appOps": {
+                "activeRoutine":0 //index # of activeRoutine
+                }
+      ,"routines": [
+                    {"title": "Example - Public Transport"
+                    ,"steps": [
+                                {"title" : "Walk to station"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                ,{"title" : "Wait"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                  ,{"title" : "Ride"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                  ,{"title" : "Walk from station"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                              ]
+                    ,"currentOps": {"activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
+                                   ,"workingAttempt" : 1 //# (not index 0) of the current attempt; increment it when you hit "Finished" //start at 1
+                                    }
+                    ,"attempts":[]
+                    }
+                    ,{"title": "Example - My Whole Day"
+                    ,"steps": [
+                                {"title" : "Eat"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                ,{"title" : "Cook"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                  ,{"title" : "Exercise"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                  ,{"title" : "Housework"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                 ,{"title" : "Officework"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                 ,{"title" : "Leisure"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                            ]
+                    ,"currentOps": {"activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
+                                   ,"workingAttempt" : 1 //# (not index 0) of the current attempt; increment it when you hit "Finished" //start at 1
+                                    }
+                    ,"attempts":[]
+                    }
+                    ]
+                  };
 
-//     // chart.render();
-//   // }
 
-//   return chart;
-// })
-// ;
+   // var dataTemplate = OLD VERSION -- BEFORE ADDING MULTI-ROUTINES
+   //    {"Routine1": {
+   //          "title": "My Routine"
+   //          ,"steps" : [
+   //                      ]
+   //          ,"currentOps" : {
+   //                      "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
+   //                      ,"workingAttempt" : 1 //# (not index 0) of the current attempt; increment it when you hit "Finished" //start at 1
+   //                       }
+   //          ,"attempts" :[ //array of attempt data, each attempt is one array element
+   //                        //this will be the first attempt
+   //                       ]//end all attempts for this routine
+
+   //                   } //end first routine object
+   //   }; //end all routines
+
+  // Some fake testing data
+  //call it with: dataStorage.all
+  // var dataStorage =
+  //     {"Routine1": {
+  //           "title": "My Morning Routine"
+  //           ,"steps" : [
+  //                       {"title" : "Eat"
+  //                         ,"timeDiff" : moment().format('HH:mm:ss')
+  //                         ,"status" : "done"
+  //                       }
+  //                       ,{"title" : "Pray"
+  //                         ,"timeDiff" : moment().format('HH:mm:ss')
+  //                         ,"status" : "doing"
+  //                       }
+  //                         ,{"title" : "Love"
+  //                         ,"timeDiff" : moment().format('HH:mm:ss')
+  //                         ,"status" : "todo"
+  //                       }
+  //                         ,{"title" : "Party"
+  //                         ,"timeDiff" : moment().format('HH:mm:ss')
+  //                         ,"status" : "todo"
+  //                       }
+  //                     ]
+  //           ,"currentOps" : {
+  //                       "activeStep" : null //which step is currently active, //"Null" if no step is running, i.e., Pause mode
+  //                       ,"workingAttempt" : 2 //# (not index 0) of the current attempt; increment it when you hit "Finished"
+  //                        }
+  //           ,"attempts" : [ //array of attempt data, each attempt is one array element
+  //                         //this is attempt 0
+  //                         [ //each element is an array of steps
+  //                         //each "step" is an object with title and times keys
+  //                           {"title": "Take Shower"
+  //                           //each TIME key is an array of objects with starts and ends time
+  //                           ,"times":[{
+  //                                     "started_at": moment("2015-02-09 09:30:20")
+  //                                    , "ended_at" : moment("2015-02-09 09:34:40")
+  //                                     }]
+  //                            }
+  //                           ,{"title": "Get Dressed",
+  //                            "times": [{
+  //                                       "started_at": "T3"
+  //                                       ,"ended_at" : "T4"
+  //                                     }
+  //                                     ,{
+  //                                       "started_at": "T5"
+  //                                      , "ended_at" : "T6"
+  //                                     }]}
+  //                         ]//END OF ATTEMPT 0
+  //                         ,[ // START OF ATTEMPT 1
+  //                           {"title": "Take Shower"
+  //                            ,"times":[{
+  //                                       "started_at": "T7"
+  //                                       ,"ended_at" : "T8"
+  //                                       }]}
+  //                           ,{"title": "Get Dressed"
+  //                            ,"times": [{
+  //                                       "started_at": "T9"
+  //                                       ,"ended_at" : "T10"
+  //                                     }]}
+  //                           ,{"title": "Eat Breakfast",
+  //                           "times" :[{
+  //                                       "started_at": "T11"
+  //                                       ,"ended_at" : "T12"
+  //                                     }]}
+  //                         ]//END OF ATTEMPT 1
+  //                        ]//end all attempts for this routine
+
+  //                    } //end first routine object
+  //    }; //end all routines
+
+  return {
+    template: function() {
+      return dataTemplate;
+    }
+    // , all: function() {
+    //   return dataStorage;
+    // }
+    // , titleTime: function(){
+    //   return titleTime;
+    // }
+  }
+
+});
