@@ -284,6 +284,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     chartAllAttempts();
 
     //Automatically show donut for the most recent attempt
+    $scope.thisAttemptTime = "Your Most Recent Routine"
     chartOneAttempt(null,oneRoutine.attempts.length-1); //FIRST PARAM IS NOT NEEDED!
 
   };
@@ -292,6 +293,8 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     console.log("Which attempt was clicked?");
 
     prettyTimeClicked = points[0]._saved.label; // This is the "pretty" formatted time of the attempt that user clicked, but since it is "pretty" and not exact, we can only compare it to other pretty times in the attempts array
+    //adds a label to the donut
+    $scope.thisAttemptTime = "Your routine at: " + prettyTimeClicked;
 
     //Look up "prettyTimeClicked" in the array of prettyTimes
     var foundResult = GraphCalcs.convertPrettyTimeToFullAttempt(prettyTimeClicked, oneRoutine);
