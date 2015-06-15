@@ -1,9 +1,10 @@
-<ion-header-bar class="bar-dark">
-
+<ion-view>
+ 
+ <ion-header-bar class="bar-dark">
       <h1 class="title">{{routineTitle}}</h1>
-
-    </ion-header-bar>
-  <ion-content padding="true" class="has-header background">
+ </ion-header-bar>
+ 
+ <ion-content padding="true" class="has-header background">
 
  <!-- Duration of attempt -->
     <div
@@ -63,8 +64,8 @@
         </div>
       </form>
 
-    <!-- I'm PROBABLY done button -->
     <div class="bar-subfooter button-bar"></div>
+    <!-- I'm PROBABLY done button -->
     <button
       class="button button-assertive button-block"
       ng-click="probablyDone()"
@@ -72,9 +73,7 @@
       >
       I'm Probably Done
     </button>
-
     <!-- I'm DEFINITELY done button -->
-    <div class="bar-subfooter button-bar"></div>
     <button
       class="button button-dark finish button-block"
       ng-click="finishAttempt()"
@@ -82,7 +81,6 @@
       >
       Finish and Analyze
     </button>
-
 
   <!-- End of page -->
   </ion-content>
