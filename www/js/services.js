@@ -578,21 +578,21 @@ var setEndTime = function(endedStep, oneRoutine){
                 "activeRoutine":0 //index # of activeRoutine
                 }
       ,"routines": [
-                    {"title": "Demo - My first routine"
+                    {"title": "Example - Public Transport"
                     ,"steps": [
-                                {"title" : "Eat"
+                                {"title" : "Walk to station"
                                   ,"timeDiff" : null
                                   ,"status" : "todo"
                                 }
-                                ,{"title" : "Pray"
+                                ,{"title" : "Wait"
                                   ,"timeDiff" : null
                                   ,"status" : "todo"
                                 }
-                                  ,{"title" : "Love"
+                                  ,{"title" : "Ride"
                                   ,"timeDiff" : null
                                   ,"status" : "todo"
                                 }
-                                  ,{"title" : "Sleep"
+                                  ,{"title" : "Walk from station"
                                   ,"timeDiff" : null
                                   ,"status" : "todo"
                                 }
@@ -602,21 +602,29 @@ var setEndTime = function(endedStep, oneRoutine){
                                     }
                     ,"attempts":[]
                     }
-                    ,{"title": "Demo - Commute by train/bus"
+                    ,{"title": "Example - My Whole Day"
                     ,"steps": [
-                                {"title" : "Walk to station"
+                                {"title" : "Eat"
                                   ,"timeDiff" : null
                                   ,"status" : "todo"
                                 }
-                                ,{"title" : "Wait for train/bus"
+                                ,{"title" : "Cook"
                                   ,"timeDiff" : null
                                   ,"status" : "todo"
                                 }
-                                  ,{"title" : "Ride, Sally, ride"
+                                  ,{"title" : "Exercise"
                                   ,"timeDiff" : null
                                   ,"status" : "todo"
                                 }
-                                  ,{"title" : "Walk to office/home/school"
+                                  ,{"title" : "Housework"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                 ,{"title" : "Officework"
+                                  ,"timeDiff" : null
+                                  ,"status" : "todo"
+                                }
+                                 ,{"title" : "Leisure"
                                   ,"timeDiff" : null
                                   ,"status" : "todo"
                                 }

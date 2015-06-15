@@ -279,7 +279,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
 
   //Automatically show donut for the most recent attempt
-  chartOneAttempt("Taco",oneRoutine.attempts.length-1);
+  chartOneAttempt(null,oneRoutine.attempts.length-1); //FIRST PARAM IS NOT NEEDED?
 
   $scope.clickAttempt = function(points, evt) {
     console.log("Which attempt was clicked?");
