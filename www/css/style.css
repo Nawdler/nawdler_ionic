@@ -81,7 +81,34 @@
 }
 .finish{
 	background-color: #e67e22 !important;
-	margin-top: 200px;
+	/*margin-top: -200px;*/
+}
+.graphLabel{
+	text-align: center !important;
+}
+.graphBox{
+	margin-left: 30px !important;
+}
+#rotate {
+	float: left;
+	position: relative;
+	top: 100px;
+	left: -35px;
+/* Safari */
+-webkit-transform: rotate(-90deg);
+
+/* Firefox */
+-moz-transform: rotate(-90deg);
+
+/* IE */
+-ms-transform: rotate(-90deg);
+
+/* Opera */
+-o-transform: rotate(-90deg);
+
+/* Internet Explorer */
+filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+
 }
 
 /*.stepTitles{

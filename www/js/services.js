@@ -449,7 +449,7 @@ var setEndTime = function(endedStep, oneRoutine){
     for (var i = 0; i < attempts.length; i++) {
       var attemptLabel = attempts[i][0].times[0].started_at;
       attemptLabel = moment(attemptLabel).local(); //to fix time bump issue
-      attemptLabel = moment(attemptLabel).format('MM/DD/YY, hh:mm:ss');
+      attemptLabel = moment(attemptLabel).format('MM/DD/YY hh:mm:ss');
       attemptLabel = String(attemptLabel);
       attemptLabelArray.push(attemptLabel);
     };
