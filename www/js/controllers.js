@@ -3,30 +3,73 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 //.controller('TimerCtrl', function($scope) {})
 .controller('TimerCtrl', ['$scope', 'moment', '$interval', '$state', 'ShareData','Routines', 'TimerCalcs', 'LocalStorage', function($scope, moment, $interval, $state, ShareData, Routines, TimerCalcs, LocalStorage) {
 
+//Include functions here that involve $scope variables
 
-  //INITIALIZE FUNCTIONS
+ var evaluateButtonStatus = function(){
+
+    console.log("Hello from evaluateButtonStatus");
+
+    if (TimerCalcs.is_attemptRunning(oneRoutine) === false){
+      $scope.buttonStatus = "none";
+    } else if(TimerCalcs.is_attemptRunning(oneRoutine) === true && oneRoutine.currentOps.activeStep != null){
+      $scope.buttonStatus = "probably";
+    } else if(TimerCalcs.is_attemptRunning(oneRoutine) === true && oneRoutine.currentOps.activeStep == null){
+      $scope.buttonStatus = "definitely";
+    };
+  };
+
+ ///////// updateTime functions
+  var pulsar;
+
+  var startUpdateTime = function(clickedStep){
+   pulsar = $interval(function(){
+    updateTime(clickedStep);
+   // console.log("UPDATE Clicked Step:: ", clickedStep);
+   }, 1000, [clickedStep]);
+   // we pass [clickedStep] in as a parameter to the callbackfunction
+  }
+
+  function updateTime(runningStep){
+    var diff = currentDiff();
+    TimerCalcs.changeDiff(runningStep, diff, oneRoutine);
+
+    var currentAttempt = oneRoutine.attempts[oneRoutine.currentOps.workingAttempt-1];
+    $scope.bigDiff = TimerCalcs.calcDurationAttempt(currentAttempt);
+
+    console.log("ONE ROUTINE TO RULE THEM ALL (oneRoutine from updateTime) : " , oneRoutine);
+    console.log("Tick tock ($scope.steps from updateTime",$scope.steps);
+  }
+
+  var currentDiff = function(){
+    var currentStep = oneRoutine.currentOps.activeStep;
+
+    var timeArray = TimerCalcs.getTimeArray(currentStep, oneRoutine); //.timeArray;
+    var total = TimerCalcs.calcMultipleSegments(timeArray);
+    return total;
+  }
+
+  var stopPulsar = function(){
+    $interval.cancel(pulsar);
+  }
+  ///////end update time stuff
+
+  //INITIALIZE DATA FOR TIMER PAGE
 
   //Use timer to reference scope of this controller.
   $scope.timer = $scope;
 
-  //LOAD DATA FROM LAST TIME
-  //ShareData.loadFromLocalStorage()
 
-  //If no routine is "active" send user to Routines page to pick one
-
-
-//REPLACE THIS or REMOVE THIS -- REPLACED BY LOADING IN ROUTINES TAB
-  //var allData = Routines.template(); //get the sample data from the factory
-
-//  ShareData.oneRoutine = allData["Routine1"]; //this will be replaced with active routine
-//TO HERE
-
- // var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this should work!
- // console.log("This is ShareData.oneRoutine in TimerCtrl ", ShareData.oneRoutine);
-
+  //MAYBE LATER If no routine is "active" send user to Routines page to pick one
 
   //Initialize data -- load from "ShareData" service!
+  //LOAD LATEST DATA -- Just to be safe
+  var allData = LocalStorage.loadFromLocalStorage();
+
+  // To "activate" and share a given routine...  Share activeRoutine by using ShareData.oneRoutine variable.  Because Objects are a reference type, this works
+  ShareData.oneRoutine = allData.routines[allData.appOps.activeRoutine];
+
   var oneRoutine = ShareData.oneRoutine; //because Objects are reference type, this works!
+
   console.log("This is loaded data in TimerCtrl - ShareData.oneRoutine ",oneRoutine);
 
   //Load data about the routine into $scope for displaying
@@ -34,11 +77,26 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
   $scope.steps = oneRoutine.steps; //store the steps array
 
-  //Start the main UI button in "none" category
-  $scope.buttonStatus = "none";
+
+  //DETERMINE WHAT IS CURRENT STATE OF CURRENT ROUTINE AND DISPLAY APPROPRIATE STUFF
+
+  //UPDATE TIMER MAIN BUTTON
+  evaluateButtonStatus();
+
+  //START PULSAR IF APPROPRIATE
+  if ($scope.buttonStatus === "probably") { //This means a step is running for this routine
+    console.log("We think a step is running and want to start the pulsar");
+
+   startUpdateTime(oneRoutine.currentOps.activeStep); //PASS IN OBJECT FORM OF ACTIVESTEP
+  };
+
+  //Get data for bigDiff, if pulsar not going to run
+  if ($scope.buttonStatus === "definitely") {
+    var currentAttempt = oneRoutine.attempts[oneRoutine.currentOps.workingAttempt-1];
+    $scope.bigDiff = TimerCalcs.calcDurationAttempt(currentAttempt);
+  };
 
   $scope.addStep = function(newStep){
-
 
     //First validate that there is not already a step with this same name
     var found = TimerCalcs.findElementByTitle(newStep,$scope.steps);
@@ -72,15 +130,14 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   };
 
   $scope.startStep = function(clickedStep){
-    //Ionic passes us clickedStep based on which list item user clicked on!
+    //Ionic passes us clickedStep based on which list item user clicked on
     // This is the currently active step, Null if none is active
 
-    console.log("Hello from start step");
+    console.log("DARTH Hello from start step");
     console.log("DARTH This is what was clicked",clickedStep);
-    console.log("DARTH typeof what was clicked ",typeof clickedStep);
+    console.log("DARTH this is typeof what was clicked ", typeof clickedStep);
 
     var clickedStepString = clickedStep.title;
-    console.log("This is what was clicked and hopefully now a string",clickedStepString);
 
    // clickedStep = clickedStepString;
 
@@ -110,7 +167,6 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     oneRoutine.currentOps.activeStep = clickedStep;
     activeStep = oneRoutine.currentOps.activeStep;
 
-    // console.log("Hello from right before change status");
     //Set status of this step to be "doing"
     TimerCalcs.changeStatus(clickedStep, "doing", oneRoutine);
 
@@ -127,44 +183,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     //Save data to LocalStorage
     LocalStorage.saveToLocalStorage();
 
-//    LocalStorage.saveToLocalStorage(LocalStorage.mergeRoutineIntoDataTree());
-    //OLD WAY ShareData.saveToLocalStorage(oneRoutine);
   } //END OF STARTSTEP
-
-  ///////// updateTime stuff
-  var pulsar;
-  var startUpdateTime = function(clickedStep){
-   pulsar = $interval(function(){
-    updateTime(clickedStep);
-   // console.log("UPDATE Clicked Step:: ", clickedStep);
-   }, 1000, [clickedStep]);
-   // we pass [clickedStep] in as a parameter to the callbackfunction
-  }
-
-  function updateTime(runningStep){
-    var diff = currentDiff();
-    TimerCalcs.changeDiff(runningStep, diff, oneRoutine);
-
-    var currentAttempt = oneRoutine.attempts[oneRoutine.currentOps.workingAttempt-1];
-    $scope.bigDiff = TimerCalcs.calcDurationAttempt(currentAttempt);
-
-    console.log("ONE ROUTINE TO RULE THEM ALL (oneRoutine from updateTime) : " , oneRoutine);
-    console.log("Tick tock ($scope.steps from updateTime",$scope.steps);
-          console.log("UPDATE TIME Button status: ",$scope.buttonStatus);
-  }
-
-  var currentDiff = function(){
-    var currentStep = oneRoutine.currentOps.activeStep;
-
-    var timeArray = TimerCalcs.getTimeArray(currentStep, oneRoutine); //.timeArray;
-    var total = TimerCalcs.calcMultipleSegments(timeArray);
-    return total;
-  }
-
-  var stopPulsar = function(){
-    $interval.cancel(pulsar);
-  }
-  ///////end update time stuff
 
   $scope.probablyDone = function(){
     var activeStep = oneRoutine.currentOps.activeStep;
@@ -213,19 +232,6 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     $state.go('tab.graph');
    }
 
-  var evaluateButtonStatus = function(){
-
-    console.log("Hello from evaluateButtonStatus");
-
-    if (TimerCalcs.is_attemptRunning(oneRoutine) === false){
-      $scope.buttonStatus = "none";
-    } else if(TimerCalcs.is_attemptRunning(oneRoutine) === true && oneRoutine.currentOps.activeStep != null){
-      $scope.buttonStatus = "probably";
-    } else if(TimerCalcs.is_attemptRunning(oneRoutine) === true && oneRoutine.currentOps.activeStep == null){
-      $scope.buttonStatus = "definitely";
-    };
-  };
-
 }]) // END OF TIMERCTRL CONTROLLER
 
 .controller('GraphCtrl', ['$scope', 'ShareData', 'TimerCalcs', 'GraphCalcs', 'LocalStorage', function($scope, ShareData, TimerCalcs, GraphCalcs, LocalStorage) {
@@ -263,15 +269,17 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
 
   chartAllAttempts(); // call this function
 
-  var chartOneAttempt = function(attempt, attemptIndex) {
+  var chartOneAttempt = function(attempt, attemptIndex) { //REFACTOR IF BOTH PARAMS NOT NEEDED?
     //Labels on X axis
     $scope.labelsDetail = GraphCalcs.getStepNames(attemptIndex, oneRoutine);
     $scope.dataDetail = GraphCalcs.getStepDurations(attemptIndex, oneRoutine);
 
     console.log("This is what is getting graphed, first labels then data ",$scope.labels,$scope.data);
-
   };
 
+
+  //Automatically show donut for the most recent attempt
+  chartOneAttempt("Taco",oneRoutine.attempts.length-1);
 
   $scope.clickAttempt = function(points, evt) {
     console.log("Which attempt was clicked?");
