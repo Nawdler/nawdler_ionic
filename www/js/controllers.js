@@ -133,9 +133,9 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     //Ionic passes us clickedStep based on which list item user clicked on
     // This is the currently active step, Null if none is active
 
-    console.log("DARTH Hello from start step");
-    console.log("DARTH This is what was clicked",clickedStep);
-    console.log("DARTH this is typeof what was clicked ", typeof clickedStep);
+    console.log("Hello from start step");
+    console.log("This is what was clicked",clickedStep);
+    console.log("This is typeof what was clicked ", typeof clickedStep);
 
     var clickedStepString = clickedStep.title;
 
@@ -354,7 +354,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
   //grabbing all the routine names from the data
   var routineArray = RoutineCalcs.getRoutineDisplayObjects(allData);
   
-  console.log("STEVEN - This is what is going to be displayed ",routineArray);
+  console.log("This is what is going to be displayed ",routineArray);
 
   //Make the "routines" array for template ng-repeat, or use an empty array
   $scope.routineArray = routineArray || [];
@@ -426,7 +426,7 @@ angular.module('starter.controllers', ['angularMoment', 'chart.js'])
     //$scope.routineArray = RoutineCalcs.getRoutineDisplayObjects(allData);
     $scope.routineArray[clickedRoutine.index].activeStatus = "active";
 
-    console.log("STEVEN This is what is getting ng-repeated in Routines page ",$scope.routineArray);
+    console.log("This is what is getting ng-repeated in Routines page ",$scope.routineArray);
 
     //Save data to LocalStorage
     LocalStorage.saveAppOpsToLocalStorage(clickedRoutine.index);

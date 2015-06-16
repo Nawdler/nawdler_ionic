@@ -82,7 +82,7 @@ var saveAppOpsToLocalStorage = function(newActiveRoutine){
   //   console.log("This is fullTree.routines ", fullTree.routines);
   //   console.log("This is fullTree.routines[ActiveRoutine] ", fullTree.routines[activeRoutine]);
 
-  //   console.log("ALLXIE This is what we want to put INTO the fullTree ", ShareData.oneRoutine);
+  //   console.log("This is what we want to put INTO the fullTree ", ShareData.oneRoutine);
   //   //Put likely modified active Routine into data tree
   //   fullTree.routines[activeRoutine] = ShareData.oneRoutine;
   // };
@@ -338,12 +338,9 @@ var setEndTime = function(endedStep, oneRoutine){
     //This function looks at the start/stop times for a STEP inside an attempt array and returns the total duration
     var total = moment.duration(0); //initiatialize as moment duration of zero
 
-    //console.log("Calc multiple Allxie", array);
-    //console.log("array.length zoop :: ", array.length);
 
     for (var i=0; i < array.length; i++){
       //console.log("Calc Multiple Segments: array[i] ",array[i]);
-      //console.log("CMS Steven Total before: ",total);
       var start = array[i].started_at;
       var end = array[i].ended_at || moment.utc(); // if there is no end yet, it's running so we call it now.
       var thisSegment = calcDurationSegment(start, end);
@@ -463,7 +460,7 @@ var setEndTime = function(endedStep, oneRoutine){
     for (var i = 0; i < attempts.length; i++) {
       var attemptDuration = TimerCalcs.calcDurationAttempt(attempts[i]);
       //convert from moment duration to number of minutes
-      var attemptDuration = moment.duration(attemptDuration).asSeconds(); //was asMinutes();
+      var attemptDuration = moment.duration(attemptDuration).asMinutes(); //was asSeconds() for better demos
 
       attemptDurations.push(attemptDuration);
     };
@@ -484,7 +481,7 @@ var setEndTime = function(endedStep, oneRoutine){
     var attempt = oneRoutine.attempts[attemptInd];
     for (var i = 0; i < attempt.length; i++) {
       var stepDuration = TimerCalcs.calcMultipleSegments(attempt[i].times);
-      stepDuration = moment.duration(stepDuration).asSeconds();
+      stepDuration = moment.duration(stepDuration).asMinutes(); //was: asSeconds() for better demos
       stepDurationArray.push(stepDuration);
     };
     return stepDurationArray;
@@ -604,7 +601,7 @@ var setEndTime = function(endedStep, oneRoutine){
                     }
                     ,{"title": "Example - My Whole Day"
                     ,"steps": [
-                                {"title" : "Eat"
+                                {"title" : "Exercise"
                                   ,"timeDiff" : null
                                   ,"status" : "todo"
                                 }
@@ -612,7 +609,7 @@ var setEndTime = function(endedStep, oneRoutine){
                                   ,"timeDiff" : null
                                   ,"status" : "todo"
                                 }
-                                  ,{"title" : "Exercise"
+                                  ,{"title" : "Eat"
                                   ,"timeDiff" : null
                                   ,"status" : "todo"
                                 }
