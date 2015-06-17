@@ -460,7 +460,10 @@ var setEndTime = function(endedStep, oneRoutine){
     for (var i = 0; i < attempts.length; i++) {
       var attemptDuration = TimerCalcs.calcDurationAttempt(attempts[i]);
       //convert from moment duration to number of minutes
-      var attemptDuration = moment.duration(attemptDuration).asMinutes(); //was asSeconds() for better demos
+      attemptDuration = moment.duration(attemptDuration).asMinutes(); //was asSeconds() for better demos
+
+      //Limit to 1 decimal place
+      attemptDuration = attemptDuration.toFixed(3);
 
       attemptDurations.push(attemptDuration);
     };
@@ -482,6 +485,10 @@ var setEndTime = function(endedStep, oneRoutine){
     for (var i = 0; i < attempt.length; i++) {
       var stepDuration = TimerCalcs.calcMultipleSegments(attempt[i].times);
       stepDuration = moment.duration(stepDuration).asMinutes(); //was: asSeconds() for better demos
+
+      //Limit to 1 decimal place
+      stepDuration = stepDuration.toFixed(3);
+
       stepDurationArray.push(stepDuration);
     };
     return stepDurationArray;
